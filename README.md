@@ -1,2 +1,2 @@
 # Marvel-Ultimate-War-Game-
-Java GIU game developed from scratch
+Java GUI game developed from scratch
