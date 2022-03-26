@@ -70,7 +70,8 @@ public class Champion {
         return currentHP;
     }
     public void setCurrentHP(int currentHP) {
-        this.currentHP = currentHP;
+    	if(currentHP>=this.maxHP)this.currentHP = this.maxHP;
+    	else this.currentHP = currentHP;
     }
     public int getMana() {
         return mana;
