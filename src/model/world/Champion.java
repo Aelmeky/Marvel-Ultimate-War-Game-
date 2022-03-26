@@ -71,6 +71,7 @@ public class Champion {
     }
     public void setCurrentHP(int currentHP) {
     	if(currentHP>=this.maxHP)this.currentHP = this.maxHP;
+    	else if(currentHP<=0)this.currentHP =0;
     	else this.currentHP = currentHP;
     }
     public int getMana() {
