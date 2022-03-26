@@ -1,5 +1,5 @@
 package engine;
-class PriorityQueue {
+public class PriorityQueue {
  
    private Comparable[] elements;
    private int nItems;

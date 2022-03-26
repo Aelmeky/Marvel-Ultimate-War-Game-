@@ -13,7 +13,7 @@ public class Game {
 	private boolean firstLeaderAbilityUsed;
 	private boolean secondLeaderAbilityUsed;
 	Object [][] board = new Object[5][5];
-	PriorityQueue turnOrder;
+	private PriorityQueue turnOrder;
 	private static ArrayList<Champion> availableChampions = new ArrayList<Champion>();
 	private static ArrayList<Ability> availableAbilities = new ArrayList<Ability>();
 	final static int BOARDHEIGHT = 5;
