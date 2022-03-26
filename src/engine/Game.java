@@ -70,8 +70,8 @@ public class Game {
 	}
 	private void placeCovers() {
 		for(int i=0;i<5;i++) {
-			int vertical = (int)(Math.random()*4+1);
-			int horizontal = (int)(Math.random()*4+1);
+			int vertical = (int)(Math.random()*3+1);
+			int horizontal = (int)(Math.random()*3+1);
 			if(board[vertical][horizontal] != null) {
 				i--;
 				continue;
