@@ -20,7 +20,7 @@ public class Game {
 	final private static int BOARDWIDTH = 5;
 	public Game(Player first, Player second){
 		this.firstPlayer = first;
-		this.secoundPlayer = second;
+		this.secondPlayer = second;
 	}
 	public PriorityQueue getTurnOrder() {
 		return turnOrder;
@@ -34,8 +34,8 @@ public class Game {
 	public Player getFirstPlayer() {
 		return firstPlayer;
 	}
-	public Player getSecoundPlayer() {
-		return secoundPlayer;
+	public Player getSecondPlayer() {
+		return secondPlayer;
 	}
 	public boolean isFirstLeaderAbilityUsed() {
 		return firstLeaderAbilityUsed;
@@ -63,7 +63,7 @@ public class Game {
 		for(int i=1 ;i<BOARDWIDTH-1;i++) {
 			
 			board[0][i] = firstPlayer.getTeam().get(champ);
-			board[BOARDHEIGHT-1][i] = secoundPlayer.getTeam().get(champ);
+			board[BOARDHEIGHT-1][i] = secondPlayer.getTeam().get(champ);
 			champ++;
 		}
 		
