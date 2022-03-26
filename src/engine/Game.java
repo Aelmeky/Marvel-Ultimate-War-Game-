@@ -49,8 +49,8 @@ public class Game {
 	public static int getBOARDWIDTH() {
 		return BOARDWIDTH;
 	}
-	public static void setAvailableAbilities(ArrayList<Ability> availableAbilities) {
-		Game.availableAbilities = availableAbilities;
+	public static ArrayList<Ability> getAvailableAbilities() {
+		return Game.availableAbilities;
 	}
 	private void placeChampions() {
 		
