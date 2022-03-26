@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.*;
+import java.awt.Point;
 import java.io.*;
 
 import model.abilities.*;
@@ -18,9 +19,13 @@ public class Game {
 	private static ArrayList<Ability> availableAbilities = new ArrayList<Ability>();
 	final private static int BOARDHEIGHT = 5;
 	final private static int BOARDWIDTH = 5;
-	public Game(Player first, Player second){
+	public Game(Player first, Player second) throws IOException{
 		this.firstPlayer = first;
 		this.secondPlayer = second;
+		//loadAbilities("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\src\\Abilities.csv");
+		//loadChampions("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\src\\Champions.csv");
+		//placeChampions();
+		//placeCovers();
 	}
 	public PriorityQueue getTurnOrder() {
 		return turnOrder;
@@ -61,7 +66,8 @@ public class Game {
 	private void placeChampions() {
 		int champ =0;
 		for(int i=1 ;i<BOARDWIDTH-1;i++) {
-			
+			firstPlayer.getTeam().get(champ).setLocation(new Point(0,i));
+			secondPlayer.getTeam().get(champ).setLocation(new Point(BOARDHEIGHT-1,i));
 			board[0][i] = firstPlayer.getTeam().get(champ);
 			board[BOARDHEIGHT-1][i] = secondPlayer.getTeam().get(champ);
 			champ++;
