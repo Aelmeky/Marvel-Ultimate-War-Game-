@@ -9,7 +9,7 @@ import model.effects.*;
 
 public class Game {
 	private Player firstPlayer;
-	private Player secoundPlayer;
+	private Player secondPlayer;
 	private boolean firstLeaderAbilityUsed;
 	private boolean secondLeaderAbilityUsed;
 	Object [][] board = new Object[5][5];
