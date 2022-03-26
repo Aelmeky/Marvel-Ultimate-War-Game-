@@ -2,7 +2,7 @@ package model.world;
 import java.awt.*;
 
 public class Cover {
-    private int currentHP;// this value is always >0// i.e exception in the getter.
+    private int currentHP;// this value is always >0// i.e exception in the setter.
     private Point location;
 
     public Point getLocation() {
@@ -12,7 +12,7 @@ public class Cover {
         return currentHP;
     }
     public void setCurrentHP(int currentHP) {
-        if(currentHP>=100){
+        if(currentHP>=0){
             this.currentHP = currentHP;
         }else{
             ;

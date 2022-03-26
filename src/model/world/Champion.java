@@ -1,6 +1,10 @@
 package model.world;
 
 import java.awt.*;
+import java.util.ArrayList;
+
+import model.abilities.Ability;
+import model.effects.Effect;
 
 public class Champion {
     private String name;
