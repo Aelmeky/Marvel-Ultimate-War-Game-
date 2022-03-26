@@ -112,7 +112,7 @@ public class Game {
 				availableChampions.add(new Hero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
 			}
 			else if(championInfo[0].equals("V")) {
-				availableChampions.add(new AntiHero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+				availableChampions.add(new Villain(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
 			}
 			line = br.readLine();
 		}
