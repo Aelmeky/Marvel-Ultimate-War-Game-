@@ -23,12 +23,16 @@ public class Champion {
     public Champion(String name, int maxHP, int mana, int maxActions, int speed, int attackRange,int attackDamage){
         this.name=name;
         this.maxHP=maxHP;
+        this.currentHP = maxHP;
         this.mana=mana;
         this.maxActionPointsPerTurn=maxActions;
+        this.currentActionPoints = maxActions;
         this.speed=speed;
         this.attackRange=attackRange;
         this.attackDamage=attackDamage;
-        abilities = new ArrayList<Ability>();
+        this.abilities = new ArrayList<Ability>();
+        this.appliedEffects = new ArrayList<Effect>();
+        this.condition = condition.ACTIVE;
     }
     public Point getLocation() {
         return location;
