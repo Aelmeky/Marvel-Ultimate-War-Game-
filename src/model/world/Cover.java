@@ -1,5 +1,6 @@
 package model.world;
 import java.awt.*;
+import exceptions.GameActionException;
 
 public class Cover {
     private int currentHP;// this value is always >0// i.e exception in the setter.
@@ -12,12 +13,16 @@ public class Cover {
         return currentHP;
     }
     public void setCurrentHP(int currentHP) {
-        if(currentHP>=0){
-            this.currentHP = currentHP;
-        }else{
-            ;
-        }
-
+//    	try {
+//    		if(currentHP>=0){
+//    			this.currentHP=currentHP;
+//    		}else {
+//    			throw new GameActionException("cover health cannot be smaller than 0");
+//    		}
+//    	}catch(){
+//    		setCurrentHP(0);
+//    	}
+    	this.currentHP=currentHP;
     }
     public Cover(int x, int y){
         this.location=new Point(x,y);
