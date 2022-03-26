@@ -16,14 +16,20 @@ public class Game {
 	private PriorityQueue turnOrder;
 	private static ArrayList<Champion> availableChampions = new ArrayList<Champion>();
 	private static ArrayList<Ability> availableAbilities = new ArrayList<Ability>();
-	final static int BOARDHEIGHT = 5;
-	final static int BOARDWIDTH = 5;
+	final private static int BOARDHEIGHT = 5;
+	final private static int BOARDWIDTH = 5;
 	public Game(Player first, Player second){
 		this.firstPlayer = first;
 		this.secoundPlayer = second;
 	}
 	public PriorityQueue getTurnOrder() {
 		return turnOrder;
+	}
+	public static int getBoardheight() {
+		return BOARDHEIGHT;
+	}
+	public static int getBoardwidth() {
+		return BOARDWIDTH;
 	}
 	public Player getFirstPlayer() {
 		return firstPlayer;
