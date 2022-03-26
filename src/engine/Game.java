@@ -53,10 +53,12 @@ public class Game {
 		return Game.availableAbilities;
 	}
 	private void placeChampions() {
-		
+		int champ =0;
 		for(int i=1 ;i<BOARDWIDTH-1;i++) {
-			board[0][i] = firstPlayer.getTeam().get(i);
-			board[BOARDHEIGHT-1][i] = secoundPlayer.getTeam().get(i);
+			
+			board[0][i] = firstPlayer.getTeam().get(champ);
+			board[BOARDHEIGHT-1][i] = secoundPlayer.getTeam().get(champ);
+			champ++;
 		}
 		
 	}
