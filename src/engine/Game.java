@@ -92,8 +92,29 @@ public class Game {
 				case "SpeedUp": effect = new SpeedUp(Integer.parseInt(abilityInfo[8]));break;
 				case "Stun": effect = new Stun(Integer.parseInt(abilityInfo[8]));break;
 				}
+				
 				availableAbilities.add(new CrowdControlAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),effect));
+				
 			}
+			line = br.readLine();
+			
+		}
+	}
+	public static void loadChampions(String filePath)throws IOException{
+		BufferedReader br= new BufferedReader(new FileReader(filePath));
+		String line = br.readLine();
+		while(line != null) {
+			String[] championInfo = line.split(",");
+			if(championInfo[0].equals("A")) {
+				availableChampions.add(new AntiHero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+			}
+			else if(championInfo[0].equals("H")) {
+				availableChampions.add(new Hero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+			}
+			else if(championInfo[0].equals("V")) {
+				availableChampions.add(new AntiHero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+			}
+			line = br.readLine();
 		}
 	}
 }
