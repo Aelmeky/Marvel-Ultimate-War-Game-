@@ -13,6 +13,7 @@ public class Game {
 	private boolean firstLeaderAbilityUsed;
 	private boolean secondLeaderAbilityUsed;
 	Object [][] board = new Object[5][5];
+	PriorityQueue turnOrder;
 	private static ArrayList<Champion> availableChampions = new ArrayList<Champion>();
 	private static ArrayList<Ability> availableAbilities = new ArrayList<Ability>();
 	final static int BOARDHEIGHT = 5;
@@ -20,6 +21,9 @@ public class Game {
 	public Game(Player first, Player second){
 		this.firstPlayer = first;
 		this.secoundPlayer = second;
+	}
+	public PriorityQueue getturnOrder() {
+		return turnOrder;
 	}
 	public Player getFirstPlayer() {
 		return firstPlayer;
