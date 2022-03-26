@@ -22,7 +22,7 @@ public class Game {
 		this.firstPlayer = first;
 		this.secoundPlayer = second;
 	}
-	public PriorityQueue getturnOrder() {
+	public PriorityQueue getTurnOrder() {
 		return turnOrder;
 	}
 	public Player getFirstPlayer() {
