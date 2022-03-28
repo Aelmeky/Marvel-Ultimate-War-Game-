@@ -22,8 +22,10 @@ public class Game {
 	public Game(Player first, Player second) throws IOException{
 		this.firstPlayer = first;
 		this.secondPlayer = second;
+		
 		loadAbilities("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Abilities.csv");
 		loadChampions("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Champions.csv");
+		this.turnOrder = new PriorityQueue(this.availableChampions.size()*2);
 		placeChampions();
 		placeCovers();
 	}
@@ -91,6 +93,7 @@ public class Game {
 	}
 	public void loadAbilities(String filePath)throws IOException{
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
+		this.availableAbilities = new ArrayList<Ability>();
 		String line = br.readLine();
 		while(line != null) {
 			String[] abilityInfo = line.split(",");
@@ -124,6 +127,7 @@ public class Game {
 	}
 	public void loadChampions(String filePath)throws IOException{
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
+		this.availableChampions = new ArrayList<Champion>();
 		String line = br.readLine();
 		while(line != null) {
 			String[] championInfo = line.split(",");
@@ -147,6 +151,7 @@ public class Game {
 			
 			line = br.readLine();
 		}
+
 	}
 	public Ability getAbilityByName(String name) {
 		for(int i=0;i<this.availableAbilities.size();i++) {
