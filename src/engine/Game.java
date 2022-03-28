@@ -22,8 +22,8 @@ public class Game {
 	public Game(Player first, Player second) throws IOException{
 		this.firstPlayer = first;
 		this.secondPlayer = second;
-		loadAbilities("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\src\\Abilities.csv");
-		loadChampions("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\src\\Champions.csv");
+		loadAbilities("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Abilities.csv");
+		loadChampions("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Champions.csv");
 		placeChampions();
 		placeCovers();
 	}
