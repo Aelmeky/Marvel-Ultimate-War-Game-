@@ -84,14 +84,11 @@ public class Game {
 		for(int i=0;i<5;i++) {
 			int vertical = (int)(Math.random()*3+1);
 			int horizontal = (int)(Math.random()*3+1);
-			if(board[vertical][horizontal] != null) {
-				i--;
-				continue;
-			}
-			board[vertical][horizontal] = new Cover(horizontal,vertical);
+			if(board[vertical][horizontal] != null) i--;
+			else board[vertical][horizontal] = new Cover(horizontal,vertical);
 		}	
 	}
-	public static void loadAbilities(String filePath)throws IOException{
+	public void loadAbilities(String filePath)throws IOException{
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
 		String line = br.readLine();
 		while(line != null) {
@@ -124,21 +121,38 @@ public class Game {
 			
 		}
 	}
-	public static void loadChampions(String filePath)throws IOException{
+	public void loadChampions(String filePath)throws IOException{
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
 		String line = br.readLine();
 		while(line != null) {
 			String[] championInfo = line.split(",");
+			Champion currChamp = null;
 			if(championInfo[0].equals("A")) {
-				availableChampions.add(new AntiHero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+				currChamp = new AntiHero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7]));
+				availableChampions.add(currChamp);
 			}
 			else if(championInfo[0].equals("H")) {
-				availableChampions.add(new Hero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+				currChamp = new Hero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7]));
+				availableChampions.add(currChamp);
 			}
 			else if(championInfo[0].equals("V")) {
-				availableChampions.add(new Villain(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7])));
+				currChamp = new Villain(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7]));
+				availableChampions.add(currChamp);
 			}
+			currChamp.getAbilities().add(this.getAbilityByName(championInfo[8]));
+			currChamp.getAbilities().add(this.getAbilityByName(championInfo[9]));
+			currChamp.getAbilities().add(this.getAbilityByName(championInfo[10]));
+			
+			
 			line = br.readLine();
 		}
+	}
+	public Ability getAbilityByName(String name) {
+		for(int i=0;i<this.availableAbilities.size();i++) {
+			if(this.availableAbilities.get(i).getName().equals(name)) {
+				return this.availableAbilities.get(i);
+			}
+		}
+		return null;
 	}
 }
