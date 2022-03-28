@@ -82,10 +82,11 @@ public class Game {
 	}
 	private void placeCovers() {
 		for(int i=0;i<5;i++) {
-			int vertical = (int)(Math.random()*3+1);
-			int horizontal = (int)(Math.random()*3+1);
-			if(board[vertical][horizontal] != null) i--;
-			else board[vertical][horizontal] = new Cover(horizontal,vertical);
+			int v = (int)(Math.random()*5);
+			int h = (int)(Math.random()*5);
+			
+			if(board[v][h] != null || (v==0 &&(h ==0 || h==4))||(v==4)&&(h==0||h==4)) i--;
+			else board[v][h] = new Cover(h,v);
 		}	
 	}
 	public void loadAbilities(String filePath)throws IOException{
