@@ -13,20 +13,11 @@ public class Cover {
         return currentHP;
     }
     public void setCurrentHP(int currentHP) {
-//    	try {
-//    		if(currentHP>=0){
-//    			this.currentHP=currentHP;
-//    		}else {
-//    			throw new GameActionException("cover health cannot be smaller than 0");
-//    		}
-//    	}catch(){
-//    		setCurrentHP(0);
-//    	}
     	this.currentHP=currentHP;
     }
     public Cover(int x, int y){
         this.location=new Point(x,y);
-        this.currentHP=(int)(Math.random() * ((1000 - 100) + 1)) + 100;
+        this.currentHP=(int)(Math.round(y)*1000)+100;
     }
 
 }

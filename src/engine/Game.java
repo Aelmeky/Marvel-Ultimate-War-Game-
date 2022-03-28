@@ -84,14 +84,15 @@ public class Game {
 	}
 	private void placeCovers() {
 		for(int i=0;i<5;i++) {
-			int v = (int)(Math.random()*5);
+			int v = (int)(Math.random()*3+1);
 			int h = (int)(Math.random()*5);
 			
 			if(board[v][h] != null || (v==0 &&(h ==0 || h==4))||(v==4)&&(h==0||h==4)) i--;
-			else board[v][h] = new Cover(h,v);
+			else board[v][h] = new Cover(v,h);
 		}	
 	}
 	public void loadAbilities(String filePath)throws IOException{
+		
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
 		this.availableAbilities = new ArrayList<Ability>();
 		String line = br.readLine();
@@ -126,6 +127,7 @@ public class Game {
 		}
 	}
 	public void loadChampions(String filePath)throws IOException{
+		
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
 		this.availableChampions = new ArrayList<Champion>();
 		String line = br.readLine();
@@ -134,16 +136,15 @@ public class Game {
 			Champion currChamp = null;
 			if(championInfo[0].equals("A")) {
 				currChamp = new AntiHero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7]));
-				availableChampions.add(currChamp);
 			}
 			else if(championInfo[0].equals("H")) {
 				currChamp = new Hero(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7]));
-				availableChampions.add(currChamp);
 			}
 			else if(championInfo[0].equals("V")) {
 				currChamp = new Villain(championInfo[1], Integer.parseInt(championInfo[2]), Integer.parseInt(championInfo[3]), Integer.parseInt(championInfo[4]), Integer.parseInt(championInfo[5]), Integer.parseInt(championInfo[6]), Integer.parseInt(championInfo[7]));
-				availableChampions.add(currChamp);
+				
 			}
+			availableChampions.add(currChamp);
 			currChamp.getAbilities().add(this.getAbilityByName(championInfo[8]));
 			currChamp.getAbilities().add(this.getAbilityByName(championInfo[9]));
 			currChamp.getAbilities().add(this.getAbilityByName(championInfo[10]));
@@ -154,8 +155,11 @@ public class Game {
 
 	}
 	public Ability getAbilityByName(String name) {
+		
 		for(int i=0;i<this.availableAbilities.size();i++) {
+			System.out.println(this.availableAbilities.get(i).getName()+" "+name);
 			if(this.availableAbilities.get(i).getName().equals(name)) {
+				
 				return this.availableAbilities.get(i);
 			}
 		}
