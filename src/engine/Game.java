@@ -15,16 +15,16 @@ public class Game {
 	private boolean secondLeaderAbilityUsed;
 	Object [][] board = new Object[5][5];
 	private PriorityQueue turnOrder;
-	private static ArrayList<Champion> availableChampions = new ArrayList<Champion>();
-	private static ArrayList<Ability> availableAbilities = new ArrayList<Ability>();
+	private static ArrayList<Champion> availableChampions;
+	private static ArrayList<Ability> availableAbilities;
 	final private static int BOARDHEIGHT = 5;
 	final private static int BOARDWIDTH = 5;
 	public Game(Player first, Player second) throws IOException{
 		this.firstPlayer = first;
 		this.secondPlayer = second;
+		availableChampions = new ArrayList<Champion>();
+		availableAbilities = new ArrayList<Ability>();
 		
-		loadAbilities("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Abilities.csv");
-		loadChampions("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Champions.csv");
 		this.turnOrder = new PriorityQueue(6);
 		placeChampions();
 		placeCovers();
