@@ -25,7 +25,7 @@ public class Game {
 		
 		loadAbilities("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Abilities.csv");
 		loadChampions("C:\\Users\\pc\\Desktop\\Game Project\\Marvel-Ultimate-War-Game-\\Champions.csv");
-		this.turnOrder = new PriorityQueue(this.availableChampions.size()*2);
+		this.turnOrder = new PriorityQueue(6);
 		placeChampions();
 		placeCovers();
 	}
@@ -99,10 +99,14 @@ public class Game {
 		while(line != null) {
 			String[] abilityInfo = line.split(",");
 			if(abilityInfo[0].equals("DMG")) {
-				availableAbilities.add(new DamagingAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),Integer.parseInt(abilityInfo[7])));
+				//availableAbilities.add(new DamagingAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),Integer.parseInt(abilityInfo[7])));
+				availableAbilities.add(new DamagingAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[4]), Integer.parseInt(abilityInfo[3]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),Integer.parseInt(abilityInfo[7])));
+
 			}
 			else if(abilityInfo[0].equals("HEL")) {
-				availableAbilities.add(new HealingAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),Integer.parseInt(abilityInfo[7])));
+				//availableAbilities.add(new HealingAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),Integer.parseInt(abilityInfo[7])));
+				availableAbilities.add(new HealingAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[4]), Integer.parseInt(abilityInfo[3]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),Integer.parseInt(abilityInfo[7])));
+
 			}
 			else if(abilityInfo[0].equals("CC")) {
 				Effect effect=null;
@@ -119,8 +123,9 @@ public class Game {
 				case "Stun": effect = new Stun(Integer.parseInt(abilityInfo[8]));break;
 				}
 				
-				availableAbilities.add(new CrowdControlAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),effect));
-				
+				//availableAbilities.add(new CrowdControlAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[3]), Integer.parseInt(abilityInfo[4]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),effect));
+				availableAbilities.add(new CrowdControlAbility(abilityInfo[1],Integer.parseInt(abilityInfo[2]), Integer.parseInt(abilityInfo[4]), Integer.parseInt(abilityInfo[3]), AreaOfEffect.valueOf(abilityInfo[5]),Integer.parseInt(abilityInfo[6]),effect));
+
 			}
 			line = br.readLine();
 			
@@ -157,7 +162,6 @@ public class Game {
 	public Ability getAbilityByName(String name) {
 		
 		for(int i=0;i<this.availableAbilities.size();i++) {
-			System.out.println(this.availableAbilities.get(i).getName()+" "+name);
 			if(this.availableAbilities.get(i).getName().equals(name)) {
 				
 				return this.availableAbilities.get(i);
