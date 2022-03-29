@@ -3194,7 +3194,6 @@ public class M1PublicTests {
 		if (champions.size() != actualChampions.size()) {
 			assertEquals("Size of champions ArrayList is incorrect ", champions.size(), actualChampions.size());
 
-
 		}
 		boolean sameHP = true;
 
