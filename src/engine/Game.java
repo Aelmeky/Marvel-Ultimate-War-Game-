@@ -88,7 +88,7 @@ public class Game {
 			int h = (int)(Math.random()*5);
 			
 			if(board[v][h] != null || (v==0 &&(h ==0 || h==4))||(v==4)&&(h==0||h==4)) i--;
-			else board[v][h] = new Cover(h,v);
+			else board[v][h] = new Cover(v,h);
 		}	
 	}
 	public void loadAbilities(String filePath)throws IOException{
