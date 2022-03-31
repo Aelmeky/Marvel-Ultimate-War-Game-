@@ -13,7 +13,12 @@ public class Cover {
         return currentHP;
     }
     public void setCurrentHP(int currentHP) {
-    	this.currentHP=currentHP;
+    	if(currentHP<0) {
+    		this.currentHP = 0;
+    	}else {
+    		this.currentHP=currentHP;
+    	}
+    	
     }
     public Cover(int x, int y){
         this.location=new Point(x,y);
