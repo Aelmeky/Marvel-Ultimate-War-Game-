@@ -13,7 +13,7 @@ public class Game {
 	private Player secondPlayer;
 	private boolean firstLeaderAbilityUsed;
 	private boolean secondLeaderAbilityUsed;
-	Object [][] board = new Object[5][5];
+	private Object [][] board = new Object[5][5];
 	private PriorityQueue turnOrder;
 	private static ArrayList<Champion> availableChampions;
 	private static ArrayList<Ability> availableAbilities;
@@ -91,10 +91,10 @@ public class Game {
 			else board[v][h] = new Cover(v,h);
 		}	
 	}
-	public void loadAbilities(String filePath)throws IOException{
+	public static void loadAbilities(String filePath)throws IOException{
 		
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
-		this.availableAbilities = new ArrayList<Ability>();
+		availableAbilities = new ArrayList<Ability>();
 		String line = br.readLine();
 		while(line != null) {
 			String[] abilityInfo = line.split(",");
@@ -131,10 +131,10 @@ public class Game {
 			
 		}
 	}
-	public void loadChampions(String filePath)throws IOException{
+	public static void loadChampions(String filePath)throws IOException{
 		
 		BufferedReader br= new BufferedReader(new FileReader(filePath));
-		this.availableChampions = new ArrayList<Champion>();
+		availableChampions = new ArrayList<Champion>();
 		String line = br.readLine();
 		while(line != null) {
 			String[] championInfo = line.split(",");
@@ -150,21 +150,21 @@ public class Game {
 				
 			}
 			availableChampions.add(currChamp);
-			currChamp.getAbilities().add(this.getAbilityByName(championInfo[8]));
-			currChamp.getAbilities().add(this.getAbilityByName(championInfo[9]));
-			currChamp.getAbilities().add(this.getAbilityByName(championInfo[10]));
+			currChamp.getAbilities().add(getAbilityByName(championInfo[8]));
+			currChamp.getAbilities().add(getAbilityByName(championInfo[9]));
+			currChamp.getAbilities().add(getAbilityByName(championInfo[10]));
 			
 			
 			line = br.readLine();
 		}
 
 	}
-	public Ability getAbilityByName(String name) {
+	public static Ability getAbilityByName(String name) {
 		
-		for(int i=0;i<this.availableAbilities.size();i++) {
-			if(this.availableAbilities.get(i).getName().equals(name)) {
+		for(int i=0;i<availableAbilities.size();i++) {
+			if(availableAbilities.get(i).getName().equals(name)) {
 				
-				return this.availableAbilities.get(i);
+				return availableAbilities.get(i);
 			}
 		}
 		return null;
