@@ -1,28 +1,35 @@
 package model.world;
-import java.awt.*;
-import exceptions.GameActionException;
 
-public class Cover {
-    private int currentHP;// this value is always >0// i.e exception in the setter.
-    private Point location;
+import java.awt.Point;
 
-    public Point getLocation() {
-        return location;
-    }
-    public int getCurrentHP() {
-        return currentHP;
-    }
-    public void setCurrentHP(int currentHP) {
-    	if(currentHP<0) {
-    		this.currentHP = 0;
-    	}else {
-    		this.currentHP=currentHP;
-    	}
-    	
-    }
-    public Cover(int x, int y){
-        this.location=new Point(x,y);
-        this.currentHP=(int)(Math.random()*900)+100;
-    }
+public class Cover  {
+	private int currentHP;
+
+	private Point location;
+
+	public Cover(int x, int y) {
+		this.currentHP = (int)(( Math.random() * 900) + 100);
+		location = new Point(x, y);
+	}
+
+	public int getCurrentHP() {
+		return this.currentHP;
+	}
+
+	public void setCurrentHP(int newHp) {
+		if (newHp < 0) {
+			currentHP = 0;
+		
+		} else
+			currentHP = newHp;
+	}
+
+	public Point getLocation() {
+		return location;
+	}
+
+	
+
+	
 
 }
