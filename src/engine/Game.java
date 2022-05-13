@@ -25,6 +25,7 @@ import model.effects.Stun;
 import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Cover;
+import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
 
@@ -242,5 +243,26 @@ public class Game {
 
 	public static int getBoardheight() {
 		return BOARDHEIGHT;
+	}
+	
+	
+	
+	public Champion getCurrentChampion() {
+		// if the champion has stun in his applied effects he passes his turn
+		
+		return new Champion(null, 0, 0, 0, 0, 0, 0);
+	}
+	
+	public void attack(Direction d) {
+		// if the current champion has disarm in the applied effects dont attack
+		// if the champion in the direction has dodge in the applied effects call math.rondom()*2 if >1 attact if <1 dont attack
+		// if the target champion has shield in the applied effects dont attack but remove the shield
+	}
+	public void castAbility(Ability a) {
+		//if the current champion has powerup in the applied effects increase the effect by 20%
+		//if the currenct champion has silence in the applied effects dont cast
+	}
+	public void move(Direction d) {
+		//if the champion has root in applied effects dont move
 	}
 }
