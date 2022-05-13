@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-public class Champion {
+public class Champion implements Damageable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -123,6 +123,7 @@ public class Champion {
 	public int getCurrentActionPoints() {
 		return currentActionPoints;
 	}
+	
 
 	public void setCurrentActionPoints(int currentActionPoints) {
 		if(currentActionPoints>maxActionPointsPerTurn)
@@ -140,6 +141,8 @@ public class Champion {
 	public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
+	
+	
 
 	
 	

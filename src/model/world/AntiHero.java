@@ -6,4 +6,5 @@ public class AntiHero extends Champion {
 		super(name, maxHP, maxMana, actions, speed, attackRange, attackDamage);
 
 	}
+	
 }
