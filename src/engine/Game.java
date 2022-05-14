@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import exceptions.*;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
@@ -262,9 +263,40 @@ public class Game {
 		//if the current champion has powerup in the applied effects increase the effect by 20%
 		//if the currenct champion has silence in the applied effects dont cast
 	}
-	public void move(Direction d) {
+	public void move(Direction d)throws NotEnoughResourcesException,UnallowedMovementException {
+		if(this.getCurrentChampion().getCurrentActionPoints()<1)throw new NotEnoughResourcesException();
+		
+		int newX = this.getCurrentChampion().getLocation().x;
+		int newY = this.getCurrentChampion().getLocation().y;
+
+		int oldX = newX;
+		int oldY = newY;
+		
+		if(d == Direction.UP)newX--;
+		else if(d == Direction.DOWN)newX++;
+		else if(d == Direction.LEFT)newY--;
+		else if(d == Direction.RIGHT)newY++;
+		
+		
+		if(newX>=this.BOARDHEIGHT || newY>=this.BOARDWIDTH ||
+		this.board[newX][newY] != null
+		|| hasEffect(this.getCurrentChampion(),"Root")) throw new UnallowedMovementException();
+		
+		this.board[newX][newY] = this.getCurrentChampion();
+		this.board[oldX][oldY] = null;
+		this.getCurrentChampion().setLocation(new Point(newX,newY));
+		
 		//if the champion has root in applied effects dont move
 	}
+	
+	public static boolean hasEffect(Champion c,String effect) {
+		for(int i =0;i<c.getAppliedEffects().size();i++) {
+			if(c.getAppliedEffects().get(i).getName().equals(effect))return true;
+		}
+		return false;
+	}
+	
+	
 	public void endTurn() {
 		// consider the possibility that shield effect may not be removes here at all
 	}
