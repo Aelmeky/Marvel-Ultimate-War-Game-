@@ -265,4 +265,7 @@ public class Game {
 	public void move(Direction d) {
 		//if the champion has root in applied effects dont move
 	}
+	public void endTurn() {
+		// consider the possibility that shield effect may not be removes here at all
+	}
 }
