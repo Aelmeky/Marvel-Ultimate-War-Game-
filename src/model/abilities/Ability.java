@@ -1,6 +1,8 @@
 package model.abilities;
+import java.util.*;
 
-public class Ability {
+import model.world.*;
+abstract public class Ability {
 	private String name;
 	private int manaCost;
 	private int baseCooldown;
@@ -54,5 +56,6 @@ public class Ability {
 	public int getRequiredActionPoints() {
 		return requiredActionPoints;
 	}
+	abstract public void execute(ArrayList<Damageable> targets);
 
 }

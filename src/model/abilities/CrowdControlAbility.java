@@ -1,6 +1,10 @@
 package model.abilities;
 
+import java.util.ArrayList;
+
 import model.effects.Effect;
+import model.world.Champion;
+import model.world.Damageable;
 
 public class CrowdControlAbility extends Ability {
 	private Effect effect;
@@ -14,6 +18,12 @@ public class CrowdControlAbility extends Ability {
 
 	public Effect getEffect() {
 		return effect;
+	}
+	
+	public void execute(ArrayList<Damageable> targets) {
+		for(int i =0;i<targets.size();i++) {
+			this.getEffect().apply((Champion) targets.get(i));
+		}
 	}
 
 }
