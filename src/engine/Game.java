@@ -276,18 +276,38 @@ public class Game {
 	
 	
 	public Champion getCurrentChampion() {
-		// if the champion has stun in his applied effects he passes his turn
 		
 		return (Champion) turnOrder.peekMin();
 	}
 	
-	public void attack(Direction d) {
+	public void attack(Direction d) throws ChampionDisarmedException {
+		if(hasEffect(this.getCurrentChampion(),"Disarm")) throw new ChampionDisarmedException();
 		
-		// if the current champion has disarm in the applied effects dont attack
+		int x = this.getCurrentChampion().getLocation().x;
+		int y = this.getCurrentChampion().getLocation().x;
+		
+		Champion target = null;
+		while(x>=0 && x<this.BOARDHEIGHT && y>=0 && y<this.BOARDWIDTH && target == null) {
+			if(d == Direction.UP) x--;
+			else if(d == Direction.DOWN)x++;
+			else if(d == Direction.LEFT)y--;
+			else if(d == Direction.RIGHT)y++;
+			if(this.board[x][y] != null && this.board[x][y] instanceof Champion) {
+				if(this.championIsEnemy(this.getCurrentChampion(),(Champion)this.board[x][y])) {
+					target = (Champion)this.board[x][y];
+				}
+			}
+		}
+		if(target != null) {
+			if(hasEffect(target,"Shield")) {
+				removeShield(target);
+				return;
+			}
+		}
+		
 		
 		// if the champion in the direction has dodge in the applied effects call math.rondom()*2 if >1 attact if <1 dont attack
 		
-		// if the target champion has shield in the applied effects dont attack but remove the shield
 		
 		/*
 		 *Heroes: they deal extra damage when attacking villains.
@@ -296,18 +316,10 @@ public class Game {
 		 act as the opposite type. If attacking an antihero, damage is calculated normally.
 		 */
 		
-		
-		
-		/*
-		 * Should increase in attack damage in effects be handled in the apply methods or here?
-		 * Embrace ->  attackDamage by 20%.
-		 * PowerUp -> increase by 20 %
-		 * Shock -> Decrease the target’s normal attack damage by 10%
-		 */
 	}
 	public void castAbility(Ability a) {
-		//if the current champion has powerup in the applied effects increase the effect by 20%
-		//if the currenct champion has silence in the applied effects dont cast
+		//if the current champion has silence in the applied effects don't cast (use hasEffect helper method)
+		//there is a championIsEnemy method
 	}
 	public void move(Direction d)throws NotEnoughResourcesException,UnallowedMovementException {
 		if(this.getCurrentChampion().getCurrentActionPoints()<1)throw new NotEnoughResourcesException();
@@ -374,6 +386,35 @@ public class Game {
 		if (playerOneWon) return this.firstPlayer;
 		
 		return null;
+	}
+	public  boolean championIsEnemy(Champion c1 ,Champion c2) {
+		boolean c1InTeam1 = false;
+		boolean c2InTeam1 = false;
+		for(int i = 0;i<this.firstPlayer.getTeam().size();i++) {
+			if(this.firstPlayer.getTeam().get(i)==c1)c1InTeam1=true;
+			if(this.firstPlayer.getTeam().get(i)==c2)c2InTeam1=true;
+		}
+		if(c1InTeam1 && c2InTeam1) return false;
+		
+		boolean c1InTeam2 = false;
+		boolean c2InTeam2 = false;
+		for(int i = 0;i<this.secondPlayer.getTeam().size();i++) {
+			if(this.secondPlayer.getTeam().get(i)==c1)c1InTeam2=true;
+			if(this.secondPlayer.getTeam().get(i)==c2)c2InTeam2=true;
+		}
+		if(c1InTeam2 && c2InTeam2) return false;
+		
+		return true;
+		
+		
+	}
+	
+	public void removeShield(Champion c) {
+		for(int i =0;i<c.getAppliedEffects().size();i++) {
+			if(c.getAppliedEffects().get(i).getName().equals("Shield")) {
+				c.getAppliedEffects().get(i).remove(c);
+			}
+		}
 	}
 	
 	
