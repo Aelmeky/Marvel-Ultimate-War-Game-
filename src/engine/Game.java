@@ -262,7 +262,8 @@ public class Game {
 			Effect eff=arr.get(i);
 			eff.setDuration(eff.getDuration()-1);
 			if(eff.getDuration()==0) {
-				arr.remove(i);
+				eff.remove(c);
+				//arr.remove(i);
 			}
 		}
 		ArrayList<Ability> ar2=c.getAbilities();
