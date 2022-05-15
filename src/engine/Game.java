@@ -284,8 +284,26 @@ public class Game {
 	public void attack(Direction d) {
 		
 		// if the current champion has disarm in the applied effects dont attack
+		
 		// if the champion in the direction has dodge in the applied effects call math.rondom()*2 if >1 attact if <1 dont attack
+		
 		// if the target champion has shield in the applied effects dont attack but remove the shield
+		
+		/*
+		 *Heroes: they deal extra damage when attacking villains.
+		 *Villains: they deal extra damage when attacking heroes.
+		 *Anti-Heroes: when being attacked or attacking a hero or villain, the antihero will always
+		 act as the opposite type. If attacking an antihero, damage is calculated normally.
+		 */
+		
+		
+		
+		/*
+		 * Should increase in attack damage in effects be handled in the apply methods or here?
+		 * Embrace ->  attackDamage by 20%.
+		 * PowerUp -> increase by 20 %
+		 * Shock -> Decrease the target’s normal attack damage by 10%
+		 */
 	}
 	public void castAbility(Ability a) {
 		//if the current champion has powerup in the applied effects increase the effect by 20%
