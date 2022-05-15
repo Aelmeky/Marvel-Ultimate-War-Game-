@@ -15,6 +15,7 @@ import model.abilities.HealingAbility;
 import model.effects.Disarm;
 import model.effects.Dodge;
 import model.effects.Effect;
+import model.effects.EffectType;
 import model.effects.Embrace;
 import model.effects.PowerUp;
 import model.effects.Root;
@@ -317,8 +318,27 @@ public class Game {
 		 */
 		
 	}
-	public void castAbility(Ability a) {
-		//if the current champion has silence in the applied effects don't cast (use hasEffect helper method)
+	public void castAbility(Ability a)throws AbilityUseException {
+		if(hasEffect(getCurrentChampion(), "silence")) {
+			throw new AbilityUseException();
+		}else {
+			if(a.getCastArea()==AreaOfEffect.SELFTARGET||a.getCastArea()==AreaOfEffect.SURROUND||a.getCastArea()==AreaOfEffect.TEAMTARGET) {
+				if(a.getCastArea()==AreaOfEffect.SELFTARGET) {
+					if(a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF) {
+						((CrowdControlAbility)a).getEffect().apply(getCurrentChampion());
+					}
+					if(a instanceof HealingAbility) {
+						getCurrentChampion().setCurrentHP(getCurrentChampion().getCurrentHP()+((HealingAbility) a).getHealAmount());
+					}
+				}
+				if(a.getCastArea()==AreaOfEffect.SURROUND) {
+					
+				}
+				if(a.getCastArea()==AreaOfEffect.TEAMTARGET) {
+					
+				}
+			}
+		}
 		//there is a championIsEnemy method
 	}
 	public void move(Direction d)throws NotEnoughResourcesException,UnallowedMovementException {
