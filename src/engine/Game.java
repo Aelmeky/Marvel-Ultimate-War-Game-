@@ -312,7 +312,7 @@ public class Game {
 		this.board[oldX][oldY] = null;
 		this.getCurrentChampion().setLocation(new Point(newX,newY));
 		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints());
-		//if the champion has root in applied effects dont move
+
 	}
 	
 	public static boolean hasEffect(Champion c,String effect) {
@@ -335,6 +335,27 @@ public class Game {
 				turnOrder.insert(secondPlayer.getTeam().get(i));
 			}		}
 		
+	}
+	public Player checkGameOver() {
+		boolean playerTwoWon = true;
+		for(int i = 0;i<firstPlayer.getTeam().size();i++) {
+			if(firstPlayer.getTeam().get(i).getCondition()!=Condition.KNOCKEDOUT) {
+				playerTwoWon = false;
+				break;
+			}
+		}
+		if (playerTwoWon) return this.secondPlayer;
+		
+		boolean playerOneWon = true;
+		for(int i = 0;i<secondPlayer.getTeam().size();i++) {
+			if(secondPlayer.getTeam().get(i).getCondition()!=Condition.KNOCKEDOUT) {
+				playerTwoWon = false;
+				break;
+			}
+		}
+		if (playerOneWon) return this.firstPlayer;
+		
+		return null;
 	}
 	
 	
