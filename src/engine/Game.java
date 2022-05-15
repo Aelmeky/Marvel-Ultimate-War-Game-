@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sql.rowset.CachedRowSet;
+
 import exceptions.*;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
@@ -28,6 +30,7 @@ import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Condition;
 import model.world.Cover;
+import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
@@ -322,25 +325,95 @@ public class Game {
 		if(hasEffect(getCurrentChampion(), "silence")) {
 			throw new AbilityUseException();
 		}else {
+			boolean good=false;
+			if((a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)|| a instanceof HealingAbility ) {
+				good=true;
+			}
 			if(a.getCastArea()==AreaOfEffect.SELFTARGET||a.getCastArea()==AreaOfEffect.SURROUND||a.getCastArea()==AreaOfEffect.TEAMTARGET) {
 				if(a.getCastArea()==AreaOfEffect.SELFTARGET) {
-					if(a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF) {
-						((CrowdControlAbility)a).getEffect().apply(getCurrentChampion());
-					}
-					if(a instanceof HealingAbility) {
-						getCurrentChampion().setCurrentHP(getCurrentChampion().getCurrentHP()+((HealingAbility) a).getHealAmount());
-					}
+					ArrayList<Damageable> arr=new ArrayList<Damageable>();
+					arr.add((Damageable)getCurrentChampion());
+					a.execute(arr);
 				}
 				if(a.getCastArea()==AreaOfEffect.SURROUND) {
+					int x=getCurrentChampion().getLocation().x;
+					int y=getCurrentChampion().getLocation().y;
+					ArrayList<Object>arr=new ArrayList<Object>();
+					if(x+1<5) {
+						Object o=this.board[x+1][y];
+						arr.add(o);
+					}
+					if(x-1>=0) {
+						Object o=this.board[x-1][y];
+						arr.add(o);
+					}
+					if(y+1<5) {
+						Object o=this.board[x][y+1];
+						arr.add(o);
+					}
+					if(y-1>=0) {
+						Object o=this.board[x][y-1];
+						arr.add(o);
+					}
 					
+					if(x+1<5&&y+1<5) {
+						Object o=this.board[x+1][y+1];
+						arr.add(o);
+					}
+					if(x-1>=0&&y-1>=0) {
+						Object o=this.board[x-1][y-1];
+						arr.add(o);
+					}
+					if(y+1<5&&x-1>=0) {
+						Object o=this.board[x-1][y+1];
+						arr.add(o);
+					}
+					if(y-1>=0&&x+1<5) {
+						Object o=this.board[x+1][y-1];
+						arr.add(o);
+					}
+					ArrayList<Damageable>ar2=new ArrayList<Damageable>();
+					for(int i=0;i<arr.size();i++) {
+						if((arr.get(i) instanceof Champion && ((Champion) arr.get(i)).getCondition() ==Condition.KNOCKEDOUT) ||arr.get(i)==null) {
+							continue;
+						}
+						if(good) {
+							if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+								continue;
+							}else {
+								ar2.add((Damageable) arr.get(i));
+							}
+						}else {
+							if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+								ar2.add((Damageable) arr.get(i));
+							}else {
+								continue;
+							}
+							
+						}
+					}
+					a.execute(ar2);
 				}
 				if(a.getCastArea()==AreaOfEffect.TEAMTARGET) {
-					
+					ArrayList<Champion>arr=new ArrayList<Champion>();
+					if(good) {
+						arr=this.getChampionPlayer(getCurrentChampion()).getTeam();
+					}else {
+						if(getChampionPlayer(getCurrentChampion())==this.firstPlayer) {
+							arr=this.secondPlayer.getTeam();
+						}else {
+							arr=this.firstPlayer.getTeam();						}
+					}
+					ArrayList<Damageable>ar2=new ArrayList<Damageable>();
+					for(int i=0;i<arr.size();i++) {
+						ar2.add((Damageable)arr.get(i));
+					}
+					a.execute(ar2);
 				}
 			}
 		}
-		//there is a championIsEnemy method
 	}
+	
 	public void move(Direction d)throws NotEnoughResourcesException,UnallowedMovementException {
 		if(this.getCurrentChampion().getCurrentActionPoints()<1)throw new NotEnoughResourcesException();
 		
@@ -427,6 +500,19 @@ public class Game {
 		return true;
 		
 		
+	}
+	public Player getChampionPlayer(Champion c) {
+		for(int i=0;i<this.getFirstPlayer().getTeam().size();i++) {
+			if(this.getFirstPlayer().getTeam().get(i)==c) {
+				return this.getFirstPlayer();
+			}
+		}
+		for(int i=0;i<this.getSecondPlayer().getTeam().size();i++) {
+			if(this.getSecondPlayer().getTeam().get(i)==c) {
+				return this.getSecondPlayer();
+			}
+		}
+		return null;
 	}
 	
 	public void removeShield(Champion c) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import model.effects.Effect;
 import model.world.Champion;
+import model.world.Cover;
 import model.world.Damageable;
 
 public class CrowdControlAbility extends Ability {
@@ -22,6 +23,9 @@ public class CrowdControlAbility extends Ability {
 	
 	public void execute(ArrayList<Damageable> targets) {
 		for(int i =0;i<targets.size();i++) {
+			if(targets.get(i) instanceof Cover) {
+				continue;
+			}
 			this.getEffect().apply((Champion) targets.get(i));
 		}
 	}
