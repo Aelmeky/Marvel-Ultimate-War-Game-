@@ -255,6 +255,7 @@ public class Game {
 	}
 	
 	public void attack(Direction d) {
+		
 		// if the current champion has disarm in the applied effects dont attack
 		// if the champion in the direction has dodge in the applied effects call math.rondom()*2 if >1 attact if <1 dont attack
 		// if the target champion has shield in the applied effects dont attack but remove the shield
@@ -285,7 +286,7 @@ public class Game {
 		this.board[newX][newY] = this.getCurrentChampion();
 		this.board[oldX][oldY] = null;
 		this.getCurrentChampion().setLocation(new Point(newX,newY));
-		
+		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints());
 		//if the champion has root in applied effects dont move
 	}
 	
@@ -300,4 +301,5 @@ public class Game {
 	public void endTurn() {
 		// consider the possibility that shield effect may not be removes here at all
 	}
+	
 }
