@@ -25,6 +25,7 @@ import model.effects.SpeedUp;
 import model.effects.Stun;
 import model.world.AntiHero;
 import model.world.Champion;
+import model.world.Condition;
 import model.world.Cover;
 import model.world.Direction;
 import model.world.Hero;
@@ -52,6 +53,7 @@ public class Game {
 		turnOrder = new PriorityQueue(6);
 		placeChampions();
 		placeCovers();
+		prepareChampionTurns();
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {
@@ -245,13 +247,37 @@ public class Game {
 	public static int getBoardheight() {
 		return BOARDHEIGHT;
 	}
-	
+	public void endTurn() {
+		// consider the possibility that shield effect may not be removes here at all
+		turnOrder.remove();
+		if(turnOrder.size()==0) {
+			prepareChampionTurns();
+		}
+		Champion c=(Champion) turnOrder.remove();
+		while(c.getCondition()!=Condition.INACTIVE) {
+			c=(Champion) turnOrder.remove();
+		}
+		ArrayList<Effect> arr=c.getAppliedEffects();
+		for(int i=0;i<arr.size();i++) {
+			Effect eff=arr.get(i);
+			eff.setDuration(eff.getDuration()-1);
+			if(eff.getDuration()==0) {
+				arr.remove(i);
+			}
+		}
+		ArrayList<Ability> ar2=c.getAbilities();
+		for(int i=0;i<ar2.size();i++) {
+			Ability abl=ar2.get(i);
+			abl.setCurrentCooldown(abl.getBaseCooldown());
+		}
+		c.setCurrentActionPoints(c.getMaxActionPointsPerTurn());
+	}
 	
 	
 	public Champion getCurrentChampion() {
 		// if the champion has stun in his applied effects he passes his turn
 		
-		return new Champion(null, 0, 0, 0, 0, 0, 0);
+		return (Champion) turnOrder.peekMin();
 	}
 	
 	public void attack(Direction d) {
@@ -279,9 +305,7 @@ public class Game {
 		else if(d == Direction.RIGHT)newY++;
 		
 		
-		if(newX>=this.BOARDHEIGHT || newY>=this.BOARDWIDTH ||
-		this.board[newX][newY] != null
-		|| hasEffect(this.getCurrentChampion(),"Root")) throw new UnallowedMovementException();
+		if(newX>=this.BOARDHEIGHT || newY>=this.BOARDWIDTH || this.board[newX][newY] != null || this.getCurrentChampion().getCondition()!=Condition.ACTIVE) throw new UnallowedMovementException();
 		
 		this.board[newX][newY] = this.getCurrentChampion();
 		this.board[oldX][oldY] = null;
@@ -296,10 +320,21 @@ public class Game {
 		}
 		return false;
 	}
-	
-	
-	public void endTurn() {
-		// consider the possibility that shield effect may not be removes here at all
+	private void prepareChampionTurns() {
+		for(int i=0;i<firstPlayer.getTeam().size();i++) {
+			Champion c=firstPlayer.getTeam().get(i);
+			if(c.getCondition()!=Condition.KNOCKEDOUT) {
+				turnOrder.insert(firstPlayer.getTeam().get(i));
+			}
+			
+		}
+		for(int i=0;i<secondPlayer.getTeam().size();i++) {
+			Champion c=secondPlayer.getTeam().get(i);
+			if(c.getCondition()!=Condition.KNOCKEDOUT) {
+				turnOrder.insert(secondPlayer.getTeam().get(i));
+			}		}
+		
 	}
+	
 	
 }

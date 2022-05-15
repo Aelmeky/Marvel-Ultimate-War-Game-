@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-public class Champion implements Damageable {
+abstract public class Champion implements Damageable, Comparable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -58,7 +58,14 @@ public class Champion implements Damageable {
 			currentHP = hp;
 
 	}
-
+	public int compareTo(Object o) {
+		Champion c=(Champion) o;
+		if(this.getSpeed()!=c.getSpeed()) {
+			return this.getSpeed()-c.getSpeed();
+		}else {
+			return this.getName().compareTo(c.getName());
+		}
+	}
 	
 	public int getCurrentHP() {
 
