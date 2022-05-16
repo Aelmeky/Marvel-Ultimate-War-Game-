@@ -74,13 +74,18 @@ public class Game {
 		if((p==this.firstPlayer&&this.firstLeaderAbilityUsed)||(p==this.secondPlayer&&this.secondLeaderAbilityUsed)) {
 			throw new LeaderAbilityAlreadyUsedException();
 		}else {
+			if(p==this.firstPlayer) {
+				this.firstLeaderAbilityUsed=true;;
+			}else {
+				this.secondLeaderAbilityUsed=true;
+			}
 			if(c instanceof Hero) {
 				c.useLeaderAbility(p.getTeam());
 			}
-			if(c instanceof Hero) {
+			if(c instanceof Villain) {
 				c.useLeaderAbility(p2.getTeam());
 			}
-			if(c instanceof Hero) {
+			if(c instanceof AntiHero) {
 				ArrayList<Champion>arr=new ArrayList<Champion>();
 				for(int i=0;i<p.getTeam().size();i++) {
 					if(p.getTeam().get(i)!=p.getLeader()) {
@@ -95,6 +100,12 @@ public class Game {
 				c.useLeaderAbility(arr);
 			}
 		}
+	}
+	public void castAbility(Ability a, Direction d) {
+		
+	}
+	public void castAbility(Ability a, int x, int y) {
+		
 	}
 	public static void loadAbilities(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -321,28 +332,27 @@ public class Game {
 		return (Champion) turnOrder.peekMin();
 	}
 	
-	public void attack(Direction d) throws ChampionDisarmedException {
+	public void attack(Direction d) throws ChampionDisarmedException,NotEnoughResourcesException {
 		if(hasEffect(this.getCurrentChampion(),"Disarm")) throw new ChampionDisarmedException();
-		
+		if(this.getCurrentChampion().getCurrentActionPoints()<2)throw new NotEnoughResourcesException();
 		int x = this.getCurrentChampion().getLocation().x;
 		int y = this.getCurrentChampion().getLocation().y;
-		
 		Damageable target = null;
 		int i=0;
-		while(x>0 && x<this.BOARDHEIGHT-1 && y>0 && y<this.BOARDWIDTH-1 && target == null&&i<this.getCurrentChampion().getAttackRange()) {
-			if(d == Direction.UP) x--;
-			else if(d == Direction.DOWN)x++;
+		while(x>=0 && x<this.BOARDHEIGHT-1 && y>=0 && y<this.BOARDWIDTH-1 && target == null&&i<this.getCurrentChampion().getAttackRange()) {
+			if(d == Direction.UP) x++;
+			else if(d == Direction.DOWN)x--;
 			else if(d == Direction.LEFT)y--;
 			else if(d == Direction.RIGHT)y++;
-			
 			i++;
+			if(x<0||y<0||x>=this.BOARDHEIGHT || y>=this.BOARDWIDTH) break;
 			if(this.board[x][y] != null && this.board[x][y] instanceof Damageable) {
 				if(this.board[x][y] instanceof Cover ||this.championIsEnemy(this.getCurrentChampion(),(Champion)this.board[x][y])) {
 					target = (Damageable)this.board[x][y];
 				}
 			}
 		}
-		//System.out.println(target.getLocation().x+" "+target.getLocation().y);
+		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints()-2);
 		boolean flag=false;
 		Champion c1=getCurrentChampion();
 		if(target != null) {
@@ -352,19 +362,22 @@ public class Game {
 				if(hasEffect((Champion)target,"Shield")) {
 					removeShield((Champion)target);
 					return;
+				}else {
+					flag=true;
 				}
 				if(hasEffect((Champion)target,"Dodge")) {
-					if((int)Math.random()*2==1) {
+					if(Math.floor(Math.random()*2)==1) {
 						flag=true;
 					}else {
 						return;
 						}
 				}
 				if(flag) {
-					if((c1 instanceof Villain&&target instanceof Villain )||(target instanceof Hero&&c1 instanceof Hero)||(c1 instanceof AntiHero||target instanceof AntiHero)) {
-						target.setCurrentHP(target.getCurrentHP()-c1.getAttackDamage());						
+					if((c1 instanceof Villain && target instanceof Villain )||(target instanceof Hero && c1 instanceof Hero)||(c1 instanceof AntiHero&&target instanceof AntiHero)) {
+						target.setCurrentHP(target.getCurrentHP()-c1.getAttackDamage());
 					}else {
-						target.setCurrentHP((int) (target.getCurrentHP()-c1.getAttackDamage()*1.5));						
+//						System.out.println("here");
+						target.setCurrentHP(target.getCurrentHP()-(int)(c1.getAttackDamage()*1.5));						
 					}
 				}
 			}
@@ -467,22 +480,17 @@ public class Game {
 	}
 	
 	public void move(Direction d)throws NotEnoughResourcesException,UnallowedMovementException {
-		if(this.getCurrentChampion().getCurrentActionPoints()<1)throw new NotEnoughResourcesException();
-		
+		if(this.getCurrentChampion().getCurrentActionPoints()<=1)throw new NotEnoughResourcesException();
+
 		int newX = this.getCurrentChampion().getLocation().x;
 		int newY = this.getCurrentChampion().getLocation().y;
-
 		int oldX = newX;
 		int oldY = newY;
-		
-		if(d == Direction.UP)newX--;
-		else if(d == Direction.DOWN)newX++;
+		if(d == Direction.UP)newX++;
+		else if(d == Direction.DOWN)newX--;
 		else if(d == Direction.LEFT)newY--;
 		else if(d == Direction.RIGHT)newY++;
-		
-		
-		if(newX>=this.BOARDHEIGHT || newY>=this.BOARDWIDTH || this.board[newX][newY] != null || this.getCurrentChampion().getCondition()!=Condition.ACTIVE) throw new UnallowedMovementException();
-		
+		if(newX<0||newY<0||newX>=this.BOARDHEIGHT || newY>=this.BOARDWIDTH || this.board[newX][newY] != null || this.getCurrentChampion().getCondition()!=Condition.ACTIVE) throw new UnallowedMovementException();
 		this.board[newX][newY] = this.getCurrentChampion();
 		this.board[oldX][oldY] = null;
 		this.getCurrentChampion().setLocation(new Point(newX,newY));
@@ -508,8 +516,8 @@ public class Game {
 			Champion c=secondPlayer.getTeam().get(i);
 			if(c.getCondition()!=Condition.KNOCKEDOUT) {
 				turnOrder.insert(secondPlayer.getTeam().get(i));
-			}		}
-		
+			}
+		}
 	}
 	public Player checkGameOver() {
 		boolean playerTwoWon = true;

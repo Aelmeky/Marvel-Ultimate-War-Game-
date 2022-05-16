@@ -18,19 +18,17 @@ public class Root extends Effect {
 	}
 	
 	public void remove(Champion c) {
-		super.remove(c);
+		int count=0;
+		for(int i=0;i<c.getAppliedEffects().size();i++) {
+			if(c.getAppliedEffects().get(i).getName().equals("Root")) {
+				count++;
+			}
+		}
+		if(count>0) {
+			return;
+		}
 		if(c.getCondition()==Condition.ROOTED) {
-			int count=0;
-			for(int i=0;i<c.getAppliedEffects().size();i++) {
-				if(c.getAppliedEffects().get(i).getName().equals("Root")) {
-					count++;
-				}
-			}
-			if(count>1) {
-				return;
-			}
 			c.setCondition(Condition.ACTIVE);
 		}
 	}
-
 }

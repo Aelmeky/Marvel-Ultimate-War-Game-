@@ -29,5 +29,8 @@ public class CrowdControlAbility extends Ability {
 			((Effect)this.getEffect().clone()).apply((Champion) targets.get(i));
 		}
 	}
+	public void remove() {
+		
+	}
 
 }

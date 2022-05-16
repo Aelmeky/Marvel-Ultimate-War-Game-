@@ -25,8 +25,7 @@ public  class HealingAbility extends Ability {
 			target.setCurrentHP(target.getCurrentHP()+this.getHealAmount());
 		}
 	}
-	
-
-	
-
+	public void remove() {
+		
+	}
 }
