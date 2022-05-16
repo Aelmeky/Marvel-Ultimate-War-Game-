@@ -108,8 +108,8 @@ public class Game {
 		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
 			throw new NotEnoughResourcesException();
 		}
-		getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
-		if(a.getCurrentCooldown()!=0) {
+		int distanceToTarget =  Math.abs(x-getCurrentChampion().getLocation().x)+Math.abs(y-getCurrentChampion().getLocation().y);
+		if(a.getCurrentCooldown()!=0 || distanceToTarget>a.getCastRange()) {
 			throw new AbilityUseException();
 		}
 		if(this.board[x][y]==null||this.board[x][y] instanceof Cover) {
@@ -120,16 +120,19 @@ public class Game {
 			if(!championIsEnemy(getCurrentChampion(),(Champion) this.board[x][y])){
 				arr.add((Damageable) this.board[x][y]);
 			}else {
-				return;
+				throw new InvalidTargetException();
 			}
 		}
 		if(a instanceof DamagingAbility||(a instanceof CrowdControlAbility&&((CrowdControlAbility) a).getEffect().getType()==EffectType.DEBUFF)){
 			if(championIsEnemy(getCurrentChampion(),(Champion) this.board[x][y])){
 				arr.add((Damageable) this.board[x][y]);
 			}else {
-				return;
+				throw new InvalidTargetException();
 			}
 		}
+		getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
+		getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
+		a.setCurrentCooldown(a.getBaseCooldown());
 		a.execute(arr);
 	}
 	public static void loadAbilities(String filePath) throws IOException {
@@ -485,7 +488,10 @@ public class Game {
 								continue;
 							}
 						}
-					}		
+					}	
+				getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
+				getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
+				a.setCurrentCooldown(a.getBaseCooldown());
 				a.execute(ar2);
 			}
 			if(a.getCastArea()==AreaOfEffect.TEAMTARGET) {
