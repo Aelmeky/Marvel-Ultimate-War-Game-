@@ -19,7 +19,6 @@ public class Cover implements Damageable {
 	public void setCurrentHP(int newHp) {
 		if (newHp < 0) {
 			currentHP = 0;
-		
 		} else
 			currentHP = newHp;
 	}

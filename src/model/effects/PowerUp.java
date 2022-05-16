@@ -7,5 +7,6 @@ public class PowerUp extends Effect {
 		super("PowerUp", duration, EffectType.BUFF);
 		
 	}
+	//power up apply and remove
 	
 }

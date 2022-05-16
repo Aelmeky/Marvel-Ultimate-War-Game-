@@ -59,7 +59,43 @@ public class Game {
 		placeCovers();
 		prepareChampionTurns();
 	}
-
+	public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException,LeaderNotCurrentException{
+		Champion c=this.getCurrentChampion();
+		Player p=this.getChampionPlayer(c);
+		if(c!=p.getLeader()) {
+			throw new LeaderNotCurrentException();
+		}
+		Player p2=null;
+		if(p==this.firstPlayer) {
+			p2=this.secondPlayer;
+		}else {
+			p2=this.firstPlayer;
+		}
+		if((p==this.firstPlayer&&this.firstLeaderAbilityUsed)||(p==this.secondPlayer&&this.secondLeaderAbilityUsed)) {
+			throw new LeaderAbilityAlreadyUsedException();
+		}else {
+			if(c instanceof Hero) {
+				c.useLeaderAbility(p.getTeam());
+			}
+			if(c instanceof Hero) {
+				c.useLeaderAbility(p2.getTeam());
+			}
+			if(c instanceof Hero) {
+				ArrayList<Champion>arr=new ArrayList<Champion>();
+				for(int i=0;i<p.getTeam().size();i++) {
+					if(p.getTeam().get(i)!=p.getLeader()) {
+						arr.add(p.getTeam().get(i));
+					}
+				}
+				for(int i=0;i<p2.getTeam().size();i++) {
+					if(p2.getTeam().get(i)!=p2.getLeader()) {
+						arr.add(p2.getTeam().get(i));
+					}
+				}
+				c.useLeaderAbility(arr);
+			}
+		}
+	}
 	public static void loadAbilities(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String line = br.readLine();
@@ -258,8 +294,9 @@ public class Game {
 			prepareChampionTurns();
 		}
 		Champion c=(Champion) turnOrder.remove();
-		while(c.getCondition()!=Condition.INACTIVE) {
+		while(!turnOrder.isEmpty()&&c.getCondition()!=Condition.INACTIVE) {
 			c=(Champion) turnOrder.remove();
+			
 		}
 		ArrayList<Effect> arr=c.getAppliedEffects();
 		for(int i=0;i<arr.size();i++) {
@@ -273,7 +310,7 @@ public class Game {
 		ArrayList<Ability> ar2=c.getAbilities();
 		for(int i=0;i<ar2.size();i++) {
 			Ability abl=ar2.get(i);
-			abl.setCurrentCooldown(abl.getBaseCooldown());
+			abl.setCurrentCooldown(abl.getCurrentCooldown()-1);
 		}
 		c.setCurrentActionPoints(c.getMaxActionPointsPerTurn());
 	}
@@ -288,41 +325,56 @@ public class Game {
 		if(hasEffect(this.getCurrentChampion(),"Disarm")) throw new ChampionDisarmedException();
 		
 		int x = this.getCurrentChampion().getLocation().x;
-		int y = this.getCurrentChampion().getLocation().x;
+		int y = this.getCurrentChampion().getLocation().y;
 		
-		Champion target = null;
-		while(x>=0 && x<this.BOARDHEIGHT && y>=0 && y<this.BOARDWIDTH && target == null) {
+		Damageable target = null;
+		int i=0;
+		while(x>0 && x<this.BOARDHEIGHT-1 && y>0 && y<this.BOARDWIDTH-1 && target == null&&i<this.getCurrentChampion().getAttackRange()) {
 			if(d == Direction.UP) x--;
 			else if(d == Direction.DOWN)x++;
 			else if(d == Direction.LEFT)y--;
 			else if(d == Direction.RIGHT)y++;
-			if(this.board[x][y] != null && this.board[x][y] instanceof Champion) {
-				if(this.championIsEnemy(this.getCurrentChampion(),(Champion)this.board[x][y])) {
-					target = (Champion)this.board[x][y];
+			
+			i++;
+			if(this.board[x][y] != null && this.board[x][y] instanceof Damageable) {
+				if(this.board[x][y] instanceof Cover ||this.championIsEnemy(this.getCurrentChampion(),(Champion)this.board[x][y])) {
+					target = (Damageable)this.board[x][y];
 				}
 			}
 		}
+		//System.out.println(target.getLocation().x+" "+target.getLocation().y);
+		boolean flag=false;
+		Champion c1=getCurrentChampion();
 		if(target != null) {
-			if(hasEffect(target,"Shield")) {
-				removeShield(target);
-				return;
+			if(target instanceof Cover) {
+				target.setCurrentHP(target.getCurrentHP()-c1.getAttackDamage());
+			}else {
+				if(hasEffect((Champion)target,"Shield")) {
+					removeShield((Champion)target);
+					return;
+				}
+				if(hasEffect((Champion)target,"Dodge")) {
+					if((int)Math.random()*2==1) {
+						flag=true;
+					}else {
+						return;
+						}
+				}
+				if(flag) {
+					if((c1 instanceof Villain&&target instanceof Villain )||(target instanceof Hero&&c1 instanceof Hero)||(c1 instanceof AntiHero||target instanceof AntiHero)) {
+						target.setCurrentHP(target.getCurrentHP()-c1.getAttackDamage());						
+					}else {
+						target.setCurrentHP((int) (target.getCurrentHP()-c1.getAttackDamage()*1.5));						
+					}
+				}
 			}
 		}
-		
-		
-		// if the champion in the direction has dodge in the applied effects call math.rondom()*2 if >1 attact if <1 dont attack
-		
-		
-		/*
-		 *Heroes: they deal extra damage when attacking villains.
-		 *Villains: they deal extra damage when attacking heroes.
-		 *Anti-Heroes: when being attacked or attacking a hero or villain, the antihero will always
-		 act as the opposite type. If attacking an antihero, damage is calculated normally.
-		 */
-		
+		if(target!=null&&target.getCurrentHP()==0) {
+			this.board[target.getLocation().x][target.getLocation().y]=null;
+		}
 	}
-	public void castAbility(Ability a)throws AbilityUseException {
-		if(hasEffect(getCurrentChampion(), "silence")) {
+	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException {
+		if((hasEffect(getCurrentChampion(), "silence"))||a.getCurrentCooldown()!=0) {
 			throw new AbilityUseException();
 		}else {
 			boolean good=false;
@@ -434,7 +486,7 @@ public class Game {
 		this.board[newX][newY] = this.getCurrentChampion();
 		this.board[oldX][oldY] = null;
 		this.getCurrentChampion().setLocation(new Point(newX,newY));
-		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints());
+		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints()-1);
 
 	}
 	
@@ -498,8 +550,6 @@ public class Game {
 		if(c1InTeam2 && c2InTeam2) return false;
 		
 		return true;
-		
-		
 	}
 	public Player getChampionPlayer(Champion c) {
 		for(int i=0;i<this.getFirstPlayer().getTeam().size();i++) {

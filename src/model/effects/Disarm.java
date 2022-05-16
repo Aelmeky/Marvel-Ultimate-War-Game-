@@ -18,6 +18,7 @@ public class Disarm extends Effect {
 		c.getAbilities().add(punch);
 	}
 	public void remove(Champion c) {
+		super.remove(c);
 		for(int i = 0;i<c.getAbilities().size();i++) {
 			if(c.getAbilities().get(i).getName().equals("Punch")) {
 				c.getAbilities().remove(i);
