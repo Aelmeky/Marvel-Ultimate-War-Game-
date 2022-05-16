@@ -53,7 +53,6 @@ abstract public class Ability {
 	public AreaOfEffect getCastArea() {
 		return castArea;
 	}
-
 	public int getRequiredActionPoints() {
 		return requiredActionPoints;
 	}

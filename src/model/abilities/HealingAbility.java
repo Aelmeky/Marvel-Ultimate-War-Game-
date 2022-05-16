@@ -24,8 +24,10 @@ public  class HealingAbility extends Ability {
 			Damageable target = targets.get(i);
 			target.setCurrentHP(target.getCurrentHP()+this.getHealAmount());
 		}
+		this.setCurrentCooldown(this.getBaseCooldown());
 	}
 	public void remove() {
 		
 	}
+	
 }

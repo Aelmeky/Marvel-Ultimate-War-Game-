@@ -104,8 +104,33 @@ public class Game {
 	public void castAbility(Ability a, Direction d) {
 		
 	}
-	public void castAbility(Ability a, int x, int y) {
-		
+	public void castAbility(Ability a, int x, int y) throws InvalidTargetException, CloneNotSupportedException, AbilityUseException, NotEnoughResourcesException{
+		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
+			throw new NotEnoughResourcesException();
+		}
+		getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
+		if(a.getCurrentCooldown()!=0) {
+			throw new AbilityUseException();
+		}
+		if(this.board[x][y]==null||this.board[x][y] instanceof Cover) {
+			throw new InvalidTargetException();
+		}
+		ArrayList<Damageable>arr=new ArrayList<Damageable>();
+		if(a instanceof HealingAbility||(a instanceof CrowdControlAbility&&((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)){
+			if(!championIsEnemy(getCurrentChampion(),(Champion) this.board[x][y])){
+				arr.add((Damageable) this.board[x][y]);
+			}else {
+				return;
+			}
+		}
+		if(a instanceof DamagingAbility||(a instanceof CrowdControlAbility&&((CrowdControlAbility) a).getEffect().getType()==EffectType.DEBUFF)){
+			if(championIsEnemy(getCurrentChampion(),(Champion) this.board[x][y])){
+				arr.add((Damageable) this.board[x][y]);
+			}else {
+				return;
+			}
+		}
+		a.execute(arr);
 	}
 	public static void loadAbilities(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -333,6 +358,12 @@ public class Game {
 	}
 	
 	public void attack(Direction d) throws ChampionDisarmedException,NotEnoughResourcesException {
+		/*
+		 For the attack method and all cast ability methods (except for casting a single target ability), if
+		no valid target was found based on the area of effect and the cast range of the ability, no one will
+		be affected by the action. However, all required resources for this action will be deducted from
+		the champion carrying it out.
+		 */
 		if(hasEffect(this.getCurrentChampion(),"Disarm")) throw new ChampionDisarmedException();
 		if(this.getCurrentChampion().getCurrentActionPoints()<2)throw new NotEnoughResourcesException();
 		int x = this.getCurrentChampion().getLocation().x;
@@ -376,7 +407,6 @@ public class Game {
 					if((c1 instanceof Villain && target instanceof Villain )||(target instanceof Hero && c1 instanceof Hero)||(c1 instanceof AntiHero&&target instanceof AntiHero)) {
 						target.setCurrentHP(target.getCurrentHP()-c1.getAttackDamage());
 					}else {
-//						System.out.println("here");
 						target.setCurrentHP(target.getCurrentHP()-(int)(c1.getAttackDamage()*1.5));						
 					}
 				}
@@ -389,92 +419,91 @@ public class Game {
 	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException, InvalidTargetException {
 		if((hasEffect(getCurrentChampion(), "silence"))||a.getCurrentCooldown()!=0) {
 			throw new AbilityUseException();
-		}else {
-			boolean good=false;
-			if((a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)|| a instanceof HealingAbility ) {
-				good=true;
+		}
+		boolean good=false;
+		if((a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)|| a instanceof HealingAbility ) {
+			good=true;
+		}
+		if(a.getCastArea()==AreaOfEffect.SELFTARGET||a.getCastArea()==AreaOfEffect.SURROUND||a.getCastArea()==AreaOfEffect.TEAMTARGET) {
+			if(a.getCastArea()==AreaOfEffect.SELFTARGET) {
+				ArrayList<Damageable> arr=new ArrayList<Damageable>();
+				arr.add((Damageable)getCurrentChampion());
+				a.execute(arr);
 			}
-			if(a.getCastArea()==AreaOfEffect.SELFTARGET||a.getCastArea()==AreaOfEffect.SURROUND||a.getCastArea()==AreaOfEffect.TEAMTARGET) {
-				if(a.getCastArea()==AreaOfEffect.SELFTARGET) {
-					ArrayList<Damageable> arr=new ArrayList<Damageable>();
-					arr.add((Damageable)getCurrentChampion());
-					a.execute(arr);
+			if(a.getCastArea()==AreaOfEffect.SURROUND) {
+				int x=getCurrentChampion().getLocation().x;
+				int y=getCurrentChampion().getLocation().y;
+				ArrayList<Object>arr=new ArrayList<Object>();
+				if(x+1<5) {
+					Object o=this.board[x+1][y];
+					arr.add(o);
 				}
-				if(a.getCastArea()==AreaOfEffect.SURROUND) {
-					int x=getCurrentChampion().getLocation().x;
-					int y=getCurrentChampion().getLocation().y;
-					ArrayList<Object>arr=new ArrayList<Object>();
-					if(x+1<5) {
-						Object o=this.board[x+1][y];
-						arr.add(o);
-					}
-					if(x-1>=0) {
-						Object o=this.board[x-1][y];
-						arr.add(o);
-					}
-					if(y+1<5) {
-						Object o=this.board[x][y+1];
-						arr.add(o);
-					}
-					if(y-1>=0) {
-						Object o=this.board[x][y-1];
-						arr.add(o);
-					}
-					
-					if(x+1<5&&y+1<5) {
-						Object o=this.board[x+1][y+1];
-						arr.add(o);
-					}
-					if(x-1>=0&&y-1>=0) {
-						Object o=this.board[x-1][y-1];
-						arr.add(o);
-					}
-					if(y+1<5&&x-1>=0) {
-						Object o=this.board[x-1][y+1];
-						arr.add(o);
-					}
-					if(y-1>=0&&x+1<5) {
-						Object o=this.board[x+1][y-1];
-						arr.add(o);
-					}
-					ArrayList<Damageable>ar2=new ArrayList<Damageable>();
-					for(int i=0;i<arr.size();i++) {
-						if((arr.get(i) instanceof Champion && ((Champion) arr.get(i)).getCondition() ==Condition.KNOCKEDOUT) ||arr.get(i)==null) {
-							continue;
-						}
-						if(good) {
-							if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
-								continue;
-							}else {
-								ar2.add((Damageable) arr.get(i));
-							}
-						}else {
-							if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
-								ar2.add((Damageable) arr.get(i));
-							}else {
-								continue;
-							}
-							
-						}
-					}
-					a.execute(ar2);
+				if(x-1>=0) {
+					Object o=this.board[x-1][y];
+					arr.add(o);
 				}
-				if(a.getCastArea()==AreaOfEffect.TEAMTARGET) {
-					ArrayList<Champion>arr=new ArrayList<Champion>();
+				if(y+1<5) {
+					Object o=this.board[x][y+1];
+					arr.add(o);
+				}
+				if(y-1>=0) {
+					Object o=this.board[x][y-1];
+					arr.add(o);
+				}
+				
+				if(x+1<5&&y+1<5) {
+					Object o=this.board[x+1][y+1];
+					arr.add(o);
+				}
+				if(x-1>=0&&y-1>=0) {
+					Object o=this.board[x-1][y-1];
+					arr.add(o);
+				}
+				if(y+1<5&&x-1>=0) {
+					Object o=this.board[x-1][y+1];
+					arr.add(o);
+				}
+				if(y-1>=0&&x+1<5) {
+					Object o=this.board[x+1][y-1];
+					arr.add(o);
+				}
+				ArrayList<Damageable>ar2=new ArrayList<Damageable>();
+				for(int i=0;i<arr.size();i++) {
+					if((arr.get(i) instanceof Champion && ((Champion) arr.get(i)).getCondition() ==Condition.KNOCKEDOUT) ||arr.get(i)==null) {
+						continue;
+					}
 					if(good) {
-						arr=this.getChampionPlayer(getCurrentChampion()).getTeam();
-					}else {
-						if(getChampionPlayer(getCurrentChampion())==this.firstPlayer) {
-							arr=this.secondPlayer.getTeam();
+						if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+							continue;
 						}else {
-							arr=this.firstPlayer.getTeam();						}
+							ar2.add((Damageable) arr.get(i));
+							}
+						}else {
+							if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+								ar2.add((Damageable) arr.get(i));
+							}else {
+								continue;
+							}
+						}
+					}		
+				a.execute(ar2);
+			}
+			if(a.getCastArea()==AreaOfEffect.TEAMTARGET) {
+				ArrayList<Champion>arr=new ArrayList<Champion>();
+				if(good) {
+					arr=this.getChampionPlayer(getCurrentChampion()).getTeam();
+				}else {
+					if(getChampionPlayer(getCurrentChampion())==this.firstPlayer) {
+						arr=this.secondPlayer.getTeam();
+					}else {
+						arr=this.firstPlayer.getTeam();
 					}
-					ArrayList<Damageable>ar2=new ArrayList<Damageable>();
-					for(int i=0;i<arr.size();i++) {
-						ar2.add((Damageable)arr.get(i));
-					}
-					a.execute(ar2);
 				}
+				ArrayList<Damageable>ar2=new ArrayList<Damageable>();
+				for(int i=0;i<arr.size();i++) {
+					ar2.add((Damageable)arr.get(i));
+				}
+				a.execute(ar2);
 			}
 		}
 	}

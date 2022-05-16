@@ -33,5 +33,4 @@ public class CrowdControlAbility extends Ability {
 	public void remove() {
 		
 	}
-
 }

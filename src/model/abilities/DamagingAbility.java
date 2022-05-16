@@ -24,6 +24,7 @@ public class DamagingAbility extends Ability {
 			Damageable target = targets.get(i);
 			target.setCurrentHP(target.getCurrentHP()-this.getDamageAmount());
 		}
+		this.setCurrentCooldown(this.getBaseCooldown());
 	}
 	public void remove() {
 		
