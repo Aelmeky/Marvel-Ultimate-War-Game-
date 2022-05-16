@@ -62,7 +62,6 @@ abstract public class Champion implements Damageable, Comparable {
 		Champion c=(Champion) o;
 		if(this.getSpeed()!=c.getSpeed()) {
 			return -1*this.getSpeed()+c.getSpeed();
-			///TA
 		}else {
 			return this.getName().compareTo(c.getName());
 		}
