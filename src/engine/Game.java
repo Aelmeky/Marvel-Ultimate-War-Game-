@@ -386,7 +386,7 @@ public class Game {
 			this.board[target.getLocation().x][target.getLocation().y]=null;
 		}
 	}
-	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException {
+	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException, InvalidTargetException {
 		if((hasEffect(getCurrentChampion(), "silence"))||a.getCurrentCooldown()!=0) {
 			throw new AbilityUseException();
 		}else {

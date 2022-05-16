@@ -1,6 +1,7 @@
 package model.abilities;
 import java.util.*;
 
+import exceptions.InvalidTargetException;
 import model.world.*;
 abstract public class Ability {
 	private String name;
@@ -56,7 +57,7 @@ abstract public class Ability {
 	public int getRequiredActionPoints() {
 		return requiredActionPoints;
 	}
-	abstract public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException;
+	abstract public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, InvalidTargetException;
 	//abstract public void remove();
 	abstract public void remove();
 
