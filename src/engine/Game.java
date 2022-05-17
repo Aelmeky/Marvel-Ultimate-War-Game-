@@ -132,7 +132,11 @@ public class Game {
 					arr.add((Damageable) this.board[x][y]);
 				}
 				if(!good && (this.board[x][y] instanceof Cover||(this.board[x][y] instanceof Champion && championIsEnemy(getCurrentChampion(),(Champion)this.board[x][y])))) {
-					arr.add((Damageable) this.board[x][y]);
+					if(this.board[x][y] instanceof Champion && hasEffect((Champion)this.board[x][y],"Shield")) {
+						removeShield((Champion)this.board[x][y]);
+					}else {
+						arr.add((Damageable) this.board[x][y]);
+					}
 				}
 			}
 		}	
@@ -180,7 +184,7 @@ public class Game {
 		this.ifDead((Damageable) this.board[x][y]);
 	}
 	public void ifDead(Damageable d) {
-		if(d!=null&&d.getCurrentHP()==0) {	
+		if(d!=null&&d.getCurrentHP()==0) {
 			if(this.board[d.getLocation().x][d.getLocation().y] instanceof Champion){
 				Champion c =(Champion) this.board[d.getLocation().x][d.getLocation().y];
 				c.setCondition(Condition.KNOCKEDOUT);
@@ -189,6 +193,18 @@ public class Game {
 					if(team.get(i).equals(c)) {
 						team.remove(i);
 					}
+				}
+				PriorityQueue pq=new PriorityQueue(turnOrder.size());
+				int j=turnOrder.size();
+				for(int i=0;i<j;i++) {
+					Champion c2=(Champion) turnOrder.remove();
+					if(c2.getCurrentHP()!=0) {
+						pq.insert(c2);
+					}
+				}
+				for(int i=0;i<pq.size();i++) {
+					Champion c3=(Champion) pq.remove();
+					turnOrder.insert(c3);
 				}
 			}
 			this.board[d.getLocation().x][d.getLocation().y]=null;
@@ -393,7 +409,9 @@ public class Game {
 		Champion c=(Champion) turnOrder.remove();
 		while(!turnOrder.isEmpty()&&c.getCondition()!=Condition.INACTIVE) {
 			c=(Champion) turnOrder.remove();
-			
+		}
+		if(turnOrder.size()==0) {
+			prepareChampionTurns();
 		}
 		ArrayList<Effect> arr=c.getAppliedEffects();
 		for(int i=0;i<arr.size();i++) {
@@ -401,7 +419,8 @@ public class Game {
 			eff.setDuration(eff.getDuration()-1);
 			if(eff.getDuration()==0) {
 				eff.remove(c);
-				//arr.remove(i);
+				arr.remove(i);
+				i--;
 			}
 		}
 		ArrayList<Ability> ar2=c.getAbilities();
@@ -538,22 +557,30 @@ public class Game {
 					if((arr.get(i) instanceof Champion && ((Champion) arr.get(i)).getCondition() ==Condition.KNOCKEDOUT) ||arr.get(i)==null) {
 						continue;
 					}
-					
 					if(good) {
 						if(arr.get(i) instanceof Cover || championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
 							continue;
 						}else {
 							ar2.add((Damageable) arr.get(i));
 							}
-						}else {
-							if(arr.get(i) instanceof Champion &&championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
-								ar2.add((Damageable) arr.get(i));
+					}else {
+						if(arr.get(i) instanceof Champion &&championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+							if(hasEffect((Champion)arr.get(i),"Shield")) {
+								removeShield((Champion)arr.get(i));
 							}else {
-								continue;
+								ar2.add((Damageable) arr.get(i));
+							}
+						}else {
+							if(arr.get(i) instanceof Cover) {
+								ar2.add((Damageable) arr.get(i));
 							}
 						}
-					}	
+					}
+				}
 				a.execute(ar2);
+				for(int i=0;i<ar2.size();i++) {
+					this.ifDead(ar2.get(i));
+				}
 				getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
 				getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
 				a.setCurrentCooldown(a.getBaseCooldown());
@@ -695,6 +722,4 @@ public class Game {
 			}
 		}
 	}
-	
-	
 }

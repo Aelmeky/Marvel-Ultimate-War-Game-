@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.junit.Test;
+
+import model.abilities.CrowdControlAbility;
+import model.world.Champion;
 
 public class M2PublicTests {
 	String championPath = "model.world.Champion";
@@ -28636,7 +28640,6 @@ public class M2PublicTests {
 					actual.addAll((ArrayList<Object>) (ff.get(targets.get(j))));
 
 				}
-
 				if (actual.size() != expected.size()) {
 					assertTrue("The method \"execute\" in class \"" + crowdControlObject.getClass().getSimpleName()
 							+ " \" should add the correct \"effect\" to each \"target\".", false);
