@@ -101,7 +101,7 @@ public class Game {
 			}
 		}
 	}
-	public void castAbility(Ability a, Direction d) throws AbilityUseException, NotEnoughResourcesException {
+	public void castAbility(Ability a, Direction d) throws AbilityUseException, NotEnoughResourcesException, InvalidTargetException, CloneNotSupportedException {
 		if((hasEffect(getCurrentChampion(), "Silence"))||a.getCurrentCooldown()!=0) {
 			throw new AbilityUseException();
 		}
@@ -111,7 +111,35 @@ public class Game {
 		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
 			throw new NotEnoughResourcesException();
 		}
-		
+		getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
+		getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
+		a.setCurrentCooldown(a.getBaseCooldown());
+		int x = this.getCurrentChampion().getLocation().x;
+		int y = this.getCurrentChampion().getLocation().y;
+		boolean good=false;
+		if((a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)|| a instanceof HealingAbility ) {
+			good=true;
+		}
+		ArrayList<Damageable>arr=new ArrayList<Damageable>();
+		for(int i=0;i<a.getCastRange();i++) {
+			if(d == Direction.UP) x++;
+			else if(d == Direction.DOWN)x--;
+			else if(d == Direction.LEFT)y--;
+			else if(d == Direction.RIGHT)y++;
+			if(this.board[x][y]!=null) {
+				//not null - friend, enemy or cover
+				if(good && this.board[x][y] instanceof Champion && !championIsEnemy(getCurrentChampion(),(Champion)this.board[x][y])) {
+					arr.add((Damageable) this.board[x][y]);
+				}
+				if(!good && (this.board[x][y] instanceof Cover||(this.board[x][y] instanceof Champion && championIsEnemy(getCurrentChampion(),(Champion)this.board[x][y])))) {
+					arr.add((Damageable) this.board[x][y]);
+				}
+			}
+		}	
+		a.execute(arr);
+		for(int i=0;i<arr.size();i++) {
+			this.ifDead(arr.get(i));
+		}		
 	}
 	public void castAbility(Ability a, int x, int y) throws InvalidTargetException, CloneNotSupportedException, AbilityUseException, NotEnoughResourcesException{
 		if((hasEffect(getCurrentChampion(), "Silence"))||a.getCurrentCooldown()!=0) {
@@ -145,10 +173,10 @@ public class Game {
 				throw new InvalidTargetException();
 			}
 		}
+		a.execute(arr);
 		getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
 		getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
 		a.setCurrentCooldown(a.getBaseCooldown());
-		a.execute(arr);
 		this.ifDead((Damageable) this.board[x][y]);
 	}
 	public void ifDead(Damageable d) {
@@ -245,7 +273,6 @@ public class Game {
 		}
 		br.close();
 	}
-
 	public static void loadChampions(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String line = br.readLine();
@@ -384,8 +411,6 @@ public class Game {
 		}
 		c.setCurrentActionPoints(c.getMaxActionPointsPerTurn());
 	}
-	
-	
 	public Champion getCurrentChampion() {
 		
 		return (Champion) turnOrder.peekMin();

@@ -10,7 +10,7 @@ public class Stun extends Effect {
 	}
 	
 	public void apply(Champion c) {
-		//super.apply(c);
+		
 		c.setCondition(Condition.INACTIVE);
 	}
 	

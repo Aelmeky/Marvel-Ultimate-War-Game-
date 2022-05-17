@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import exceptions.InvalidTargetException;
 import model.effects.Effect;
+import model.effects.EffectType;
 import model.world.Champion;
 import model.world.Cover;
 import model.world.Damageable;
@@ -24,11 +25,13 @@ public class CrowdControlAbility extends Ability {
 	
 	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, InvalidTargetException {
 		for(int i =0;i<targets.size();i++) {
-			if(this.getCastArea()!=AreaOfEffect.SURROUND && targets.get(i) instanceof Cover) {
+			if((this.getCastArea()==AreaOfEffect.TEAMTARGET || this.getEffect().getType()==EffectType.BUFF)&& targets.get(i) instanceof Cover) {
 				throw new InvalidTargetException();
 			}
-			((Champion)targets.get(i)).getAppliedEffects().add((Effect)this.effect.clone());
-			((Effect)this.getEffect().clone()).apply((Champion) targets.get(i));
+			if(targets.get(i) instanceof Champion) {
+				((Champion)targets.get(i)).getAppliedEffects().add((Effect)this.effect.clone());
+				((Effect)this.getEffect().clone()).apply((Champion) targets.get(i));
+			}
 		}
 	}
 	public void remove() {
