@@ -419,7 +419,11 @@ public class Game {
 			this.board[target.getLocation().x][target.getLocation().y]=null;
 		}
 	}
-	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException, InvalidTargetException {
+	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException, InvalidTargetException,NotEnoughResourcesException {
+		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
+			throw new NotEnoughResourcesException();
+		}
+		//check this on an ide, i did it in github
 		if((hasEffect(getCurrentChampion(), "silence"))||a.getCurrentCooldown()!=0) {
 			throw new AbilityUseException();
 		}
