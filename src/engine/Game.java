@@ -101,7 +101,16 @@ public class Game {
 			}
 		}
 	}
-	public void castAbility(Ability a, Direction d) {
+	public void castAbility(Ability a, Direction d) throws AbilityUseException, NotEnoughResourcesException {
+		if((hasEffect(getCurrentChampion(), "Silence"))||a.getCurrentCooldown()!=0) {
+			throw new AbilityUseException();
+		}
+		if(getCurrentChampion().getMana()<a.getManaCost()) {
+			throw new NotEnoughResourcesException();
+		}
+		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
+			throw new NotEnoughResourcesException();
+		}
 		
 	}
 	public void castAbility(Ability a, int x, int y) throws InvalidTargetException, CloneNotSupportedException, AbilityUseException, NotEnoughResourcesException{
@@ -458,6 +467,9 @@ public class Game {
 				ArrayList<Damageable> arr=new ArrayList<Damageable>();
 				arr.add((Damageable)getCurrentChampion());
 				a.execute(arr);
+				getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
+				getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
+				a.setCurrentCooldown(a.getBaseCooldown());
 			}
 			if(a.getCastArea()==AreaOfEffect.SURROUND) {
 				int x=getCurrentChampion().getLocation().x;
@@ -501,24 +513,25 @@ public class Game {
 					if((arr.get(i) instanceof Champion && ((Champion) arr.get(i)).getCondition() ==Condition.KNOCKEDOUT) ||arr.get(i)==null) {
 						continue;
 					}
+					
 					if(good) {
-						if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+						if(arr.get(i) instanceof Cover || championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
 							continue;
 						}else {
 							ar2.add((Damageable) arr.get(i));
 							}
 						}else {
-							if(championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+							if(arr.get(i) instanceof Champion &&championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
 								ar2.add((Damageable) arr.get(i));
 							}else {
 								continue;
 							}
 						}
 					}	
+				a.execute(ar2);
 				getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
 				getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
 				a.setCurrentCooldown(a.getBaseCooldown());
-				a.execute(ar2);
 			}
 			if(a.getCastArea()==AreaOfEffect.TEAMTARGET) {
 				ArrayList<Champion>arr=new ArrayList<Champion>();
@@ -533,13 +546,28 @@ public class Game {
 				}
 				ArrayList<Damageable>ar2=new ArrayList<Damageable>();
 				for(int i=0;i<arr.size();i++) {
-					ar2.add((Damageable)arr.get(i));
+					Champion c=arr.get(i);
+					if(inrange(getCurrentChampion(),c,a.getCastRange())) {
+						ar2.add((Damageable)arr.get(i));
+					}
 				}
 				a.execute(ar2);
+				for(int i=0;i<ar2.size();i++) {
+					this.ifDead(ar2.get(i));
+				}
+				getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-a.getRequiredActionPoints());
+				getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
+				a.setCurrentCooldown(a.getBaseCooldown());
 			}
 		}
 	}
-	
+	public static boolean inrange(Champion c1,Champion c2, int x) {
+		int distanceToTarget =  Math.abs(c1.getLocation().x-c2.getLocation().x)+Math.abs(c1.getLocation().y-c2.getLocation().y);
+		if(distanceToTarget<=x) {
+			return true;
+		}
+		return false;
+	}
 	public void move(Direction d)throws NotEnoughResourcesException,UnallowedMovementException {
 		if(this.getCurrentChampion().getCurrentActionPoints()<=1)throw new NotEnoughResourcesException();
 
