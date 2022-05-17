@@ -59,7 +59,7 @@ public class Game {
 		placeCovers();
 		prepareChampionTurns();
 	}
-	public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException,LeaderNotCurrentException{
+	public void useLeaderAbility()  throws LeaderAbilityAlreadyUsedException,LeaderNotCurrentException{
 		Champion c=this.getCurrentChampion();
 		Player p=this.getChampionPlayer(c);
 		if(c!=p.getLeader()) {
@@ -105,15 +105,21 @@ public class Game {
 		
 	}
 	public void castAbility(Ability a, int x, int y) throws InvalidTargetException, CloneNotSupportedException, AbilityUseException, NotEnoughResourcesException{
+		if((hasEffect(getCurrentChampion(), "Silence"))||a.getCurrentCooldown()!=0) {
+			throw new AbilityUseException();
+		}
+		if(getCurrentChampion().getMana()<a.getManaCost()) {
+			throw new NotEnoughResourcesException();
+		}
 		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
 			throw new NotEnoughResourcesException();
+		}
+		if(this.board[x][y]==null||this.board[x][y] instanceof Cover) {
+			throw new InvalidTargetException();
 		}
 		int distanceToTarget =  Math.abs(x-getCurrentChampion().getLocation().x)+Math.abs(y-getCurrentChampion().getLocation().y);
 		if(a.getCurrentCooldown()!=0 || distanceToTarget>a.getCastRange()) {
 			throw new AbilityUseException();
-		}
-		if(this.board[x][y]==null||this.board[x][y] instanceof Cover) {
-			throw new InvalidTargetException();
 		}
 		ArrayList<Damageable>arr=new ArrayList<Damageable>();
 		if(a instanceof HealingAbility||(a instanceof CrowdControlAbility&&((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)){
@@ -134,6 +140,22 @@ public class Game {
 		getCurrentChampion().setMana(getCurrentChampion().getMana()-a.getManaCost());
 		a.setCurrentCooldown(a.getBaseCooldown());
 		a.execute(arr);
+		this.ifDead((Damageable) this.board[x][y]);
+	}
+	public void ifDead(Damageable d) {
+		if(d!=null&&d.getCurrentHP()==0) {	
+			if(this.board[d.getLocation().x][d.getLocation().y] instanceof Champion){
+				Champion c =(Champion) this.board[d.getLocation().x][d.getLocation().y];
+				c.setCondition(Condition.KNOCKEDOUT);
+				ArrayList<Champion> team=getChampionPlayer(c).getTeam();
+				for(int i=0;i<team.size();i++) {
+					if(team.get(i).equals(c)) {
+						team.remove(i);
+					}
+				}
+			}
+			this.board[d.getLocation().x][d.getLocation().y]=null;
+		}
 	}
 	public static void loadAbilities(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -369,6 +391,7 @@ public class Game {
 		 */
 		if(hasEffect(this.getCurrentChampion(),"Disarm")) throw new ChampionDisarmedException();
 		if(this.getCurrentChampion().getCurrentActionPoints()<2)throw new NotEnoughResourcesException();
+		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints()-2);
 		int x = this.getCurrentChampion().getLocation().x;
 		int y = this.getCurrentChampion().getLocation().y;
 		Damageable target = null;
@@ -386,7 +409,6 @@ public class Game {
 				}
 			}
 		}
-		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints()-2);
 		boolean flag=false;
 		Champion c1=getCurrentChampion();
 		if(target != null) {
@@ -415,20 +437,17 @@ public class Game {
 				}
 			}
 		}
-		if(target!=null&&target.getCurrentHP()==0) {
-			this.board[target.getLocation().x][target.getLocation().y]=null;
-		}
+		this.ifDead(target);
 	}
 	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException, InvalidTargetException,NotEnoughResourcesException {
-		// add mana cost exception
-		//then update mana in champion
-		//should do this in 3 cast abilities		
-		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
+		if((hasEffect(getCurrentChampion(), "Silence"))||a.getCurrentCooldown()!=0) {
+			throw new AbilityUseException();
+		}
+		if(getCurrentChampion().getMana()<a.getManaCost()) {
 			throw new NotEnoughResourcesException();
 		}
-		//check this on an ide, i did it in github
-		if((hasEffect(getCurrentChampion(), "silence"))||a.getCurrentCooldown()!=0) {
-			throw new AbilityUseException();
+		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
+			throw new NotEnoughResourcesException();
 		}
 		boolean good=false;
 		if((a instanceof CrowdControlAbility && ((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF)|| a instanceof HealingAbility ) {
@@ -619,6 +638,7 @@ public class Game {
 		for(int i =0;i<c.getAppliedEffects().size();i++) {
 			if(c.getAppliedEffects().get(i).getName().equals("Shield")) {
 				c.getAppliedEffects().get(i).remove(c);
+				c.getAppliedEffects().remove(i);
 			}
 		}
 	}

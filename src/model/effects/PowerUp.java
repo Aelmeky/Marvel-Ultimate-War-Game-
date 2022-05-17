@@ -24,7 +24,6 @@ public class PowerUp extends Effect {
 		}
 	}
 	public void apply(Champion c) {
-		super.apply(c);
 		for(int i=0;i<c.getAbilities().size();i++) {
 			Ability a=c.getAbilities().get(i);
 			if(a instanceof HealingAbility) {

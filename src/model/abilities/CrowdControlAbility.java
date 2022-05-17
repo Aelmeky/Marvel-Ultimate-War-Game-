@@ -27,10 +27,10 @@ public class CrowdControlAbility extends Ability {
 			if(targets.get(i) instanceof Cover) {
 				throw new InvalidTargetException();
 			}
+			((Champion)targets.get(i)).getAppliedEffects().add((Effect)this.effect.clone());
 			((Effect)this.getEffect().clone()).apply((Champion) targets.get(i));
 		}
 	}
 	public void remove() {
-		
 	}
 }
