@@ -190,7 +190,7 @@ public class Game {
 				c.setCondition(Condition.KNOCKEDOUT);
 				ArrayList<Champion> team=getChampionPlayer(c).getTeam();
 				for(int i=0;i<team.size();i++) {
-					if(team.get(i).equals(c)) {
+					if(team.get(i)==c) {
 						team.remove(i);
 					}
 				}
@@ -669,7 +669,6 @@ public class Game {
 			}
 		}
 		if (playerTwoWon) return this.secondPlayer;
-		
 		boolean playerOneWon = true;
 		for(int i = 0;i<secondPlayer.getTeam().size();i++) {
 			if(secondPlayer.getTeam().get(i).getCondition()!=Condition.KNOCKEDOUT) {
