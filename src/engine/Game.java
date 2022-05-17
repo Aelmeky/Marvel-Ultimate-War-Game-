@@ -420,6 +420,9 @@ public class Game {
 		}
 	}
 	public void castAbility(Ability a)throws AbilityUseException, CloneNotSupportedException, InvalidTargetException,NotEnoughResourcesException {
+		// add mana cost exception
+		//then update mana in champion
+		//should do this in 3 cast abilities		
 		if(getCurrentChampion().getCurrentActionPoints()<a.getRequiredActionPoints()) {
 			throw new NotEnoughResourcesException();
 		}
