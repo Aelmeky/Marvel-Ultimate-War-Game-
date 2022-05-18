@@ -24,6 +24,9 @@ public class CrowdControlAbility extends Ability {
 	}
 	
 	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, InvalidTargetException {
+		/*
+		 dont throw here covers should not be sent here..
+		 */
 		for(int i =0;i<targets.size();i++) {
 			if(targets.get(i) instanceof Champion) {
 				((Champion)targets.get(i)).getAppliedEffects().add((Effect)this.effect.clone());
