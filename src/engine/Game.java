@@ -739,7 +739,7 @@ public class Game {
 		}
 		if (this.getSecondPlayer().getTeam().isEmpty()) {
 			return this.firstPlayer;
-			{
+		}
 		return null;
 	}
 
