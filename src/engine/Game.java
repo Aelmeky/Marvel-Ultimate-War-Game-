@@ -137,15 +137,21 @@ public class Game {
 				y--;
 			else if (d == Direction.RIGHT)
 				y++;
+			
+			if(x>=5||y>=5||x<0||y<0) {
+				break;
+			}
 			if (this.board[x][y] != null) {
 				// not null - friend, enemy or cover
 				if (good && this.board[x][y] instanceof Champion
 						&& !championIsEnemy(getCurrentChampion(), (Champion) this.board[x][y])) {
 					arr.add((Damageable) this.board[x][y]);
 				}
+				//if not good covers should should only be with damaging abilities
 				if (!good && (this.board[x][y] instanceof Cover || (this.board[x][y] instanceof Champion
 						&& championIsEnemy(getCurrentChampion(), (Champion) this.board[x][y])))) {
 					if (this.board[x][y] instanceof Champion && hasEffect((Champion) this.board[x][y], "Shield")) {
+						//remove shield for damaging ability only
 						removeShield((Champion) this.board[x][y]);
 					} else {
 						arr.add((Damageable) this.board[x][y]);
