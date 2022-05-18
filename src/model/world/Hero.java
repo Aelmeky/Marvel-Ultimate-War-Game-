@@ -20,10 +20,12 @@ public class Hero extends Champion {
 				if(f.getType()==EffectType.DEBUFF) {
 					f.remove(c);
 					c.getAppliedEffects().remove(j);
+					System.out.println("here");
 					j--;
 				}
 			}
 			Embrace e=new Embrace(2);
+			c.getAppliedEffects().add(e);
 			e.apply(c);
 		}
 	}

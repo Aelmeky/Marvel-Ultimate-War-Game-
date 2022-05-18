@@ -14,7 +14,6 @@ public class Embrace extends Effect {
 		c.setMana((int) (c.getMana()*1.2));
 		c.setSpeed((int) (c.getSpeed()*1.2));
 		c.setAttackDamage((int) (c.getAttackDamage()*1.2));
-		c.getAppliedEffects().add(this);
 	}
 	public void remove(Champion c) {
 		c.setSpeed((int) (c.getSpeed()/1.2));
