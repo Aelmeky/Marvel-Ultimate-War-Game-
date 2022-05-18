@@ -14,6 +14,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import engine.PriorityQueue;
 import model.abilities.CrowdControlAbility;
 import model.world.Champion;
 
@@ -24172,7 +24173,6 @@ public class M2PublicTests {
 
 			Method m2 = turnOrder.getClass().getMethod("size");
 			int size = (int) m2.invoke(turnOrder);
-
 			assertTrue("The turnOrder is not updated correctly after calling endTurn. Expected size" + 5 + " but was "
 					+ size + ".", size == 5);
 
@@ -24696,6 +24696,7 @@ public class M2PublicTests {
 
 					for (int i = 0; i < champEffectsUpdated.size(); i++) {
 						if (champEffectsUpdated.get(i) == powerUpEffect) {
+							System.out.println(champEffectsUpdated.get(i));
 							fail("endTurn should remove any expired effects from the current champion's appliedEffects arraylist.");
 						}
 					}
