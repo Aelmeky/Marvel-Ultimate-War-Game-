@@ -154,7 +154,7 @@ public class Game {
 					arr.add((Damageable) this.board[x][y]);
 				}
 				//if not good covers should should only be with damaging abilities
-				if (!good && (this.board[x][y] instanceof Cover || (this.board[x][y] instanceof Champion && championIsEnemy(getCurrentChampion(), (Champion) this.board[x][y])))) {
+				if (!good && ((this.board[x][y] instanceof Cover && a instanceof DamagingAbility) || (this.board[x][y] instanceof Champion && championIsEnemy(getCurrentChampion(), (Champion) this.board[x][y])))) {
 					if (this.board[x][y] instanceof Champion && hasEffect((Champion) this.board[x][y], "Shield")) {
 						//remove shield for damaging ability only
 						removeShield((Champion) this.board[x][y]);
@@ -633,7 +633,7 @@ public class Game {
 						}
 					} 
 					else {
-						if (arr.get(i) instanceof Cover) {
+						if (arr.get(i) instanceof Cover && a instanceof DamagingAbility) {
 							ar2.add((Damageable) arr.get(i));
 						}
 					}
