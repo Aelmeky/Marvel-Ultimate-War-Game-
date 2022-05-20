@@ -26,8 +26,6 @@ public class DamagingAbility extends Ability {
 		}
 		this.setCurrentCooldown(this.getBaseCooldown());
 	}
-	public void remove() {
-		
-	}
+
 
 }

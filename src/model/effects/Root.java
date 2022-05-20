@@ -17,14 +17,10 @@ public class Root extends Effect {
 	}
 	
 	public void remove(Champion c) {
-		int count=0;
 		for(int i=0;i<c.getAppliedEffects().size();i++) {
 			if(c.getAppliedEffects().get(i).getName().equals("Root")) {
-				count++;
+				return;
 			}
-		}
-		if(count>0) {
-			return;
 		}
 		if(c.getCondition()==Condition.ROOTED) {
 			c.setCondition(Condition.ACTIVE);

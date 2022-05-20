@@ -32,6 +32,5 @@ public class CrowdControlAbility extends Ability {
 		}
 		this.setCurrentCooldown(this.getBaseCooldown());
 	}
-	public void remove() {
-	}
+
 }

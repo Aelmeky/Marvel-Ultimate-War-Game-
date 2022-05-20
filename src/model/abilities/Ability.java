@@ -57,6 +57,4 @@ abstract public class Ability {
 		return requiredActionPoints;
 	}
 	abstract public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, InvalidTargetException;
-	abstract public void remove();
-
 }
