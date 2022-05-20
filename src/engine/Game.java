@@ -90,7 +90,8 @@ public class Game {
 			if (c instanceof Villain) {
 				c.useLeaderAbility(p2.getTeam());
 				for(int i = 0;i<p2.getTeam().size();i++) {
-					ifDead(p2.getTeam().get(i));
+					if(ifDead(p2.getTeam().get(i)))i--;
+
 				}
 			}
 			if (c instanceof AntiHero) {
@@ -213,7 +214,7 @@ public class Game {
 		this.ifDead((Damageable) this.board[x][y]);
 	}
 
-	public void ifDead(Damageable d) { 
+	public boolean ifDead(Damageable d) { 
 	
 		if (d != null && (d.getCurrentHP() == 0 || ( (d instanceof Champion) && ((Champion)d).getCondition() == Condition.KNOCKEDOUT ) )) {
 			if (d instanceof Champion) {
@@ -237,7 +238,9 @@ public class Game {
 				this.turnOrder = pq;
 			}
 			this.board[d.getLocation().x][d.getLocation().y] = null;
+			return true;
 		}
+		return false;
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {
