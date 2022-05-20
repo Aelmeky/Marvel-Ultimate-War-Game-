@@ -201,7 +201,7 @@ public class Game {
 		if (a instanceof DamagingAbility || (a instanceof CrowdControlAbility
 				&& ((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF)) {
 			if (championIsEnemy(getCurrentChampion(), (Champion) this.board[x][y])) {
-				if(hasEffect((Champion) this.board[x][y],"Shield")) removeShield((Champion) this.board[x][y]);
+				if(hasEffect((Champion) this.board[x][y],"Shield") && a instanceof DamagingAbility) removeShield((Champion) this.board[x][y]);
 				else arr.add((Damageable) this.board[x][y]);
 			} 
 			else {
