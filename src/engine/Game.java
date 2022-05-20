@@ -487,15 +487,16 @@ public class Game {
 		 */
 		if (hasEffect(this.getCurrentChampion(), "Disarm"))
 			throw new ChampionDisarmedException();
+		
 		if (this.getCurrentChampion().getCurrentActionPoints() < 2)
 			throw new NotEnoughResourcesException();
+		
 		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints() - 2);
 		int x = this.getCurrentChampion().getLocation().x;
 		int y = this.getCurrentChampion().getLocation().y;
 		Damageable target = null;
 		int i = 0;
-		while (x >= 0 && x < this.BOARDHEIGHT - 1 && y >= 0 && y < this.BOARDWIDTH - 1 && target == null
-				&& i < this.getCurrentChampion().getAttackRange()) {
+		while (target == null) {
 			if (d == Direction.UP)
 				x++;
 			else if (d == Direction.DOWN)
@@ -505,35 +506,40 @@ public class Game {
 			else if (d == Direction.RIGHT)
 				y++;
 			i++;
-			if (x < 0 || y < 0 || x >= this.BOARDHEIGHT || y >= this.BOARDWIDTH)
+			if (x < 0 || y < 0 || x >= this.BOARDHEIGHT || y >= this.BOARDWIDTH || i > this.getCurrentChampion().getAttackRange())
 				break;
 			if (this.board[x][y] != null && this.board[x][y] instanceof Damageable) {
 				if (this.board[x][y] instanceof Cover
 						|| this.championIsEnemy(this.getCurrentChampion(), (Champion) this.board[x][y])) {
 					target = (Damageable) this.board[x][y];
+					break;
 				}
 			}
 		}
-		boolean flag = false;
+		
+		boolean attackflag = false;
 		Champion c1 = getCurrentChampion();
 		if (target != null) {
 			if (target instanceof Cover) {
 				target.setCurrentHP(target.getCurrentHP() - c1.getAttackDamage());
-			} else {
+			} 
+			else {
 				if (hasEffect((Champion) target, "Shield")) {
 					removeShield((Champion) target);
 					return;
-				} else {
-					flag = true;
+				} 
+				else {
+					attackflag = true;
 				}
 				if (hasEffect((Champion) target, "Dodge")) {
 					if (Math.floor(Math.random() * 2) == 1) {
-						flag = true;
-					} else {
+						attackflag = true;
+					}
+					else {
 						return;
 					}
 				}
-				if (flag) {
+				if (attackflag) {
 					if ((c1 instanceof Villain && target instanceof Villain)
 							|| (target instanceof Hero && c1 instanceof Hero)
 							|| (c1 instanceof AntiHero && target instanceof AntiHero)) {
