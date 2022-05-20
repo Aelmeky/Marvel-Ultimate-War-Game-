@@ -219,6 +219,7 @@ public class Game {
 				for (int i = 0; i < team.size(); i++) {
 					if (team.get(i) == c) {
 						team.remove(i);
+						break;
 					}
 				}
 				PriorityQueue pq = new PriorityQueue(turnOrder.size());
@@ -473,7 +474,6 @@ public class Game {
 	}
 
 	public Champion getCurrentChampion() {
-
 		return (Champion) turnOrder.peekMin();
 	}
 
@@ -569,85 +569,82 @@ public class Game {
 				|| a instanceof HealingAbility) {
 			good = true;
 		}
-		if (a.getCastArea() == AreaOfEffect.SELFTARGET || a.getCastArea() == AreaOfEffect.SURROUND
-				|| a.getCastArea() == AreaOfEffect.TEAMTARGET) {
-			if (a.getCastArea() == AreaOfEffect.SELFTARGET) {
-				ArrayList<Damageable> arr = new ArrayList<Damageable>();
-				arr.add((Damageable) getCurrentChampion());
-				a.execute(arr);
-				getCurrentChampion().setCurrentActionPoints(
-						getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
-				getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
-				a.setCurrentCooldown(a.getBaseCooldown());
+		if (a.getCastArea() == AreaOfEffect.SELFTARGET) {
+			ArrayList<Damageable> arr = new ArrayList<Damageable>();
+			arr.add((Damageable) getCurrentChampion());
+			a.execute(arr);
+			getCurrentChampion().setCurrentActionPoints(
+					getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
+			getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
+			a.setCurrentCooldown(a.getBaseCooldown());
+		}
+		if (a.getCastArea() == AreaOfEffect.SURROUND) {
+			int x = getCurrentChampion().getLocation().x;
+			int y = getCurrentChampion().getLocation().y;
+			ArrayList<Object> arr = new ArrayList<Object>();
+			if (x + 1 < 5) {
+				Object o = this.board[x + 1][y];
+				arr.add(o);
 			}
-			if (a.getCastArea() == AreaOfEffect.SURROUND) {
-				int x = getCurrentChampion().getLocation().x;
-				int y = getCurrentChampion().getLocation().y;
-				ArrayList<Object> arr = new ArrayList<Object>();
-				if (x + 1 < 5) {
-					Object o = this.board[x + 1][y];
-					arr.add(o);
+			if (x - 1 >= 0) {
+				Object o = this.board[x - 1][y];
+				arr.add(o);
+			}
+			if (y + 1 < 5) {
+				Object o = this.board[x][y + 1];
+				arr.add(o);
+			}
+			if (y - 1 >= 0) {
+				Object o = this.board[x][y - 1];
+				arr.add(o);
+			}
+			if (x + 1 < 5 && y + 1 < 5) {
+				Object o = this.board[x + 1][y + 1];
+				arr.add(o);
+			}
+			if (x - 1 >= 0 && y - 1 >= 0) {
+				Object o = this.board[x - 1][y - 1];
+				arr.add(o);
+			}
+			if (y + 1 < 5 && x - 1 >= 0) {
+				Object o = this.board[x - 1][y + 1];
+				arr.add(o);
+			}
+			if (y - 1 >= 0 && x + 1 < 5) {
+				Object o = this.board[x + 1][y - 1];
+				arr.add(o);
+			}
+			ArrayList<Damageable> ar2 = new ArrayList<Damageable>();
+			for (int i = 0; i < arr.size(); i++) {
+				if ((arr.get(i) instanceof Champion
+						&& ((Champion) arr.get(i)).getCondition() == Condition.KNOCKEDOUT) || arr.get(i) == null) {
+					continue;
 				}
-				if (x - 1 >= 0) {
-					Object o = this.board[x - 1][y];
-					arr.add(o);
-				}
-				if (y + 1 < 5) {
-					Object o = this.board[x][y + 1];
-					arr.add(o);
-				}
-				if (y - 1 >= 0) {
-					Object o = this.board[x][y - 1];
-					arr.add(o);
-				}
-
-				if (x + 1 < 5 && y + 1 < 5) {
-					Object o = this.board[x + 1][y + 1];
-					arr.add(o);
-				}
-				if (x - 1 >= 0 && y - 1 >= 0) {
-					Object o = this.board[x - 1][y - 1];
-					arr.add(o);
-				}
-				if (y + 1 < 5 && x - 1 >= 0) {
-					Object o = this.board[x - 1][y + 1];
-					arr.add(o);
-				}
-				if (y - 1 >= 0 && x + 1 < 5) {
-					Object o = this.board[x + 1][y - 1];
-					arr.add(o);
-				}
-				ArrayList<Damageable> ar2 = new ArrayList<Damageable>();
-				for (int i = 0; i < arr.size(); i++) {
-					if ((arr.get(i) instanceof Champion
-							&& ((Champion) arr.get(i)).getCondition() == Condition.KNOCKEDOUT) || arr.get(i) == null) {
+				if (good) {
+					if (arr.get(i) instanceof Cover
+							|| championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
 						continue;
+					} else {
+						ar2.add((Damageable) arr.get(i));
 					}
-					if (good) {
-						if (arr.get(i) instanceof Cover
-								|| championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
-							continue;
+				} else {
+					if (arr.get(i) instanceof Champion
+							&& championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
+						if (hasEffect((Champion) arr.get(i), "Shield")) {
+							removeShield((Champion) arr.get(i));
 						} else {
 							ar2.add((Damageable) arr.get(i));
 						}
 					} else {
-						if (arr.get(i) instanceof Champion
-								&& championIsEnemy((Champion) arr.get(i), getCurrentChampion())) {
-							if (hasEffect((Champion) arr.get(i), "Shield")) {
-								removeShield((Champion) arr.get(i));
-							} else {
-								ar2.add((Damageable) arr.get(i));
-							}
-						} else {
-							if (arr.get(i) instanceof Cover) {
-								ar2.add((Damageable) arr.get(i));
-							}
+						if (arr.get(i) instanceof Cover) {
+							ar2.add((Damageable) arr.get(i));
 						}
 					}
 				}
-				a.execute(ar2);
-				for (int i = 0; i < ar2.size(); i++) {
-					this.ifDead(ar2.get(i));
+			}
+			a.execute(ar2);
+			for (int i = 0; i < ar2.size(); i++) {
+				this.ifDead(ar2.get(i));
 				}
 				getCurrentChampion().setCurrentActionPoints(
 						getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
@@ -681,7 +678,6 @@ public class Game {
 				getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
 				a.setCurrentCooldown(a.getBaseCooldown());
 			}
-		}
 	}
 
 	public static boolean inrange(Champion c1, Champion c2, int x) {
@@ -694,7 +690,7 @@ public class Game {
 	}
 
 	public void move(Direction d) throws NotEnoughResourcesException, UnallowedMovementException {
-		if (this.getCurrentChampion().getCurrentActionPoints() <= 1)
+		if (this.getCurrentChampion().getCurrentActionPoints() < 1)
 			throw new NotEnoughResourcesException();
 
 		int newX = this.getCurrentChampion().getLocation().x;
