@@ -209,10 +209,11 @@ public class Game {
 		this.ifDead((Damageable) this.board[x][y]);
 	}
 
-	public void ifDead(Damageable d) {
+	public void ifDead(Damageable d) { 
+		// handle the case of removing covers
 		if (d != null && d.getCurrentHP() == 0) {
-			if (this.board[d.getLocation().x][d.getLocation().y] instanceof Champion) {
-				Champion c = (Champion) this.board[d.getLocation().x][d.getLocation().y];
+			if (d instanceof Champion) {
+				Champion c = (Champion) d;
 				c.setCondition(Condition.KNOCKEDOUT);
 				ArrayList<Champion> team = getChampionPlayer(c).getTeam();
 				for (int i = 0; i < team.size(); i++) {
@@ -224,7 +225,7 @@ public class Game {
 				int j = turnOrder.size();
 				for (int i = 0; i < j; i++) {
 					Champion c2 = (Champion) turnOrder.remove();
-					if (c2.getCurrentHP() >= 0) {
+					if (c2.getCurrentHP() > 0) {
 						pq.insert(c2);
 					}
 				}
