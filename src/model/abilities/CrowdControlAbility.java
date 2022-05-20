@@ -34,9 +34,9 @@ public class CrowdControlAbility extends Ability {
 			}
 			if((this.getCastArea()==AreaOfEffect.TEAMTARGET || this.getEffect().getType()==EffectType.BUFF)&& targets.get(i) instanceof Cover) {
 				throw new InvalidTargetException();
-			}
-
+			}	
 		}
+		this.setCurrentCooldown(this.getBaseCooldown());
 	}
 	public void remove() {
 	}
