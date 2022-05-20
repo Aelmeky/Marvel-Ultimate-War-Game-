@@ -210,7 +210,7 @@ public class Game {
 	}
 
 	public void ifDead(Damageable d) { 
-		// handle the case of removing covers
+	
 		if (d != null && d.getCurrentHP() == 0) {
 			if (d instanceof Champion) {
 				Champion c = (Champion) d;
@@ -229,10 +229,7 @@ public class Game {
 						pq.insert(c2);
 					}
 				}
-				for (int i = 0; i < pq.size(); i++) {
-					Champion c3 = (Champion) pq.remove();
-					turnOrder.insert(c3);
-				}
+				this.turnOrder = pq;
 			}
 			this.board[d.getLocation().x][d.getLocation().y] = null;
 		}
