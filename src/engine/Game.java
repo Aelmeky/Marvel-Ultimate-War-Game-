@@ -798,6 +798,8 @@ public class Game {
 			if (c.getAppliedEffects().get(i).getName().equals("Shield")) {
 				c.getAppliedEffects().get(i).remove(c);
 				c.getAppliedEffects().remove(i);
+				//we remove only one instance of the shield effects
+				break;
 			}
 		}
 	}
