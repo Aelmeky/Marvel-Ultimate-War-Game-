@@ -1,9 +1,10 @@
 package model.abilities;
-import java.util.*;
 
-import exceptions.InvalidTargetException;
-import model.world.*;
-abstract public class Ability {
+import java.util.ArrayList;
+
+import model.world.Damageable;
+
+public abstract class Ability {
 	private String name;
 	private int manaCost;
 	private int baseCooldown;
@@ -25,6 +26,7 @@ abstract public class Ability {
 	public int getCurrentCooldown() {
 		return currentCooldown;
 	}
+	public abstract void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException;
 
 	public void setCurrentCooldown(int currentCoolDown) {
 		if (currentCoolDown < 0)
@@ -53,8 +55,9 @@ abstract public class Ability {
 	public AreaOfEffect getCastArea() {
 		return castArea;
 	}
+
 	public int getRequiredActionPoints() {
 		return requiredActionPoints;
 	}
-	abstract public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, InvalidTargetException;
+
 }

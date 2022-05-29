@@ -12,22 +12,27 @@ public class Hero extends Champion {
 		super(name, maxHP, maxMana, actions, speed, attackRange, attackDamage);
 
 	}
+
+	@Override
 	public void useLeaderAbility(ArrayList<Champion> targets) {
-		for(int i=0;i<targets.size();i++) {
-			Champion c=targets.get(i);
-			for(int j=0;j<c.getAppliedEffects().size();j++) {
-				Effect f=c.getAppliedEffects().get(j);
-				if(f.getType()==EffectType.DEBUFF) {
-					f.remove(c);
-					c.getAppliedEffects().remove(j);
-					j--;
-				}
+		for (Champion c : targets) {
+			int i = 0;
+			while (i < c.getAppliedEffects().size()) {
+				Effect e = c.getAppliedEffects().get(i);
+				if (e.getType() == EffectType.DEBUFF) {
+					e.remove(c);
+					c.getAppliedEffects().remove(e);
+
+				} else
+					i++;
 			}
-			Embrace e=new Embrace(2);
-			c.getAppliedEffects().add(e);
-			e.apply(c);
+				Embrace em = new Embrace(2);
+				
+				em.apply(c);
+				c.getAppliedEffects().add(em);
+				
+			}
 		}
+
 	}
 
-	
-}

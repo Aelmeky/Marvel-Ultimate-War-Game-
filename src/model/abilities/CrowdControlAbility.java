@@ -2,11 +2,8 @@ package model.abilities;
 
 import java.util.ArrayList;
 
-import exceptions.InvalidTargetException;
 import model.effects.Effect;
-import model.effects.EffectType;
 import model.world.Champion;
-import model.world.Cover;
 import model.world.Damageable;
 
 public class CrowdControlAbility extends Ability {
@@ -22,15 +19,16 @@ public class CrowdControlAbility extends Ability {
 	public Effect getEffect() {
 		return effect;
 	}
-	
-	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, InvalidTargetException {
-		for(int i =0;i<targets.size();i++) {
-			if(targets.get(i) instanceof Champion) {
-				((Champion)targets.get(i)).getAppliedEffects().add((Effect)this.effect.clone());
-				((Effect)this.getEffect().clone()).apply((Champion) targets.get(i));
-			}	
+
+	@Override
+	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException {
+		for(Damageable d: targets)
+		{
+			Champion c =(Champion) d;
+			c.getAppliedEffects().add((Effect) effect.clone());
+			effect.apply(c);
 		}
-		this.setCurrentCooldown(this.getBaseCooldown());
+		
 	}
 
 }

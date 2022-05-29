@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-abstract public class Champion implements Damageable, Comparable {
+@SuppressWarnings("rawtypes")
+public abstract class Champion implements Damageable,Comparable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -48,9 +49,10 @@ abstract public class Champion implements Damageable, Comparable {
 
 	public void setCurrentHP(int hp) {
 
-		if (hp < 0) {
+		if (hp <= 0) {
 			currentHP = 0;
-			this.setCondition(Condition.KNOCKEDOUT);			
+			condition=Condition.KNOCKEDOUT;
+			
 		} 
 		else if (hp > maxHP)
 			currentHP = maxHP;
@@ -58,14 +60,7 @@ abstract public class Champion implements Damageable, Comparable {
 			currentHP = hp;
 
 	}
-	public int compareTo(Object o) {
-		Champion c=(Champion) o;
-		if(this.getSpeed()!=c.getSpeed()) {
-			return -1*this.getSpeed()+c.getSpeed();
-		}else {
-			return this.getName().compareTo(c.getName());
-		}
-	}
+
 	
 	public int getCurrentHP() {
 
@@ -130,7 +125,6 @@ abstract public class Champion implements Damageable, Comparable {
 	public int getCurrentActionPoints() {
 		return currentActionPoints;
 	}
-	
 
 	public void setCurrentActionPoints(int currentActionPoints) {
 		if(currentActionPoints>maxActionPointsPerTurn)
@@ -149,11 +143,13 @@ abstract public class Champion implements Damageable, Comparable {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
 
-	abstract public void useLeaderAbility(ArrayList<Champion> team);
+	public int compareTo(Object o)
+	{
+		Champion c = (Champion)o;
+		if(speed==c.speed)
+			return name.compareTo(c.name);
+		return -1 * (speed-c.speed);
+	}
 	
-	
-
-	
-	
-
+public abstract void useLeaderAbility(ArrayList<Champion> targets);
 }

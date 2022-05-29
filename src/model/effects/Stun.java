@@ -8,32 +8,36 @@ public class Stun extends Effect {
 	public Stun(int duration) {
 		super("Stun", duration, EffectType.DEBUFF);
 	}
-	
+
+	@Override
 	public void apply(Champion c) {
-		
 		c.setCondition(Condition.INACTIVE);
+		
 	}
-	
+
+	@Override
 	public void remove(Champion c) {
-		boolean fr=false;
-		boolean fs=false;
-		for(int i=0;i<c.getAppliedEffects().size();i++) {
-			if(c.getAppliedEffects().get(i).getName().equals("Root")) {
-				fr=true;
+		boolean isStunned=false;
+		boolean isRooted=false;
+		for(Effect e: c.getAppliedEffects())
+		{
+			if(e instanceof Stun)
+			{
+				isStunned=true;
+				break;
 			}
-			if(c.getAppliedEffects().get(i).getName().equals("Stun")) {
-				fs=true;
-			}
+		
+			else if(e instanceof Root)
+				isRooted=true;
 		}
-		if(fs) {
-			return;
-		}
-		if(fr) {
+		if(isStunned)
+			c.setCondition(Condition.INACTIVE);
+		else if(isRooted)
 			c.setCondition(Condition.ROOTED);
-		}else {
-			c.setCondition(Condition.ACTIVE);
-		}
+		else
+		c.setCondition(Condition.ACTIVE);
+		
 	}
-	
+
 
 }

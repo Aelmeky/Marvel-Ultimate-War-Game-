@@ -19,14 +19,15 @@ public  class HealingAbility extends Ability {
 	public void setHealAmount(int healAmount) {
 		this.healAmount = healAmount;
 	}
-	public void execute(ArrayList<Damageable> targets) {
-		//only friendly champions can be here, no covers
-		for(int i =0;i<targets.size();i++) {
-			Damageable target = targets.get(i);
-			target.setCurrentHP(target.getCurrentHP()+this.getHealAmount());
-		}
-		this.setCurrentCooldown(this.getBaseCooldown());
-	}
 
 	
+	@Override
+	public void execute(ArrayList<Damageable> targets) {
+		for (Damageable d : targets)
+
+			d.setCurrentHP(d.getCurrentHP() + healAmount);
+
+	}
+	
+
 }

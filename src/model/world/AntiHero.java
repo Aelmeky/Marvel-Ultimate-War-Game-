@@ -2,9 +2,6 @@ package model.world;
 
 import java.util.ArrayList;
 
-import model.effects.Effect;
-import model.effects.EffectType;
-import model.effects.Embrace;
 import model.effects.Stun;
 
 public class AntiHero extends Champion {
@@ -13,14 +10,14 @@ public class AntiHero extends Champion {
 		super(name, maxHP, maxMana, actions, speed, attackRange, attackDamage);
 
 	}
-	
+
+	@Override
 	public void useLeaderAbility(ArrayList<Champion> targets) {
-		for(int i=0;i<targets.size();i++) {
-			Champion c=targets.get(i);
+		for (Champion c: targets)
+		{
 			Stun s = new Stun(2);
-			s.apply(c);
 			c.getAppliedEffects().add(s);
+			s.apply(c);
 		}
 	}
-	
 }
