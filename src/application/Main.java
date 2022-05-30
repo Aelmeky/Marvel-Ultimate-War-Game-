@@ -19,15 +19,15 @@ public class Main extends Application {
 	static String player2name;
 	public void start(Stage stage) {
 			stage.setTitle("Marvel game");
-			Image icon=new Image("/Assets/Marvel_Logo.png");
-			stage.getIcons().add(icon);
+//			Image icon=new Image("/Assets/Marvel_Logo.png");
+//			stage.getIcons().add(icon);
 			
 			BorderPane border = new BorderPane();
 			Scene scene = new Scene(border);
 			border.setStyle("-fx-background-color: #87CEEB;");
 			stage.setScene(scene);
 			stage.setWidth(1000);
-			stage.setHeight(800);
+			stage.setHeight(700);
 		    VBox vbox = new VBox();
 		    vbox.setPadding(new Insets(10));
 		    vbox.setSpacing(8);
@@ -54,7 +54,12 @@ public class Main extends Application {
 			EventHandler<ActionEvent> proceed = new EventHandler<ActionEvent>() {
 	            public void handle(ActionEvent e){
 	                if(!player1field.getText().equals("")&&!player2field.getText().equals("")) {
-	                	System.out.println("good");
+	                	if(player1field.getText().equals(player2field.getText())){
+	                		new errormes("Error","Names can't be identical");
+	                	}else {
+		                	System.out.println("good");
+		                	//toscene2();
+	                	}
 	                }else {
 	                	new errormes("Error","Names can't be empty");
 	                }
