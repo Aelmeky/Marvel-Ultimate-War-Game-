@@ -4,16 +4,22 @@ import java.io.IOException;
 
 import engine.*;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
+import model.world.Champion;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -120,6 +126,20 @@ public class Main extends Application {
 	    Button toscene3=new Button("Continue");
 		border.setBottom(toscene3);
 		toscene3.setVisible(false);
+		ToggleGroup tog=new ToggleGroup();
+        tog.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            public void changed(ObservableValue<? extends Toggle> ob,Toggle o, Toggle n){
+                RadioButton rb = (RadioButton)tog.getSelectedToggle();
+                if (rb != null) {
+                	for(Champion c:p.getTeam()) {
+                		if(c.getName().equals(rb.getText())) {
+                            p.setLeader(c);
+                            break;
+                		}
+                	}
+                }
+            }
+        });
 	    removeChampion.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0){
 				if(selected.getChildren().size()==1) {
@@ -162,7 +182,7 @@ public class Main extends Application {
 			} );
 			arr[i].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0){
-					addChampion(p,toscene3,selected,j);
+					addChampion(tog,p,toscene3,selected,j);
 				}
 			} );
 			grid.add(arr[i],i%5,i/5,1,1);
@@ -183,40 +203,71 @@ public class Main extends Application {
 		//toscene3.setAlignment(Pos.TOP_RIGHT);
 		toscene3.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0){
+		        if(p.getLeader()==null) {
+		        	new errormes("Error", "Please Choose A Leader");
+		        	return;
+		        }
 				toScene3(stage);
 			}
 		} );
 	}
 	
 	public static void toScene3(Stage stage) {
-		System.out.println(game.getFirstPlayer().getTeam().get(0).getName());
-		System.out.println(game.getFirstPlayer().getTeam().get(1).getName());
-		System.out.println(game.getFirstPlayer().getTeam().get(2).getName());
 		if(game.getSecondPlayer().getTeam().size()!=0) {
-			System.out.println(game.getSecondPlayer().getTeam().get(0).getName());
-			System.out.println(game.getSecondPlayer().getTeam().get(1).getName());
-			System.out.println(game.getSecondPlayer().getTeam().get(2).getName());
-		}
-		if(game.getSecondPlayer().getTeam().size()!=0) {
-			toscene4(stage);
+			scene4(stage);
 		}else {
 			toscene2(game.getSecondPlayer(), stage);
 		}
 	}
-	public static void toscene4(Stage stage) {
-		System.out.println("here");
+	public static void scene4(Stage stage) {
+		game.prepareChampionTurns();
+		BorderPane border = new BorderPane();
+		border.setPrefHeight(1000);
+		border.setPrefWidth(700);
+		Scene scene = new Scene(border);
+		border.setStyle("-fx-background-color: #87CEEB;");
+		stage.setScene(scene);
+		stage.setWidth(1001);
+		stage.setHeight(701);
 		
+		Label current=new Label("Current Champion "+game.getCurrentChampion().getName()+":");
+		current.setFont(Font.font("verdana",30));
+				
+		VBox rightpane=new VBox();
+		rightpane.setSpacing(14);
+		rightpane.setMaxWidth(200);
+		rightpane.setMinWidth(200);
+		rightpane.setStyle("-fx-background-color: #123456;");
+		
+		VBox leftpane=new VBox();
+		leftpane.setSpacing(14);
+		leftpane.setMaxWidth(250);
+		leftpane.setMinWidth(250);
+		leftpane.setStyle("-fx-background-color: #CAFFEE;");
+		Label ava=new Label("Available Actions:");
+		ava.setFont(Font.font("verdana",30));
+		leftpane.getChildren().add(ava);
+		
+		GridPane grid =new GridPane();
+		
+		
+		border.setRight(rightpane);
+		border.setLeft(leftpane);
+	    border.setTop(current);
+	    border.setCenter(grid);
 	}
 
-	public static void addChampion(Player p,Button b,VBox selected, int i) {
+	public static void addChampion(ToggleGroup t,Player p,Button b,VBox selected, int i) {
 		if(p.getTeam().size()==3) {
 			new errormes("Error", "Your Team can only Have 3 Members");
 			return;
 		}
 		if(p.getTeam().size()==3) {}
-		Text t=new Text(game.getAvailableChampions().get(i).getName());
-		t.setFont(Font.font("verdana",15));
-		selected.getChildren().add(t);
+//		Text t=new Text(game.getAvailableChampions().get(i).getName());
+//		t.setFont(Font.font("verdana",15));
+		RadioButton rb=new RadioButton(game.getAvailableChampions().get(i).getName());
+		rb.setToggleGroup(t);
+		selected.getChildren().add(rb);
 		p.getTeam().add(game.getAvailableChampions().get(i));
 		if(p.getTeam().size()==3) {
 			b.setVisible(true);
