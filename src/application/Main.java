@@ -1,7 +1,6 @@
 package application;
 import java.io.IOException;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
 
 import engine.*;
 import javafx.application.Application;
@@ -28,8 +27,8 @@ public class Main extends Application {
 	static Game game;
 	public void start(Stage stage) {
 			stage.setTitle("Marvel game");
-//			Image icon=new Image("/Assets/Marvel_Logo.png");
-//			stage.getIcons().add(icon);
+			Image icon=new Image("/Assets/Marvel_Logo.png");
+			stage.getIcons().add(icon);
 			
 			BorderPane border = new BorderPane();
 			Scene scene = new Scene(border);
@@ -70,13 +69,13 @@ public class Main extends Application {
 				          	player2=new Player(player2field.getText());
 				          	game=new Game(player1,player2);
 				          	try {
-				    			Game.loadAbilities("C:\\Users\\Abdelrahman Elmeky\\Documents\\My-Github\\Marvelgame\\Marvel-Ultimate-War-Game-\\Abilities.CSV");
-				    			Game.loadChampions("C:\\Users\\Abdelrahman Elmeky\\Documents\\My-Github\\Marvelgame\\Marvel-Ultimate-War-Game-\\Champions.CSV");
+				    			Game.loadAbilities("/home/ahme/Programming/Marvel-Ultimate-War-Game-/src/Abilities.csv");
+				    			Game.loadChampions("/home/ahme/Programming/Marvel-Ultimate-War-Game-/src/Champions.csv");
 				    		} catch (IOException e2) {
 				    			System.out.println(e2);
 				    			new errormes("Error","Error in Abilities and Champion Files");
 				    		}
-		                	toscene2(stage);
+		                	toscene2(game.getFirstPlayer(),stage);
 	                	}
 	                }else {
 	                	new errormes("Error","Names can't be empty");
@@ -91,7 +90,7 @@ public class Main extends Application {
 			stage.show();
 	}
 	
-	public static void toscene2(Stage stage) {
+	public static void toscene2(Player p , Stage stage) {
 		BorderPane border = new BorderPane();
 		border.setPrefHeight(1000);
 		border.setPrefWidth(700);
@@ -128,7 +127,7 @@ public class Main extends Application {
 					return;
 				}
 				selected.getChildren().remove(selected.getChildren().size()-1);
-				game.getFirstPlayer().getTeam().remove(game.getFirstPlayer().getTeam().size()-1);
+				p.getTeam().remove(game.getFirstPlayer().getTeam().size()-1);
 				toscene3.setVisible(false);
 			}
 		} );
@@ -163,7 +162,7 @@ public class Main extends Application {
 			} );
 			arr[i].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0){
-					addChampion(toscene3,selected,j);
+					addChampion(p,toscene3,selected,j);
 				}
 			} );
 			grid.add(arr[i],i%5,i/5,1,1);
@@ -173,7 +172,7 @@ public class Main extends Application {
 		grid.setVgap(20);
 		grid.setAlignment(Pos.CENTER);
 			    
-		Label t=new Label("Select Champions For "+player1.getName()+":");
+		Label t=new Label("Select Champions For "+p.getName()+":");
 		t.setFont(Font.font("verdana",30));
 		
 	    border.setRight(tostring);
@@ -190,20 +189,36 @@ public class Main extends Application {
 	}
 	
 	public static void toScene3(Stage stage) {
+		System.out.println(game.getFirstPlayer().getTeam().get(0).getName());
+		System.out.println(game.getFirstPlayer().getTeam().get(1).getName());
+		System.out.println(game.getFirstPlayer().getTeam().get(2).getName());
+		if(game.getSecondPlayer().getTeam().size()!=0) {
+			System.out.println(game.getSecondPlayer().getTeam().get(0).getName());
+			System.out.println(game.getSecondPlayer().getTeam().get(1).getName());
+			System.out.println(game.getSecondPlayer().getTeam().get(2).getName());
+		}
+		if(game.getSecondPlayer().getTeam().size()!=0) {
+			toscene4(stage);
+		}else {
+			toscene2(game.getSecondPlayer(), stage);
+		}
+	}
+	public static void toscene4(Stage stage) {
+		System.out.println("here");
 		
 	}
 
-	public static void addChampion(Button b,VBox selected, int i) {
-		if(game.getFirstPlayer().getTeam().size()==3) {
+	public static void addChampion(Player p,Button b,VBox selected, int i) {
+		if(p.getTeam().size()==3) {
 			new errormes("Error", "Your Team can only Have 3 Members");
 			return;
 		}
-		if(game.getFirstPlayer().getTeam().size()==3) {}
+		if(p.getTeam().size()==3) {}
 		Text t=new Text(game.getAvailableChampions().get(i).getName());
 		t.setFont(Font.font("verdana",15));
 		selected.getChildren().add(t);
-		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(i));
-		if(game.getFirstPlayer().getTeam().size()==3) {
+		p.getTeam().add(game.getAvailableChampions().get(i));
+		if(p.getTeam().size()==3) {
 			b.setVisible(true);
 		}
 
