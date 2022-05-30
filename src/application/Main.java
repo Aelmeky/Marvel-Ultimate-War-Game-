@@ -1,4 +1,5 @@
-package application;
+package src.application;
+import application.errormes;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -55,7 +56,7 @@ public class Main extends Application {
 	                if(!player1field.getText().equals("")&&!player2field.getText().equals("")) {
 	                	System.out.println("good");
 	                }else {
-	                	//errormes m=new errormes("Error","Names can't be empty");
+	                	new errormes("Error","Names can't be empty");
 	                }
 	            }
 	        };
