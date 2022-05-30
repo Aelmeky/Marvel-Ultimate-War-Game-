@@ -1,9 +1,12 @@
 package application;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import engine.*;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -16,6 +19,7 @@ import model.world.Cover;
 import model.world.Damageable;
 import model.world.Villain;
 import model.world.Hero;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,13 +32,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 public class Main extends Application {
 	static Player player1;
 	static Player player2;
 	static Game game;
+	static ArrayList<Integer> chosenChamions;
 	public void start(Stage stage) {
+			chosenChamions=new ArrayList<Integer>();
 			stage.setTitle("Marvel game");
 			Image icon=new Image("/Assets/Marvel_Logo.png");
 			stage.getIcons().add(icon);
@@ -143,17 +150,6 @@ public class Main extends Application {
                 }
             }
         });
-	    removeChampion.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				if(selected.getChildren().size()==1) {
-					new errormes("Error", "Your Team is Empty");
-					return;
-				}
-				selected.getChildren().remove(selected.getChildren().size()-1);
-				p.getTeam().remove(game.getFirstPlayer().getTeam().size()-1);
-				toscene3.setVisible(false);
-			}
-		} );
 	    
 	    Text t2=new Text("Your Team:");
 		t2.setFont(Font.font("verdana",15));
@@ -176,6 +172,13 @@ public class Main extends Application {
 		arr[12]=new Button("B12");
 		arr[13]=new Button("B13");
 		arr[14]=new Button("B14");
+		System.out.println(chosenChamions);
+		if(!chosenChamions.isEmpty()) {
+			for(int i=0;i<chosenChamions.size();i++) {
+				final int j=chosenChamions.get(i);
+				arr[j].setVisible(false);
+			}
+		}
 		for(int i=0;i<15;i++){
 			final int j=i;
 			arr[i].addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
@@ -186,10 +189,26 @@ public class Main extends Application {
 			arr[i].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0){
 					addChampion(tog,p,toscene3,selected,j);
+					arr[j].setVisible(false);
 				}
 			} );
 			grid.add(arr[i],i%5,i/5,1,1);
 		}
+		
+	    removeChampion.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0){
+				if(selected.getChildren().size()==1) {
+					new errormes("Error", "Your Team is Empty");
+					return;
+				}
+				Node n=selected.getChildren().remove(selected.getChildren().size()-1);
+				int x=chosenChamions.remove(chosenChamions.size()-1);
+				final int j=x;
+				arr[j].setVisible(true);
+				p.getTeam().remove(game.getFirstPlayer().getTeam().size()-1);
+				toscene3.setVisible(false);
+			}
+		} );
 
 		grid.setHgap(20);
 		grid.setVgap(20);
@@ -240,6 +259,10 @@ public class Main extends Application {
 		rightpane.setMaxWidth(200);
 		rightpane.setMinWidth(200);
 		rightpane.setStyle("-fx-background-color: #123456;");
+		Label stat=new Label("Stats:");
+		stat.setTextFill(Color.BLACK);
+		stat.setFont(Font.font("verdana",19));
+		rightpane.getChildren().add(stat);
 		
 		VBox leftpane=new VBox();
 		leftpane.setSpacing(14);
@@ -257,11 +280,20 @@ public class Main extends Application {
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
 				grr[j][i]=new VBox();
-				grr[j][i].setMinHeight(50);
-				grr[j][i].setMaxHeight(50);
-				grr[j][i].setMinWidth(50);
-				grr[j][i].setMaxWidth(50);
+				grr[j][i].setMinHeight(100);
+				grr[j][i].setMaxHeight(100);
+				grr[j][i].setMinWidth(100);
+				grr[j][i].setMaxWidth(100);
 				grid.add(grr[j][i], j, i);
+				final int j2=j;
+				final int i2=i;
+				grr[j][i].addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
+					public void handle(Event arg0){
+						if(grr[j2][i2].getChildren().size()!=0) {
+							dispalystats(((Label)grr[j2][i2].getChildren().get(1)),rightpane);
+						}
+					}
+				});
 			}
 		}
 		game.placeChampions();
@@ -275,6 +307,16 @@ public class Main extends Application {
 	    border.setCenter(grid);
 	}
 	
+	protected static void dispalystats(Label node, VBox rightpane) {
+		Label l=new Label(node.getText());
+		l.setFont(Font.font("verdana",14));
+		l.setTextFill(Color.BLACK);
+		while(rightpane.getChildren().size()!=1) {
+			rightpane.getChildren().remove(1);
+		}
+		rightpane.getChildren().add(l);
+	}
+
 	public static void updateGrid(GridPane grid) {
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
@@ -283,17 +325,39 @@ public class Main extends Application {
 					int x=((Damageable)d).getLocation().x;
 					int y=((Damageable)d).getLocation().y;
 					if(d instanceof Champion) {
-						System.out.print("Champ ");
+//						System.out.print("Champ "+" "+x+" "+y);
 						Label l=new Label(((Champion) d).getName());
-						grid.add(l,y,x);
+						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l);
+//						System.out.print(((VBox)getNodeFromGrid(grid,4-x,y)));
+						Label l2=new Label(((Champion) d).toString());
+						l2.setVisible(false);
+						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l2);
+						
 					}else {
 						Label l=new Label("Cover");
-						grid.add(l,y,x);
+						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l);
+						Label l2=new Label(((Cover) d).toString());
+						l2.setVisible(false);
+						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l2);
+						
 					}
 					System.out.println(x+" "+y);
 				}
 			}
 		}
+	}
+	public static Node getNodeFromGrid (GridPane gridPane,final int row, final int column) {
+	    Node result = null;
+	    ObservableList<Node> childrens = gridPane.getChildren();
+	    for (Node node : childrens) {
+	        if(node!=null) {
+	        	if(gridPane.getRowIndex(node) !=null&&gridPane.getRowIndex(node)== row && gridPane.getColumnIndex(node) !=null &&gridPane.getColumnIndex(node) == column) {
+	        		result = node;
+	  	            break;
+	  	        }
+	        }
+	    }
+	    return result;
 	}
 
 	public static void addChampion(ToggleGroup t,Player p,Button b,VBox selected, int i) {
@@ -307,6 +371,7 @@ public class Main extends Application {
 		RadioButton rb=new RadioButton(game.getAvailableChampions().get(i).getName());
 		rb.setToggleGroup(t);
 		selected.getChildren().add(rb);
+		chosenChamions.add(i);
 		p.getTeam().add(clone(game.getAvailableChampions().get(i)));
 		if(p.getTeam().size()==3) {
 			b.setVisible(true);

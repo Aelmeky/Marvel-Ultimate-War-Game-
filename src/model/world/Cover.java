@@ -3,6 +3,11 @@ package model.world;
 import java.awt.Point;
 
 public class Cover implements Damageable {
+	@Override
+	public String toString() {
+		return "currentHP=" + currentHP;
+	}
+
 	private int currentHP;
 
 	private Point location;
