@@ -1,7 +1,5 @@
 package application;
 import java.io.IOException;
-
-
 import engine.*;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -12,7 +10,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
+import model.world.AntiHero;
 import model.world.Champion;
+import model.world.Cover;
+import model.world.Damageable;
+import model.world.Villain;
+import model.world.Hero;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -200,7 +203,6 @@ public class Main extends Application {
 	    border.setTop(t);
 	    border.setCenter(grid);
 	    border.getCenter().setStyle("-fx-background-color: #654321;");
-		//toscene3.setAlignment(Pos.TOP_RIGHT);
 		toscene3.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0){
 		        if(p.getLeader()==null) {
@@ -245,16 +247,48 @@ public class Main extends Application {
 		leftpane.setMinWidth(250);
 		leftpane.setStyle("-fx-background-color: #CAFFEE;");
 		Label ava=new Label("Available Actions:");
-		ava.setFont(Font.font("verdana",30));
+		ava.setFont(Font.font("verdana",19));
 		leftpane.getChildren().add(ava);
 		
 		GridPane grid =new GridPane();
-		
+		grid.setGridLinesVisible(true);
+		grid.setAlignment(Pos.CENTER);
+		VBox[][] grr=new VBox[5][5];
+		for(int i=0;i<5;i++) {
+			for(int j=0;j<5;j++) {
+				grr[j][i]=new VBox();
+				grr[j][i].setMinHeight(50);
+				grr[j][i].setMaxHeight(50);
+				grr[j][i].setMinWidth(50);
+				grr[j][i].setMaxWidth(50);
+				grid.add(grr[j][i], j, i);
+			}
+		}
+		game.placeChampions();
+		updateGrid(grid);
+		grid.setVgap(5); 
+	    grid.setHgap(5);
 		
 		border.setRight(rightpane);
 		border.setLeft(leftpane);
 	    border.setTop(current);
 	    border.setCenter(grid);
+	}
+	
+	public static void updateGrid(GridPane grid) {
+		for(int i=0;i<5;i++) {
+			for(int j=0;j<5;j++) {
+				Object d=game.getBoard()[i][j];
+				if(d instanceof Damageable) {
+					int x=((Damageable)d).getLocation().x;
+					int y=((Damageable)d).getLocation().y;
+					if(d instanceof Champion) {
+						System.out.print("Champ ");
+					}
+					System.out.println(x+" "+y);
+				}
+			}
+		}
 	}
 
 	public static void addChampion(ToggleGroup t,Player p,Button b,VBox selected, int i) {
@@ -268,12 +302,19 @@ public class Main extends Application {
 		RadioButton rb=new RadioButton(game.getAvailableChampions().get(i).getName());
 		rb.setToggleGroup(t);
 		selected.getChildren().add(rb);
-		p.getTeam().add(game.getAvailableChampions().get(i));
+		p.getTeam().add(clone(game.getAvailableChampions().get(i)));
 		if(p.getTeam().size()==3) {
 			b.setVisible(true);
+		}	
+	}
+	public static Champion clone(Champion c) {
+		if(c instanceof Hero) {
+			return new Hero(c.getName(),c.getMaxHP(),c.getMana(),c.getMaxActionPointsPerTurn(),c.getSpeed(),c.getAttackRange(),c.getAttackRange());
 		}
-
-		
+		if(c instanceof Villain) {
+			return new Villain(c.getName(),c.getMaxHP(),c.getMana(),c.getMaxActionPointsPerTurn(),c.getSpeed(),c.getAttackRange(),c.getAttackRange());
+		}
+		return new AntiHero(c.getName(),c.getMaxHP(),c.getMana(),c.getMaxActionPointsPerTurn(),c.getSpeed(),c.getAttackRange(),c.getAttackRange());
 	}
 
 	public static void viewChampionStats(VBox tostring,int i) {
