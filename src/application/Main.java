@@ -55,7 +55,7 @@ public class Main extends Application {
 	                if(!player1field.getText().equals("")&&!player2field.getText().equals("")) {
 	                	System.out.println("good");
 	                }else {
-	                	errormes m=new errormes("Error","Names can't be empty");
+	                	//errormes m=new errormes("Error","Names can't be empty");
 	                }
 	            }
 	        };
