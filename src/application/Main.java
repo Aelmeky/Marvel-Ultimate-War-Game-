@@ -284,6 +284,11 @@ public class Main extends Application {
 					int y=((Damageable)d).getLocation().y;
 					if(d instanceof Champion) {
 						System.out.print("Champ ");
+						Label l=new Label(((Champion) d).getName());
+						grid.add(l,y,x);
+					}else {
+						Label l=new Label("Cover");
+						grid.add(l,y,x);
 					}
 					System.out.println(x+" "+y);
 				}
