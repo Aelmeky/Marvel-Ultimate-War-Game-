@@ -9,6 +9,13 @@ import model.effects.Effect;
 
 @SuppressWarnings("rawtypes")
 public abstract class Champion implements Damageable,Comparable {
+	@Override
+	public String toString() {
+		return "name=" + name +"\n"+ "maxHP=" + maxHP +"\n"+ "currentHP=" + currentHP +"\n"+ "mana=" + mana+"\n"
+				+ "ActionPoints=" + maxActionPointsPerTurn +"\n"+ "currentActionPoints=" + currentActionPoints
+				+"\n"+ "attackRange=" + attackRange +"\n"+ "attackDamage=" + attackDamage +"\n"+ "speed=" + speed;
+	}
+
 	private String name;
 	private int maxHP;
 	private int currentHP;
