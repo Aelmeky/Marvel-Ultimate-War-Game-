@@ -1,4 +1,4 @@
-package src.application;
+package application;
 import application.errormes;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
