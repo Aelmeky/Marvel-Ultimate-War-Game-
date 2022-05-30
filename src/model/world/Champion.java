@@ -11,9 +11,14 @@ import model.effects.Effect;
 public abstract class Champion implements Damageable,Comparable {
 	@Override
 	public String toString() {
+		String s="";
+		for(int i=0;i<this.abilities.size();i++) {
+			s+=this.abilities.get(i).getName()+"\n";
+		}
 		return "name=" + name +"\n"+ "maxHP=" + maxHP +"\n"+ "currentHP=" + currentHP +"\n"+ "mana=" + mana+"\n"
 				+ "ActionPoints=" + maxActionPointsPerTurn +"\n"+ "currentActionPoints=" + currentActionPoints
-				+"\n"+ "attackRange=" + attackRange +"\n"+ "attackDamage=" + attackDamage +"\n"+ "speed=" + speed;
+				+"\n"+ "attackRange=" + attackRange +"\n"+ "attackDamage=" + attackDamage +"\n"+ "speed=" + speed+"\n"+
+				"Abilities="+"\n"+s;
 	}
 
 	private String name;

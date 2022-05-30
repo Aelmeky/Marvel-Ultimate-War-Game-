@@ -329,7 +329,8 @@ public class Main extends Application {
 						Label l=new Label(((Champion) d).getName());
 						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l);
 //						System.out.print(((VBox)getNodeFromGrid(grid,4-x,y)));
-						Label l2=new Label(((Champion) d).toString());
+						Champion c=(Champion)d;
+						Label l2=new Label(enhancedToString(c));
 						l2.setVisible(false);
 						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l2);
 						
@@ -341,11 +342,36 @@ public class Main extends Application {
 						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l2);
 						
 					}
-					System.out.println(x+" "+y);
+//					System.out.println(x+" "+y);
 				}
 			}
 		}
 	}
+	
+	public static String enhancedToString(Champion c) {
+		String s2="";
+		if(c instanceof Champion) {
+			s2="Champion";
+		}
+		if(c instanceof Villain) {
+			s2="Villain";
+		}
+		if(c instanceof AntiHero) {
+			s2="AntiHero";
+		}
+		String s3="";
+		System.out.println(c.getAbilities());
+		for(int j=0;j<c.getAbilities().size();j++) {
+			System.out.println("here");
+			s3+=c.getAbilities().get(j).getName()+"\n";
+		}
+		System.out.println(s3);
+		String s="name=" + c.getName() +"\n"+"Type="+s2+"\n"+ "currentHP=" + c.getCurrentHP() +"\n"+ "mana=" + c.getMana()+"\n"
+				+"currentActionPoints=" + c.getCurrentActionPoints()+"\n"+ "attackRange=" + c.getAttackRange() +"\n"+ "attackDamage=" + c.getAttackDamage()+"\n"+
+				"Abilities="+"\n"+s3;
+		return s;
+	}
+	
 	public static Node getNodeFromGrid (GridPane gridPane,final int row, final int column) {
 	    Node result = null;
 	    ObservableList<Node> childrens = gridPane.getChildren();
