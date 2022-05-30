@@ -1,7 +1,8 @@
 package application;
 import java.io.IOException;
 
-import application.errormes;
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import engine.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -18,11 +19,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 public class Main extends Application {
 	static Player player1;
 	static Player player2;
@@ -102,144 +101,113 @@ public class Main extends Application {
 		stage.setWidth(1001);
 		stage.setHeight(701);
 	    VBox tostring = new VBox();
+	    
 	    tostring.setSpacing(14);
 	    tostring.setMaxWidth(200);
 	    tostring.setMinWidth(200);
 	    tostring.setStyle("-fx-background-color: #123456;");
 	    
-		GridPane grid =new GridPane();
-		
-		Button b0=new Button("B0");
-		b0.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,0);
-			}
-		} );
-		Button b1=new Button("B1");
-		b1.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,1);
-			}
-		} );
-		Button b2=new Button("B2");
-		b2.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,2);
-			}
-		} );
-		Button b3=new Button("B3");
-		b3.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,3);
-			}
-		} );
-		Button b4=new Button("B4");
-		b4.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,4);
-			}
-		} );
-		Button b5=new Button("B5");
-		b5.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,5);
-			}
-		} );
-		Button b6=new Button("B6");
-		b6.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,6);
-			}
-		} );
-		Button b7=new Button("B7");
-		b7.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,7);
-			}
-		} );
-		Button b8=new Button("B8");
-		b8.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,8);
-			}
-		} );
-		Button b9=new Button("B9");
-		b9.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,9);
-			}
-		} );
-		Button b10=new Button("B10");
-		b10.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,10);
-			}
-		} );
-		Button b11=new Button("B11");
-		b11.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,11);
-			}
-		} );
-		Button b12=new Button("B12");
-		b12.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,12);
-			}
-		} );
-		Button b13=new Button("B13");
-		b13.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,13);
-			}
-		} );
-		Button b14=new Button("B14");
-		b14.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
-			public void handle(Event arg0){
-				viewChampionStats(tostring,14);
-			}
-		} );
-		
-		grid.add(b0,0,0,1,1);
-		grid.add(b1,1,0,1,1);
-		grid.add(b2,2,0,1,1);
-		grid.add(b3,3,0,1,1);
-		grid.add(b4,4,0,1,1);
-		grid.add(b5,0,1,1,1);
-		grid.add(b6,1,1,1,1);
-		grid.add(b7,2,1,1,1);
-		grid.add(b8,3,1,1,1);
-		grid.add(b9,4,1,1,1);
-		grid.add(b10,0,2,1,1);
-		grid.add(b11,1,2,1,1);
-		grid.add(b12,2,2,1,1);
-		grid.add(b13,3,2,1,1);
-		grid.add(b14,4,2,1,1);
-
-		//grid.setPadding(new Insets(10));
-		grid.setHgap(20);
-		grid.setVgap(20);
-		//grid.setMaxWidth(400);
-		//grid.setMaxHeight(150);
-		grid.setAlignment(Pos.CENTER);
-		
-		
 		VBox selected = new VBox();
 	    selected.setSpacing(8);
 	    selected.setPrefWidth(200);
 	    selected.setStyle("-fx-background-color: #aaaaaa;");
+	    VBox leftpane = new VBox();
+	    leftpane.setSpacing(8);
+	    leftpane.setPrefWidth(200);
+	    leftpane.setStyle("-fx-background-color: #aaaaaa;");
+	    leftpane.getChildren().add(selected);
+	    Button removeChampion=new Button("Remove Last Champion");
+	    leftpane.getChildren().add(removeChampion);
+	    Button toscene3=new Button("Continue");
+		border.setBottom(toscene3);
+		toscene3.setVisible(false);
+	    removeChampion.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0){
+				if(selected.getChildren().size()==1) {
+					new errormes("Error", "Your Team is Empty");
+					return;
+				}
+				selected.getChildren().remove(selected.getChildren().size()-1);
+				game.getFirstPlayer().getTeam().remove(game.getFirstPlayer().getTeam().size()-1);
+				toscene3.setVisible(false);
+			}
+		} );
 	    
+	    Text t2=new Text("Your Team:");
+		t2.setFont(Font.font("verdana",15));
+		selected.getChildren().add(t2);
+	    
+		GridPane grid =new GridPane();
+		Button[] arr=new Button[15];
+		arr[0]=new Button("B0");
+		arr[1]=new Button("B1");
+		arr[2]=new Button("B2");
+		arr[3]=new Button("B3");
+		arr[4]=new Button("B4");
+		arr[5]=new Button("B5");
+		arr[6]=new Button("B6");
+		arr[7]=new Button("B7");
+		arr[8]=new Button("B8");
+		arr[9]=new Button("B9");
+		arr[10]=new Button("B10");
+		arr[11]=new Button("B11");
+		arr[12]=new Button("B12");
+		arr[13]=new Button("B13");
+		arr[14]=new Button("B14");
+		for(int i=0;i<15;i++){
+			final int j=i;
+			arr[i].addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
+				public void handle(Event arg0){
+					viewChampionStats(tostring,j);
+				}
+			} );
+			arr[i].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+				public void handle(Event arg0){
+					addChampion(toscene3,selected,j);
+				}
+			} );
+			grid.add(arr[i],i%5,i/5,1,1);
+		}
+
+		grid.setHgap(20);
+		grid.setVgap(20);
+		grid.setAlignment(Pos.CENTER);
+			    
 		Label t=new Label("Select Champions For "+player1.getName()+":");
 		t.setFont(Font.font("verdana",30));
-		//t.setAlignment(Pos.CENTER);
 		
 	    border.setRight(tostring);
-		border.setLeft(selected);
+		border.setLeft(leftpane);
 	    border.setTop(t);
 	    border.setCenter(grid);
 	    border.getCenter().setStyle("-fx-background-color: #654321;");
-	    //border.setMargin(border.getCenter(), new Insets(50));
-	    
+		//toscene3.setAlignment(Pos.TOP_RIGHT);
+		toscene3.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0){
+				toScene3(stage);
+			}
+		} );
+	}
+	
+	public static void toScene3(Stage stage) {
+		
+	}
+
+	public static void addChampion(Button b,VBox selected, int i) {
+		if(game.getFirstPlayer().getTeam().size()==3) {
+			new errormes("Error", "Your Team can only Have 3 Members");
+			return;
+		}
+		if(game.getFirstPlayer().getTeam().size()==3) {}
+		Text t=new Text(game.getAvailableChampions().get(i).getName());
+		t.setFont(Font.font("verdana",15));
+		selected.getChildren().add(t);
+		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(i));
+		if(game.getFirstPlayer().getTeam().size()==3) {
+			b.setVisible(true);
+		}
+
+		
 	}
 
 	public static void viewChampionStats(VBox tostring,int i) {
