@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -172,7 +173,6 @@ public class Main extends Application {
 		arr[12]=new Button("B12");
 		arr[13]=new Button("B13");
 		arr[14]=new Button("B14");
-		System.out.println(chosenChamions);
 		if(!chosenChamions.isEmpty()) {
 			for(int i=0;i<chosenChamions.size();i++) {
 				final int j=chosenChamions.get(i);
@@ -241,6 +241,8 @@ public class Main extends Application {
 		}
 	}
 	public static void scene4(Stage stage) {
+		//TODO abilities to string somewhere
+		
 		game.prepareChampionTurns();
 		BorderPane border = new BorderPane();
 		border.setPrefHeight(1000);
@@ -251,8 +253,33 @@ public class Main extends Application {
 		stage.setWidth(1001);
 		stage.setHeight(701);
 		
-		Label current=new Label("Current Champion "+game.getCurrentChampion().getName()+":");
+		Label current=new Label("Current Champion: "+game.getCurrentChampion().getName());
 		current.setFont(Font.font("verdana",30));
+		Champion c=(Champion) game.getTurnOrder().remove();
+		Label next=new Label("next Champion: "+((Champion)game.getTurnOrder().peekMin()).getName());
+		game.getTurnOrder().insert(c);
+		next.setFont(Font.font("verdana",30));
+		
+		HBox toprow1=new HBox();
+		toprow1.setSpacing(14);
+		toprow1.getChildren().add(current);
+		toprow1.getChildren().add(next);
+		
+		HBox toprow2=new HBox();
+
+		Label player1stat =new Label(game.getFirstPlayer().getName()+" used Leader Ability="+game.isFirstLeaderAbilityUsed());
+		player1stat.setFont(Font.font("verdana",30));
+		Label player2stat =new Label(game.getSecondPlayer().getName()+" used Leader Ability="+game.isSecondLeaderAbilityUsed());
+		player2stat.setFont(Font.font("verdana",30));
+		toprow2.setSpacing(14);
+		toprow2.getChildren().add(player1stat);
+		toprow2.getChildren().add(player2stat);
+		
+		VBox top=new VBox();
+		top.setSpacing(14);
+		top.getChildren().add(toprow1);
+		top.getChildren().add(toprow2);
+
 				
 		VBox rightpane=new VBox();
 		rightpane.setSpacing(14);
@@ -303,11 +330,41 @@ public class Main extends Application {
 		
 		border.setRight(rightpane);
 		border.setLeft(leftpane);
-	    border.setTop(current);
+	    border.setTop(top);
 	    border.setCenter(grid);
+	    prepareActions(leftpane,game.getCurrentChampion());
 	}
 	
-	protected static void dispalystats(Label node, VBox rightpane) {
+	public static void prepareActions(VBox leftpane, Champion c) {
+		Button[] arr=new Button[6];
+		if(c.getCurrentActionPoints()>=1) {
+			arr[0]=new Button("Move");
+			arr[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+				public void handle(Event arg0){
+			        //int[] ar2=getCoords();
+			        //System.out.println(ar2[0]+" "+ar2[1]);
+					
+				}
+			} );
+		}
+		if(c.getCurrentActionPoints()>=2) {
+			arr[1]=new Button("Attack");
+			arr[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+				public void handle(Event arg0){
+					
+				}
+			} );
+		}
+		
+		for(int i=0;i<6;i++) {
+			if(arr[i]!=null) {
+				leftpane.getChildren().add(arr[i]);
+			}
+		}
+		
+	}
+
+	public static void dispalystats(Label node, VBox rightpane) {
 		Label l=new Label(node.getText());
 		l.setFont(Font.font("verdana",14));
 		l.setTextFill(Color.BLACK);
@@ -360,16 +417,26 @@ public class Main extends Application {
 			s2="AntiHero";
 		}
 		String s3="";
-		System.out.println(c.getAbilities());
 		for(int j=0;j<c.getAbilities().size();j++) {
-			System.out.println("here");
 			s3+=c.getAbilities().get(j).getName()+"\n";
 		}
-		System.out.println(s3);
-		String s="name=" + c.getName() +"\n"+"Type="+s2+"\n"+ "currentHP=" + c.getCurrentHP() +"\n"+ "mana=" + c.getMana()+"\n"
-				+"currentActionPoints=" + c.getCurrentActionPoints()+"\n"+ "attackRange=" + c.getAttackRange() +"\n"+ "attackDamage=" + c.getAttackDamage()+"\n"+
-				"Abilities="+"\n"+s3;
-		return s;
+		String eff="";
+		for(int j=0;j<c.getAppliedEffects().size();j++) {
+			s3+=c.getAppliedEffects().get(j).getName()+" Duration="+c.getAppliedEffects().get(j).getDuration()+"\n";
+		}
+		if(c.equals(game.getCurrentChampion())) {
+			String s="name=" + c.getName() +"\n"+"Type="+s2+"\n"+ "currentHP=" + c.getCurrentHP() +"\n"+ "mana=" + c.getMana()+"\n"
+					+"currentActionPoints=" + c.getCurrentActionPoints()+"\n"+ "attackRange=" + c.getAttackRange() +"\n"+ "attackDamage=" + c.getAttackDamage()+"\n"+
+					"Effects="+"\n"+eff+"Abilities="+"\n"+s3;
+			return s;
+		}else {
+			boolean flag=c.equals(game.getFirstPlayer().getLeader())||c.equals(game.getSecondPlayer().getLeader());
+			String s="name=" + c.getName() +"\n"+"Type="+s2+"\n"+ "currentHP=" + c.getCurrentHP() +"\n"+ "mana=" + c.getMana()+"\n"
+					+"Speed="+c.getSpeed()+"\n"+"maxActionPoints=" + c.getMaxActionPointsPerTurn()+"\n"+ "attackRange=" 
+					+ c.getAttackRange() +"\n"+ "attackDamage=" + c.getAttackDamage()+"\n"+"isLeader="+flag+"\n"+
+					"Effects="+"\n"+eff;
+			return s;
+		}
 	}
 	
 	public static Node getNodeFromGrid (GridPane gridPane,final int row, final int column) {
@@ -398,19 +465,10 @@ public class Main extends Application {
 		rb.setToggleGroup(t);
 		selected.getChildren().add(rb);
 		chosenChamions.add(i);
-		p.getTeam().add(clone(game.getAvailableChampions().get(i)));
+		p.getTeam().add(game.getAvailableChampions().get(i));
 		if(p.getTeam().size()==3) {
 			b.setVisible(true);
 		}	
-	}
-	public static Champion clone(Champion c) {
-		if(c instanceof Hero) {
-			return new Hero(c.getName(),c.getMaxHP(),c.getMana(),c.getMaxActionPointsPerTurn(),c.getSpeed(),c.getAttackRange(),c.getAttackRange());
-		}
-		if(c instanceof Villain) {
-			return new Villain(c.getName(),c.getMaxHP(),c.getMana(),c.getMaxActionPointsPerTurn(),c.getSpeed(),c.getAttackRange(),c.getAttackRange());
-		}
-		return new AntiHero(c.getName(),c.getMaxHP(),c.getMana(),c.getMaxActionPointsPerTurn(),c.getSpeed(),c.getAttackRange(),c.getAttackRange());
 	}
 
 	public static void viewChampionStats(VBox tostring,int i) {
