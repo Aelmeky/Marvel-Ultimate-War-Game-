@@ -86,8 +86,8 @@ public class Main extends Application {
 				          	player2=new Player(player2field.getText());
 				          	game=new Game(player1,player2);
 				          	try {
-				    			Game.loadAbilities("/home/ahme/Programming/Marvel-Ultimate-War-Game-/src/Abilities.csv");
-				    			Game.loadChampions("/home/ahme/Programming/Marvel-Ultimate-War-Game-/src/Champions.csv");
+				    			Game.loadAbilities("/Abilities.csv");
+				    			Game.loadChampions("/Champions.csv");
 				    		} catch (IOException e2) {
 				    			System.out.println(e2);
 				    			new errormes("Error","Error in Abilities and Champion Files");
