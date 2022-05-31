@@ -353,49 +353,39 @@ public class Main extends Application {
 					movesbut[0] = new Button("Up");
 					movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 						public void handle(Event arg0){
-							
 								try {
 									game.move(model.world.Direction.UP);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
 								}
-							
-							
 						}
 					} );
 					movesbut[1] = new Button("Right");
 					movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 						public void handle(Event arg0){
-							
 								try {
 									game.move(model.world.Direction.RIGHT);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
 								}
-							
-							
 						}
 					} );
 					movesbut[2] = new Button("Left");
 					movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 						public void handle(Event arg0){
-							
 								try {
 									game.move(model.world.Direction.LEFT);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
 								}
-							
-							
 						}
 					} );
 					movesbut[3] = new Button("Down");
 					movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 						public void handle(Event arg0){
-							
 								try {
 									game.move(model.world.Direction.DOWN);
 									
@@ -403,14 +393,14 @@ public class Main extends Application {
 								
 									new errormes("Error",e.toString());
 								}
-							
-							
 						}
 					} );
 					for(int i=0;i<4;i++) moveBox.getChildren().add(movesbut[i]);
 					
 				}
+				
 			} );
+			
 			
 		}
 		if(c.getCurrentActionPoints()>=2) {
