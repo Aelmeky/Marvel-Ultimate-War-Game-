@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import engine.*;
+import exceptions.NotEnoughResourcesException;
+import exceptions.UnallowedMovementException;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,6 +29,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.skin.TextInputControlSkin.Direction;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -337,15 +340,37 @@ public class Main extends Application {
 	
 	public static void prepareActions(VBox leftpane, Champion c) {
 		Button[] arr=new Button[6];
+		HBox moveBox = new HBox();
 		if(c.getCurrentActionPoints()>=1) {
 			arr[0]=new Button("Move");
+			moveBox.getChildren().add(arr[0]);
 			arr[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0){
 			        //int[] ar2=getCoords();
 			        //System.out.println(ar2[0]+" "+ar2[1]);
+					Button[] movesbut=new Button[4];
+					movesbut[0] = new Button("Up");
+					movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+						public void handle(Event arg0){
+							
+								try {
+									game.move(model.world.Direction.UP);
+								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
+								
+									new errormes("Error",e.toString());
+								}
+							
+							
+						}
+					} );
+					movesbut[1] = new Button("Right");
+					movesbut[2] = new Button("Left");
+					movesbut[3] = new Button("Down");
+					for(int i=0;i<4;i++) moveBox.getChildren().add(movesbut[i]);
 					
 				}
 			} );
+			
 		}
 		if(c.getCurrentActionPoints()>=2) {
 			arr[1]=new Button("Attack");
@@ -355,8 +380,8 @@ public class Main extends Application {
 				}
 			} );
 		}
-		
-		for(int i=0;i<6;i++) {
+		leftpane.getChildren().add(moveBox);
+		for(int i=1;i<6;i++) {
 			if(arr[i]!=null) {
 				leftpane.getChildren().add(arr[i]);
 			}
