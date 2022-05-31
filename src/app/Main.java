@@ -342,11 +342,11 @@ public class Main extends Application {
 		border.setLeft(leftpane);
 		border.setTop(top);
 		border.setCenter(grid);
-		prepareActions(leftpane, game.getCurrentChampion(), grid);
+		prepareActions(leftpane, game.getCurrentChampion(), grid,stage);
 
 	}
 
-	public static void prepareActions(VBox leftpane, Champion c, GridPane grid) {
+	public static void prepareActions(VBox leftpane, Champion c, GridPane grid,Stage stage) {
 		if (c.getCurrentActionPoints() >= 1) {
 			HBox moveBox = new HBox();
 			Button move = new Button("Move");
@@ -433,6 +433,7 @@ public class Main extends Application {
 								System.out.println("here");
 								updateGrid(grid);
 								hideButtons(attackBox);
+								gameOver(stage);
 							} catch (NotEnoughResourcesException | ChampionDisarmedException
 									| InvalidTargetException e) {
 								new errormes("Error", e.toString());
@@ -446,6 +447,7 @@ public class Main extends Application {
 								game.attack(model.world.Direction.RIGHT);
 								updateGrid(grid);
 								hideButtons(attackBox);
+								gameOver(stage);
 							} catch (NotEnoughResourcesException | ChampionDisarmedException
 									| InvalidTargetException e) {
 								new errormes("Error", e.toString());
@@ -459,6 +461,7 @@ public class Main extends Application {
 								game.attack(model.world.Direction.LEFT);
 								updateGrid(grid);
 								hideButtons(attackBox);
+								gameOver(stage);
 							} catch (NotEnoughResourcesException | ChampionDisarmedException
 									| InvalidTargetException e) {
 								new errormes("Error", e.toString());
@@ -472,6 +475,7 @@ public class Main extends Application {
 								game.attack(model.world.Direction.DOWN);
 								updateGrid(grid);
 								hideButtons(attackBox);
+								gameOver(stage);
 							} catch (NotEnoughResourcesException|ChampionDisarmedException|InvalidTargetException e) {
 								new errormes("Error",e.toString());
 							}
@@ -518,7 +522,7 @@ public class Main extends Application {
 						Label l2 = new Label(enhancedToString(c));
 						l2.setVisible(false);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
-						System.out.println(((Champion)d).getName()+" "+((Champion)d).getCurrentActionPoints());
+						//System.out.println(((Champion)d).getName()+" "+((Champion)d).getCurrentActionPoints());
 					} else {
 						Label l = new Label("Cover");
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l);
@@ -621,5 +625,17 @@ public class Main extends Application {
 	public static void hideButtons(HBox moveBox) {
 		for (int i = 0; i < 4; i++)
 			moveBox.getChildren().remove(1);
+	}
+	public static void gameOver(Stage stage) {
+		if(game.checkGameOver()==null) {
+			return;
+		}else if (game.checkGameOver().equals(player1)) {
+			System.out.println("game 0ver");
+			//
+		}else {
+			System.out.println("game 0ver");
+			//
+		}
+		
 	}
 }

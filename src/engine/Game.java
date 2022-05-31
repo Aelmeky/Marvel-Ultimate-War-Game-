@@ -289,6 +289,8 @@ public class Game {
 					int curhp = ((Cover) board[currx][curry]).getCurrentHP();
 					curhp -= getCurrentChampion().getAttackDamage();
 					((Cover) board[currx][curry]).setCurrentHP(curhp);
+					Champion curr = getCurrentChampion();
+					curr.setCurrentActionPoints(curr.getCurrentActionPoints() - 2);
 					if (curhp <= 0)
 						board[currx][curry] = null;
 					return;
