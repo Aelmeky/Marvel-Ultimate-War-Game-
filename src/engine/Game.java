@@ -326,7 +326,9 @@ public class Game {
 						damage = (int) (damage * 1.5);
 
 					target.setCurrentHP(target.getCurrentHP() - damage);
+					//System.out.println(curr.getCurrentActionPoints()+" 1");
 					curr.setCurrentActionPoints(curr.getCurrentActionPoints() - 2);
+					//System.out.println(curr.getCurrentActionPoints()+" 2");
 					ArrayList<Damageable> targets = new ArrayList<Damageable>();
 					targets.add(target);
 					cleanup(targets);
