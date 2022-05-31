@@ -205,7 +205,7 @@ public class Main extends Application {
 				int x=chosenChamions.remove(chosenChamions.size()-1);
 				final int j=x;
 				arr[j].setVisible(true);
-				p.getTeam().remove(game.getFirstPlayer().getTeam().size()-1);
+				p.getTeam().remove(p.getTeam().size()-1);
 				toscene3.setVisible(false);
 			}
 		} );
