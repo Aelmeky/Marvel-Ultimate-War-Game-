@@ -191,8 +191,8 @@ public class Main extends Application {
 			} );
 			arr[i].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0){
-					addChampion(tog,p,toscene3,selected,j);
 					arr[j].setVisible(false);
+					addChampion(tog,p,toscene3,selected,j,arr);
 				}
 			} );
 			grid.add(arr[i],i%5,i/5,1,1);
@@ -356,7 +356,7 @@ public class Main extends Application {
 								try {
 									game.move(model.world.Direction.UP);
 									updateGrid(grid);
-									hideButtons(movesbut);
+									hideButtons(moveBox);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -369,7 +369,7 @@ public class Main extends Application {
 								try {
 									game.move(model.world.Direction.RIGHT);
 									updateGrid(grid);
-									hideButtons(movesbut);
+									hideButtons(moveBox);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -382,7 +382,7 @@ public class Main extends Application {
 								try {
 									game.move(model.world.Direction.LEFT);
 									updateGrid(grid);
-									hideButtons(movesbut);
+									hideButtons(moveBox);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -395,7 +395,7 @@ public class Main extends Application {
 								try {
 									game.move(model.world.Direction.DOWN);
 									updateGrid(grid);
-									hideButtons(movesbut);
+									hideButtons(moveBox);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -518,8 +518,9 @@ public class Main extends Application {
 	    return result;
 	}
 
-	public static void addChampion(ToggleGroup t,Player p,Button b,VBox selected, int i) {
+	public static void addChampion(ToggleGroup t,Player p,Button b,VBox selected, int i,Button[] arr) {
 		if(p.getTeam().size()==3) {
+			arr[i].setVisible(true);
 			new errormes("Error", "Your Team can only Have 3 Members");
 			return;
 		}
@@ -548,9 +549,7 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	public static void hideButtons(Button[] b) {
-		for(int i=0;i<b.length;i++) {
-			b[i]=null;
-		}
+	public static void hideButtons(HBox moveBox) {
+		for(int i=0;i<4;i++) moveBox.getChildren().remove(1);
 	}
 }
