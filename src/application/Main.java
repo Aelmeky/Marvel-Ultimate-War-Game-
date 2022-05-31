@@ -90,7 +90,7 @@ public class Main extends Application {
 				          	game=new Game(player1,player2);
 				          	try {
 				    			Game.loadAbilities("./Abilities.csv");
-				    			Game.loadChampions(".\\Champions.csv");
+				    			Game.loadChampions("./Champions.csv");
 				    		} catch (IOException e2) {
 				    			System.out.println(e2);
 				    			new errormes("Error","Error in Abilities and Champion Files");
