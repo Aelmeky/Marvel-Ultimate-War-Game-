@@ -1,4 +1,4 @@
-package application;
+package app;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -335,11 +335,11 @@ public class Main extends Application {
 		border.setLeft(leftpane);
 	    border.setTop(top);
 	    border.setCenter(grid);
-	    prepareActions(leftpane,game.getCurrentChampion());
+	    prepareActions(leftpane,game.getCurrentChampion(),grid);
 	    
 	}
 	
-	public static void prepareActions(VBox leftpane, Champion c) {
+	public static void prepareActions(VBox leftpane, Champion c,GridPane grid) {
 		Button[] arr=new Button[6];
 		HBox moveBox = new HBox();
 		if(c.getCurrentActionPoints()>=1) {
@@ -355,6 +355,8 @@ public class Main extends Application {
 						public void handle(Event arg0){
 								try {
 									game.move(model.world.Direction.UP);
+									updateGrid(grid);
+									hideButtons(movesbut);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -366,6 +368,8 @@ public class Main extends Application {
 						public void handle(Event arg0){
 								try {
 									game.move(model.world.Direction.RIGHT);
+									updateGrid(grid);
+									hideButtons(movesbut);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -377,6 +381,8 @@ public class Main extends Application {
 						public void handle(Event arg0){
 								try {
 									game.move(model.world.Direction.LEFT);
+									updateGrid(grid);
+									hideButtons(movesbut);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -388,7 +394,8 @@ public class Main extends Application {
 						public void handle(Event arg0){
 								try {
 									game.move(model.world.Direction.DOWN);
-									
+									updateGrid(grid);
+									hideButtons(movesbut);
 								} catch (NotEnoughResourcesException | UnallowedMovementException e) {
 								
 									new errormes("Error",e.toString());
@@ -399,9 +406,7 @@ public class Main extends Application {
 					
 				}
 				
-			} );
-			
-			
+			} );	
 		}
 		if(c.getCurrentActionPoints()>=2) {
 			arr[1]=new Button("Attack");
@@ -434,6 +439,10 @@ public class Main extends Application {
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
 				Object d=game.getBoard()[i][j];
+				ObservableList<Node> children=((VBox)getNodeFromGrid(grid,4-i,j)).getChildren();
+				while(!children.isEmpty()) {
+					children.remove(0);
+				}
 				if(d instanceof Damageable) {
 					int x=((Damageable)d).getLocation().x;
 					int y=((Damageable)d).getLocation().y;
@@ -455,7 +464,7 @@ public class Main extends Application {
 						((VBox)getNodeFromGrid(grid,4-x,y)).getChildren().add(l2);
 						
 					}
-//					System.out.println(x+" "+y);
+					//System.out.println(x+" "+y+" "+i+" "+j);
 				}
 			}
 		}
@@ -538,5 +547,10 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+	public static void hideButtons(Button[] b) {
+		for(int i=0;i<b.length;i++) {
+			b[i]=null;
+		}
 	}
 }

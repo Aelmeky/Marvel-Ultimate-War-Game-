@@ -11,4 +11,9 @@ public abstract class GameActionException extends Exception {
 		super(s);
 	}
 
+	public String toString() {
+		return getMessage()+"";
+	}
+	
+
 }
