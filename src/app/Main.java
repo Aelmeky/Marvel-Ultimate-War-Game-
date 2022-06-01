@@ -1,4 +1,5 @@
 package app;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import engine.*;
@@ -56,6 +57,8 @@ public class Main extends Application {
 	static Label player2stat;
 	static Label current;
 	static Label next;
+	static String fastestChampion;
+
 	public void start(Stage stage) {
 		chosenChamions = new ArrayList<Integer>();
 		stage.setTitle("Marvel game");
@@ -258,8 +261,8 @@ public class Main extends Application {
 
 	public static void scene4(Stage stage) {
 		// TODO abilities to string somewhere
-
 		game.prepareChampionTurns();
+		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
 		BorderPane border = new BorderPane();
 		border.setPrefHeight(1000);
 		border.setPrefWidth(700);
@@ -283,9 +286,11 @@ public class Main extends Application {
 
 		HBox toprow2 = new HBox();
 
-		player1stat = new Label(game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
+		player1stat = new Label(
+				game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
 		player1stat.setFont(Font.font("verdana", 30));
-		player2stat = new Label(game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
+		player2stat = new Label(
+				game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
 		player2stat.setFont(Font.font("verdana", 30));
 		toprow2.setSpacing(14);
 		toprow2.getChildren().add(player1stat);
@@ -305,7 +310,7 @@ public class Main extends Application {
 		stat.setTextFill(Color.BLACK);
 		stat.setFont(Font.font("verdana", 19));
 		rightpane.getChildren().add(stat);
-		
+
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(14);
 		leftpane.setMaxWidth(250);
@@ -314,7 +319,6 @@ public class Main extends Application {
 		Label ava = new Label("Available Actions:");
 		ava.setFont(Font.font("verdana", 19));
 		leftpane.getChildren().add(ava);
-
 
 		VBox abilityBox = new VBox(14);
 		leftpane.getChildren().add(abilityBox);
@@ -363,7 +367,7 @@ public class Main extends Application {
 		Button move = new Button("Move");
 		move.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
-				actionDirectional(moveBox, grid, stage,"move",null);
+				actionDirectional(moveBox, grid, stage, "move", null);
 			}
 		});
 		leftpane.getChildren().add(move);
@@ -371,11 +375,12 @@ public class Main extends Application {
 		leftpane.getChildren().add(attack);
 		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
-				actionDirectional(moveBox, grid, stage,"attack",null);
+				actionDirectional(moveBox, grid, stage, "attack", null);
 			}
 
 		});
-		Border b=new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+		Border b = new Border(
+				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 		moveBox.setBorder(b);
 		ArrayList<Ability> abilities = c.getAbilities();
 //		HBox abilityBox1 = new HBox();
@@ -394,21 +399,21 @@ public class Main extends Application {
 			}
 		}
 		for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
-			Ability a=game.getCurrentChampion().getAbilities().get(i);
-			Button button= new Button(a.getName());
+			Ability a = game.getCurrentChampion().getAbilities().get(i);
+			Button button = new Button(a.getName());
 			button.setTextFill(Color.BLACK);
 			abilityBox.getChildren().add(button);
 			button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0) {
-					if(justAbilities.contains(a)) {
-						castJustAbility(game.getCurrentChampion(),a);
+					if (justAbilities.contains(a)) {
+						castJustAbility(game.getCurrentChampion(), a);
 						gameOver(stage);
 					}
-					if(directionalAbilities.contains(a)) {
+					if (directionalAbilities.contains(a)) {
 						actionDirectional(moveBox, grid, stage, "castAbility", a);
 					}
-					if(xyAbilities.contains(a)) {
-						//castJustAbility(game.getCurrentChampion(),a);
+					if (xyAbilities.contains(a)) {
+						// castJustAbility(game.getCurrentChampion(),a);
 					}
 				}
 			});
@@ -424,28 +429,27 @@ public class Main extends Application {
 
 		});
 		leftpane.getChildren().add(moveBox);
-		
+
 		Button endTurn = new Button("End Turn");
 		leftpane.getChildren().add(endTurn);
 		endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				game.endTurn();
+				System.out.println(game.getCurrentChampion().getName());
 				current.setText("Current Champion: " + game.getCurrentChampion().getName());
 				try {
-					//System.out.println("t"+game.getTurnOrder().size());
-					game.getTurnOrder().remove();
-					if(game.getTurnOrder().size()==0) {
-						throw new Exception();
+					Champion c = (Champion) game.getTurnOrder().remove();
+					if (game.getTurnOrder().size() == 0) {
+						next.setText("next Champion: " + fastestChampion);
+					} else {
+						next.setText("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
 					}
+					// System.out.println(((Champion)game.getTurnOrder().peekMin()).getName());
+					game.getTurnOrder().insert(c);
 				} catch (Exception e) {
+					System.out.println("exc");
 					game.prepareChampionTurns();
-				}finally {
-					//System.out.println("f"+game.getTurnOrder().size());
 					next.setText("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
-					//System.out.println(((Champion)game.getTurnOrder().peekMin()).getName());
-					if(game.getTurnOrder().size()!=6) {
-						game.getTurnOrder().insert(c);
-					}
 				}
 				updateGrid(grid);
 				gameOver(stage);
@@ -454,22 +458,24 @@ public class Main extends Application {
 		});
 
 	}
-	
+
 	public static void useLeaderAbility() {
 		try {
 			game.useLeaderAbility();
-			player1stat.setText(game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
-			player2stat.setText(game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
+			player1stat.setText(
+					game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
+			player2stat.setText(
+					game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
 		} catch (Exception e) {
 			new errormes("Error", e.getMessage());
 		}
-		
+
 	}
 
 	public static void castJustAbility(Champion currentChampion, Ability a) {
 		try {
 			game.castAbility(a);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			new errormes("error", e.getMessage());
 		}
 	}
@@ -623,8 +629,9 @@ public class Main extends Application {
 		}
 
 	}
-	public static void actionDirectional(HBox directionBox,GridPane grid,Stage stage,String s,Ability a){
-		while(!directionBox.getChildren().isEmpty()) {
+
+	public static void actionDirectional(HBox directionBox, GridPane grid, Stage stage, String s, Ability a) {
+		while (!directionBox.getChildren().isEmpty()) {
 			directionBox.getChildren().remove(0);
 		}
 		Button[] movesbut = new Button[4];
@@ -632,18 +639,18 @@ public class Main extends Application {
 		movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				try {
-					if(s.equals("move")) {
+					if (s.equals("move")) {
 						game.move(model.world.Direction.UP);
-					}else if(s.equals("attack")) {
+					} else if (s.equals("attack")) {
 						game.attack(model.world.Direction.UP);
-					}
-					else if(s.equals("castAbility")) {
-						game.castAbility(a,model.world.Direction.UP);
+					} else if (s.equals("castAbility")) {
+						game.castAbility(a, model.world.Direction.UP);
 					}
 					updateGrid(grid);
 					hideButtons(directionBox);
 					gameOver(stage);
-				} catch (NotEnoughResourcesException | ChampionDisarmedException| AbilityUseException | InvalidTargetException | UnallowedMovementException |CloneNotSupportedException e) {
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | AbilityUseException
+						| InvalidTargetException | UnallowedMovementException | CloneNotSupportedException e) {
 					new errormes("Error", e.toString());
 				}
 			}
@@ -652,18 +659,18 @@ public class Main extends Application {
 		movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				try {
-					if(s.equals("move")) {
+					if (s.equals("move")) {
 						game.move(model.world.Direction.RIGHT);
-					}else if(s.equals("attack")) {
+					} else if (s.equals("attack")) {
 						game.attack(model.world.Direction.RIGHT);
-					}
-					else if(s.equals("castAbility")) {
-						game.castAbility(a,model.world.Direction.RIGHT);
+					} else if (s.equals("castAbility")) {
+						game.castAbility(a, model.world.Direction.RIGHT);
 					}
 					updateGrid(grid);
 					hideButtons(directionBox);
 					gameOver(stage);
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException | UnallowedMovementException|CloneNotSupportedException|AbilityUseException  e) {
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException
+						| UnallowedMovementException | CloneNotSupportedException | AbilityUseException e) {
 					new errormes("Error", e.toString());
 				}
 			}
@@ -672,18 +679,18 @@ public class Main extends Application {
 		movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				try {
-					if(s.equals("move")) {
+					if (s.equals("move")) {
 						game.move(model.world.Direction.LEFT);
-					}else if(s.equals("attack")) {
+					} else if (s.equals("attack")) {
 						game.attack(model.world.Direction.LEFT);
-					}
-					else if(s.equals("castAbility")) {
-						game.castAbility(a,model.world.Direction.LEFT);
+					} else if (s.equals("castAbility")) {
+						game.castAbility(a, model.world.Direction.LEFT);
 					}
 					updateGrid(grid);
 					hideButtons(directionBox);
 					gameOver(stage);
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException | UnallowedMovementException|CloneNotSupportedException|AbilityUseException  e) {
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException
+						| UnallowedMovementException | CloneNotSupportedException | AbilityUseException e) {
 					new errormes("Error", e.toString());
 				}
 			}
@@ -692,18 +699,18 @@ public class Main extends Application {
 		movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				try {
-					if(s.equals("move")) {
+					if (s.equals("move")) {
 						game.move(model.world.Direction.DOWN);
-					}else if(s.equals("attack")) {
+					} else if (s.equals("attack")) {
 						game.attack(model.world.Direction.DOWN);
-					}
-					else if(s.equals("castAbility")) {
-						game.castAbility(a,model.world.Direction.DOWN);
+					} else if (s.equals("castAbility")) {
+						game.castAbility(a, model.world.Direction.DOWN);
 					}
 					updateGrid(grid);
 					hideButtons(directionBox);
 					gameOver(stage);
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException | UnallowedMovementException|CloneNotSupportedException|AbilityUseException e) {
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException
+						| UnallowedMovementException | CloneNotSupportedException | AbilityUseException e) {
 					new errormes("Error", e.toString());
 				}
 			}
