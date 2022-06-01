@@ -7,6 +7,10 @@ import model.world.Champion;
 import model.world.Damageable;
 
 public class CrowdControlAbility extends Ability {
+	public String toString() {
+		return super.toString()+"\n"+"Type=CroudControlAbility"+"\n"+"effect=" + effect.getName();
+	}
+
 	private Effect effect;
 
 	public CrowdControlAbility(String name, int cost, int baseCoolDown, int castRadius, AreaOfEffect area, int required,

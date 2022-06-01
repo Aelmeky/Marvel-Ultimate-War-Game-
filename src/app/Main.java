@@ -311,6 +311,11 @@ public class Main extends Application {
 		stat.setFont(Font.font("verdana", 19));
 		rightpane.getChildren().add(stat);
 
+		Label abilityData=new Label();
+		abilityData.setFont(Font.font("verdana", 14));
+		abilityData.setTextFill(Color.BLACK);
+
+		
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(14);
 		leftpane.setMaxWidth(250);
@@ -354,15 +359,18 @@ public class Main extends Application {
 		grid.setVgap(5);
 		grid.setHgap(5);
 
+		Border b = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+		abilityData.setBorder(b);
+		rightpane.getChildren().add(abilityData);
 		border.setRight(rightpane);
 		border.setLeft(leftpane);
 		border.setTop(top);
 		border.setCenter(grid);
-		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage);
+		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage,rightpane);
 
 	}
 
-	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage) {
+	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage,VBox rightpane) {
 		while(leftpane.getChildren().size()!=2) {
 			leftpane.getChildren().remove(2);
 		}
@@ -382,8 +390,7 @@ public class Main extends Application {
 			}
 
 		});
-		Border b = new Border(
-				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+		Border b = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 		moveBox.setBorder(b);
 		ArrayList<Ability> abilities = c.getAbilities();
 //		HBox abilityBox1 = new HBox();
@@ -409,6 +416,11 @@ public class Main extends Application {
 			Button button = new Button(a.getName());
 			button.setTextFill(Color.BLACK);
 			abilityBox.getChildren().add(button);
+			button.addEventHandler(MouseEvent.MOUSE_ENTERED,new EventHandler<Event>() {
+				public void handle(Event arg0) {
+					((Label)rightpane.getChildren().get(rightpane.getChildren().size()-1)).setText(a.toString());	
+				}
+			});
 			button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0) {
 					if (justAbilities.contains(a)) {
@@ -486,7 +498,7 @@ public class Main extends Application {
 				}
 				updateGrid(grid);
 				gameOver(stage);
-				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage);
+				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage,rightpane);
 			}
 
 		});
@@ -494,11 +506,11 @@ public class Main extends Application {
 	}
 	public static void castxyabilities(Champion c, Ability a, int x,int y,GridPane grid) {
 		try {
-			System.out.println(((Damageable)game.getBoard()[x][y]).getCurrentHP());
-			System.out.println(((Label)((VBox)getNodeFromGrid(grid, 4-x, y)).getChildren().get(1)).getText());
+			//System.out.println(((Damageable)game.getBoard()[x][y]).getCurrentHP());
+			//System.out.println(((Label)((VBox)getNodeFromGrid(grid, 4-x, y)).getChildren().get(1)).getText());
 			game.castAbility(a, 4-x, y);
 		}catch (Exception e) {
-			System.out.println(e);
+			//System.out.println(e);
 			new errormes("Error", e.getMessage());
 		}
 	}
@@ -528,10 +540,10 @@ public class Main extends Application {
 		Label l = new Label(node.getText());
 		l.setFont(Font.font("verdana", 14));
 		l.setTextFill(Color.BLACK);
-		VBox n = new VBox();
+		Label n = new Label();
 		while (rightpane.getChildren().size() != 1) {
-			if (rightpane.getChildren().get(1) instanceof VBox) {
-				n = (VBox) rightpane.getChildren().remove(1);
+			if (rightpane.getChildren().get(1) instanceof Label) {
+				n = (Label) rightpane.getChildren().remove(1);
 			} else {
 				rightpane.getChildren().remove(1);
 			}
@@ -665,11 +677,12 @@ public class Main extends Application {
 		if (game.checkGameOver() == null) {
 			return;
 		} else if (game.checkGameOver().equals(player1)) {
-			System.out.println("9ame 0ver 1");
-			//
+			new Alert("Congrats", "Player 1 Won \n 9ame over");
+			stage.setScene(new Scene(null,Color.SKYBLUE));
+			//stage.setdisabeled(true);
 		} else {
-			System.out.println("9ame 0ver 2");
-			//
+			new Alert("Congrats", "Player 2 Won \n 9ame over");
+			stage.setScene(new Scene(null,Color.SKYBLUE));
 		}
 
 	}

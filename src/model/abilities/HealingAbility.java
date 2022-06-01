@@ -6,6 +6,10 @@ import model.world.Damageable;
 
 public  class HealingAbility extends Ability {
 	private int healAmount;
+	
+	public String toString() {
+		return super.toString()+"\n"+"Type=HealingAbility"+"\n"+"HealAmount="+healAmount;
+	}
 
 	public HealingAbility(String name,int cost, int baseCoolDown, int castRadius, AreaOfEffect area,int required, int healingAmount) {
 		super(name,cost, baseCoolDown, castRadius, area,required);

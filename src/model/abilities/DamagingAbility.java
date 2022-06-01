@@ -8,6 +8,11 @@ public class DamagingAbility extends Ability {
 
 	private int damageAmount;
 
+	
+	public String toString() {
+		return super.toString()+"\n"+"Type=DamagingAbility"+"\n"+"damageAmount=" + damageAmount;
+	}
+	
 	public DamagingAbility(String name, int cost, int baseCoolDown, int castRadius, AreaOfEffect area, int required,
 			int damageAmount) {
 		super(name, cost, baseCoolDown, castRadius, area, required);

@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import model.world.Damageable;
 
 public abstract class Ability {
+	@Override
+	public String toString() {
+		return "name=" + name +"\n"+ "manaCost=" + manaCost +"\n"+ "baseCooldown=" + baseCooldown+"\n"
+				+ "currentCooldown=" + currentCooldown +"\n"+ "castRange=" + castRange +"\n"+ "castArea=" + castArea+"\n"
+				+ "requiredActionPoints=" + requiredActionPoints;
+	}
+
 	private String name;
 	private int manaCost;
 	private int baseCooldown;
