@@ -2,6 +2,7 @@ package app;
 import java.io.IOException;
 import java.util.ArrayList;
 import engine.*;
+import exceptions.AbilityUseException;
 import exceptions.ChampionDisarmedException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughResourcesException;
@@ -359,159 +360,31 @@ public class Main extends Application {
 	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage) {
 		HBox moveBox = new HBox();
 		Button move = new Button("Move");
-		moveBox.getChildren().add(move);
 		move.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
-				if(moveBox.getChildren().size()>1) {
-					return;
-				}
-				Button[] movesbut = new Button[4];
-				movesbut[0] = new Button("Up");
-				movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.move(model.world.Direction.UP);
-							updateGrid(grid);
-							hideButtons(moveBox);
-						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				movesbut[1] = new Button("Right");
-				movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.move(model.world.Direction.RIGHT);
-							updateGrid(grid);
-							hideButtons(moveBox);
-						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				movesbut[2] = new Button("Left");
-				movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.move(model.world.Direction.LEFT);
-							updateGrid(grid);
-							hideButtons(moveBox);
-						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				movesbut[3] = new Button("Down");
-				movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.move(model.world.Direction.DOWN);
-							updateGrid(grid);
-							hideButtons(moveBox);
-						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				for (int i = 0; i < 4; i++) {
-					moveBox.getChildren().add(movesbut[i]);
-				}
+				actionDirectional(moveBox, grid, stage,"move",null);
 			}
-
 		});
-		
-		leftpane.getChildren().add(moveBox);
-		HBox attackBox = new HBox();
+		leftpane.getChildren().add(move);
 		Button attack = new Button("Attack");
-		attackBox.getChildren().add(attack);
+		leftpane.getChildren().add(attack);
 		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
-				if(attackBox.getChildren().size()>1) {
-					return;
-				}
-				// int[] ar2=getCoords();
-				// System.out.println(ar2[0]+" "+ar2[1]);
-				Button[] movesbut = new Button[4];
-				movesbut[0] = new Button("Up");
-				movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.attack(model.world.Direction.UP);
-							System.out.println("here");
-							updateGrid(grid);
-							hideButtons(attackBox);
-							gameOver(stage);
-						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				movesbut[1] = new Button("Right");
-				movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.attack(model.world.Direction.RIGHT);
-							updateGrid(grid);
-							hideButtons(attackBox);
-							gameOver(stage);
-						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				movesbut[2] = new Button("Left");
-				movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.attack(model.world.Direction.LEFT);
-							updateGrid(grid);
-							hideButtons(attackBox);
-							gameOver(stage);
-						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				movesbut[3] = new Button("Down");
-				movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-					public void handle(Event arg0) {
-						try {
-							game.attack(model.world.Direction.DOWN);
-							updateGrid(grid);
-							hideButtons(attackBox);
-							gameOver(stage);
-						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
-							new errormes("Error", e.toString());
-						}
-					}
-				});
-				for (int i = 0; i < 4; i++) {
-					attackBox.getChildren().add(movesbut[i]);
-				}
+				actionDirectional(moveBox, grid, stage,"attack",null);
 			}
 
 		});
-		
-		leftpane.getChildren().add(attackBox);
 		Border b=new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
-		attackBox.setBorder(b);
-		attack.setBorder(b);
-		System.out.println(leftpane.getChildren());
-		System.out.println(attackBox.getChildren());
+		moveBox.setBorder(b);
 		ArrayList<Ability> abilities = c.getAbilities();
 //		HBox abilityBox1 = new HBox();
 //		abilityBox1.getChildren().add(attack);
 		ArrayList<Ability> justAbilities = new ArrayList<Ability>();
 		ArrayList<Ability> xyAbilities = new ArrayList<Ability>();
-		ArrayList<Ability> directinalAbilities = new ArrayList<Ability>();
+		ArrayList<Ability> directionalAbilities = new ArrayList<Ability>();
 		for (Ability a : abilities) {
 			if (a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
-				directinalAbilities.add(a);
+				directionalAbilities.add(a);
 			}
 			if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
 				xyAbilities.add(a);
@@ -529,11 +402,34 @@ public class Main extends Application {
 					if(justAbilities.contains(a)) {
 						castJustAbility(game.getCurrentChampion(),a);
 					}
+					if(directionalAbilities.contains(a)) {
+						actionDirectional(moveBox, grid, stage, "castAbility", a);
+					}
+					if(xyAbilities.contains(a)) {
+						//castJustAbility(game.getCurrentChampion(),a);
+					}
 				}
 			});
-			
 		}
+		Button LeaderAbility = new Button("Use Leader Ability");
+		leftpane.getChildren().add(LeaderAbility);
+		LeaderAbility.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				useLeaderAbility();
+			}
 
+		});
+		leftpane.getChildren().add(moveBox);
+
+	}
+	
+	public static void useLeaderAbility() {
+		try {
+			game.useLeaderAbility();
+		} catch (Exception e) {
+			new errormes("erroe", e.getMessage());
+		}
+		
 	}
 
 	public static void castJustAbility(Champion currentChampion, Ability a) {
@@ -683,7 +579,7 @@ public class Main extends Application {
 
 	public static void hideButtons(HBox box) {
 		for (int i = 0; i < 4; i++)
-			box.getChildren().remove(1);
+			box.getChildren().remove(0);
 	}
 
 	public static void gameOver(Stage stage) {
@@ -697,5 +593,94 @@ public class Main extends Application {
 			//
 		}
 
+	}
+	public static void actionDirectional(HBox directionBox,GridPane grid,Stage stage,String s,Ability a){
+		while(!directionBox.getChildren().isEmpty()) {
+			directionBox.getChildren().remove(0);
+		}
+		Button[] movesbut = new Button[4];
+		movesbut[0] = new Button("Up");
+		movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				try {
+					if(s.equals("move")) {
+						game.move(model.world.Direction.UP);
+					}else if(s.equals("attack")) {
+						game.attack(model.world.Direction.UP);
+					}
+					else if(s.equals("castAbility")) {
+						game.castAbility(a,model.world.Direction.UP);
+					}
+					updateGrid(grid);
+					hideButtons(directionBox);
+					gameOver(stage);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException| AbilityUseException | InvalidTargetException | UnallowedMovementException |CloneNotSupportedException e) {
+					new errormes("Error", e.toString());
+				}
+			}
+		});
+		movesbut[1] = new Button("Right");
+		movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				try {
+					if(s.equals("move")) {
+						game.move(model.world.Direction.RIGHT);
+					}else if(s.equals("attack")) {
+						game.attack(model.world.Direction.RIGHT);
+					}
+					else if(s.equals("castAbility")) {
+						game.castAbility(a,model.world.Direction.RIGHT);
+					}
+					updateGrid(grid);
+					hideButtons(directionBox);
+					gameOver(stage);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException | UnallowedMovementException|CloneNotSupportedException|AbilityUseException  e) {
+					new errormes("Error", e.toString());
+				}
+			}
+		});
+		movesbut[2] = new Button("Left");
+		movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				try {
+					if(s.equals("move")) {
+						game.move(model.world.Direction.LEFT);
+					}else if(s.equals("attack")) {
+						game.attack(model.world.Direction.LEFT);
+					}
+					else if(s.equals("castAbility")) {
+						game.castAbility(a,model.world.Direction.LEFT);
+					}
+					updateGrid(grid);
+					hideButtons(directionBox);
+					gameOver(stage);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException | UnallowedMovementException|CloneNotSupportedException|AbilityUseException  e) {
+					new errormes("Error", e.toString());
+				}
+			}
+		});
+		movesbut[3] = new Button("Down");
+		movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				try {
+					if(s.equals("move")) {
+						game.move(model.world.Direction.DOWN);
+					}else if(s.equals("attack")) {
+						game.attack(model.world.Direction.DOWN);
+					}
+					else if(s.equals("castAbility")) {
+						game.castAbility(a,model.world.Direction.DOWN);
+					}
+					updateGrid(grid);
+					hideButtons(directionBox);
+					gameOver(stage);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException | UnallowedMovementException|CloneNotSupportedException|AbilityUseException e) {
+					new errormes("Error", e.toString());
+				}
+			}
+		});
+		for (int i = 0; i < 4; i++) {
+			directionBox.getChildren().add(movesbut[i]);
+		}
 	}
 }
