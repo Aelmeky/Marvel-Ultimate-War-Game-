@@ -52,7 +52,10 @@ public class Main extends Application {
 	static Player player2;
 	static Game game;
 	static ArrayList<Integer> chosenChamions;
-
+	static Label player1stat;
+	static Label player2stat;
+	static Label current;
+	static Label next;
 	public void start(Stage stage) {
 		chosenChamions = new ArrayList<Integer>();
 		stage.setTitle("Marvel game");
@@ -266,10 +269,10 @@ public class Main extends Application {
 		stage.setWidth(1001);
 		stage.setHeight(701);
 
-		Label current = new Label("Current Champion: " + game.getCurrentChampion().getName());
+		current = new Label("Current Champion: " + game.getCurrentChampion().getName());
 		current.setFont(Font.font("verdana", 30));
 		Champion c = (Champion) game.getTurnOrder().remove();
-		Label next = new Label("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
+		next = new Label("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
 		game.getTurnOrder().insert(c);
 		next.setFont(Font.font("verdana", 30));
 
@@ -280,11 +283,9 @@ public class Main extends Application {
 
 		HBox toprow2 = new HBox();
 
-		Label player1stat = new Label(
-				game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
+		player1stat = new Label(game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
 		player1stat.setFont(Font.font("verdana", 30));
-		Label player2stat = new Label(
-				game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
+		player2stat = new Label(game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
 		player2stat.setFont(Font.font("verdana", 30));
 		toprow2.setSpacing(14);
 		toprow2.getChildren().add(player1stat);
@@ -401,6 +402,7 @@ public class Main extends Application {
 				public void handle(Event arg0) {
 					if(justAbilities.contains(a)) {
 						castJustAbility(game.getCurrentChampion(),a);
+						gameOver(stage);
 					}
 					if(directionalAbilities.contains(a)) {
 						actionDirectional(moveBox, grid, stage, "castAbility", a);
@@ -416,18 +418,50 @@ public class Main extends Application {
 		LeaderAbility.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				useLeaderAbility();
+				updateGrid(grid);
+				gameOver(stage);
 			}
 
 		});
 		leftpane.getChildren().add(moveBox);
+		
+		Button endTurn = new Button("End Turn");
+		leftpane.getChildren().add(endTurn);
+		endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				game.endTurn();
+				current.setText("Current Champion: " + game.getCurrentChampion().getName());
+				try {
+					//System.out.println("t"+game.getTurnOrder().size());
+					game.getTurnOrder().remove();
+					if(game.getTurnOrder().size()==0) {
+						throw new Exception();
+					}
+				} catch (Exception e) {
+					game.prepareChampionTurns();
+				}finally {
+					//System.out.println("f"+game.getTurnOrder().size());
+					next.setText("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
+					//System.out.println(((Champion)game.getTurnOrder().peekMin()).getName());
+					if(game.getTurnOrder().size()!=6) {
+						game.getTurnOrder().insert(c);
+					}
+				}
+				updateGrid(grid);
+				gameOver(stage);
+			}
+
+		});
 
 	}
 	
 	public static void useLeaderAbility() {
 		try {
 			game.useLeaderAbility();
+			player1stat.setText(game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
+			player2stat.setText(game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
 		} catch (Exception e) {
-			new errormes("erroe", e.getMessage());
+			new errormes("Error", e.getMessage());
 		}
 		
 	}
@@ -468,16 +502,12 @@ public class Main extends Application {
 					int x = ((Damageable) d).getLocation().x;
 					int y = ((Damageable) d).getLocation().y;
 					if (d instanceof Champion) {
-//						System.out.print("Champ "+" "+x+" "+y);
 						Label l = new Label(((Champion) d).getName());
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l);
-//						System.out.print(((VBox)getNodeFromGrid(grid,4-x,y)));
 						Champion c = (Champion) d;
 						Label l2 = new Label(enhancedToString(c));
 						l2.setVisible(false);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
-						// System.out.println(((Champion)d).getName()+"
-						// "+((Champion)d).getCurrentActionPoints());
 					} else {
 						Label l = new Label("Cover");
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l);
@@ -486,7 +516,6 @@ public class Main extends Application {
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
 
 					}
-					// System.out.println(x+" "+y+" "+i+" "+j);
 				}
 			}
 		}
@@ -586,10 +615,10 @@ public class Main extends Application {
 		if (game.checkGameOver() == null) {
 			return;
 		} else if (game.checkGameOver().equals(player1)) {
-			System.out.println("game 0ver");
+			System.out.println("9ame 0ver 1");
 			//
 		} else {
-			System.out.println("game 0ver");
+			System.out.println("9ame 0ver 2");
 			//
 		}
 
