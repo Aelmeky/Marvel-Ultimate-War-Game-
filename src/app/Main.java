@@ -1,8 +1,6 @@
 package app;
-
 import java.io.IOException;
 import java.util.ArrayList;
-
 import engine.*;
 import exceptions.ChampionDisarmedException;
 import exceptions.InvalidTargetException;
@@ -18,12 +16,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
+import model.abilities.Ability;
+import model.abilities.AreaOfEffect;
 import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Cover;
 import model.world.Damageable;
 import model.world.Villain;
-import model.world.Hero;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -32,10 +31,14 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.skin.TextInputControlSkin.Direction;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -300,7 +303,7 @@ public class Main extends Application {
 		stat.setTextFill(Color.BLACK);
 		stat.setFont(Font.font("verdana", 19));
 		rightpane.getChildren().add(stat);
-
+		
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(14);
 		leftpane.setMaxWidth(250);
@@ -309,6 +312,13 @@ public class Main extends Application {
 		Label ava = new Label("Available Actions:");
 		ava.setFont(Font.font("verdana", 19));
 		leftpane.getChildren().add(ava);
+
+
+		VBox abilityBox = new VBox(14);
+		leftpane.getChildren().add(abilityBox);
+		Label abilityLabel = new Label("Your Abilities:");
+		abilityLabel.setTextFill(Color.BLACK);
+		abilityBox.getChildren().add(abilityLabel);
 
 		GridPane grid = new GridPane();
 		grid.setGridLinesVisible(true);
@@ -342,164 +352,212 @@ public class Main extends Application {
 		border.setLeft(leftpane);
 		border.setTop(top);
 		border.setCenter(grid);
-		prepareActions(leftpane, game.getCurrentChampion(), grid,stage);
+		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage);
 
 	}
 
-	public static void prepareActions(VBox leftpane, Champion c, GridPane grid,Stage stage) {
-		if (c.getCurrentActionPoints() >= 1) {
-			HBox moveBox = new HBox();
-			Button move = new Button("Move");
-			moveBox.getChildren().add(move);
-			move.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage) {
+		HBox moveBox = new HBox();
+		Button move = new Button("Move");
+		moveBox.getChildren().add(move);
+		move.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				if(moveBox.getChildren().size()>1) {
+					return;
+				}
+				Button[] movesbut = new Button[4];
+				movesbut[0] = new Button("Up");
+				movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.move(model.world.Direction.UP);
+							updateGrid(grid);
+							hideButtons(moveBox);
+						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
+
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				movesbut[1] = new Button("Right");
+				movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.move(model.world.Direction.RIGHT);
+							updateGrid(grid);
+							hideButtons(moveBox);
+						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
+
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				movesbut[2] = new Button("Left");
+				movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.move(model.world.Direction.LEFT);
+							updateGrid(grid);
+							hideButtons(moveBox);
+						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
+
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				movesbut[3] = new Button("Down");
+				movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.move(model.world.Direction.DOWN);
+							updateGrid(grid);
+							hideButtons(moveBox);
+						} catch (NotEnoughResourcesException | UnallowedMovementException e) {
+
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				for (int i = 0; i < 4; i++) {
+					moveBox.getChildren().add(movesbut[i]);
+				}
+			}
+
+		});
+		
+		leftpane.getChildren().add(moveBox);
+		HBox attackBox = new HBox();
+		Button attack = new Button("Attack");
+		attackBox.getChildren().add(attack);
+		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			public void handle(Event arg0) {
+				if(attackBox.getChildren().size()>1) {
+					return;
+				}
+				// int[] ar2=getCoords();
+				// System.out.println(ar2[0]+" "+ar2[1]);
+				Button[] movesbut = new Button[4];
+				movesbut[0] = new Button("Up");
+				movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.attack(model.world.Direction.UP);
+							System.out.println("here");
+							updateGrid(grid);
+							hideButtons(attackBox);
+							gameOver(stage);
+						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				movesbut[1] = new Button("Right");
+				movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.attack(model.world.Direction.RIGHT);
+							updateGrid(grid);
+							hideButtons(attackBox);
+							gameOver(stage);
+						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				movesbut[2] = new Button("Left");
+				movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.attack(model.world.Direction.LEFT);
+							updateGrid(grid);
+							hideButtons(attackBox);
+							gameOver(stage);
+						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				movesbut[3] = new Button("Down");
+				movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+					public void handle(Event arg0) {
+						try {
+							game.attack(model.world.Direction.DOWN);
+							updateGrid(grid);
+							hideButtons(attackBox);
+							gameOver(stage);
+						} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e) {
+							new errormes("Error", e.toString());
+						}
+					}
+				});
+				for (int i = 0; i < 4; i++) {
+					attackBox.getChildren().add(movesbut[i]);
+				}
+			}
+
+		});
+		
+		leftpane.getChildren().add(attackBox);
+		Border b=new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+		attackBox.setBorder(b);
+		attack.setBorder(b);
+		System.out.println(leftpane.getChildren());
+		System.out.println(attackBox.getChildren());
+		ArrayList<Ability> abilities = c.getAbilities();
+//		HBox abilityBox1 = new HBox();
+//		abilityBox1.getChildren().add(attack);
+		ArrayList<Ability> justAbilities = new ArrayList<Ability>();
+		ArrayList<Ability> xyAbilities = new ArrayList<Ability>();
+		ArrayList<Ability> directinalAbilities = new ArrayList<Ability>();
+		for (Ability a : abilities) {
+			if (a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
+				directinalAbilities.add(a);
+			}
+			if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
+				xyAbilities.add(a);
+			} else {
+				justAbilities.add(a);
+			}
+		}
+		for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
+			Ability a=game.getCurrentChampion().getAbilities().get(i);
+			Button button= new Button(a.getName());
+			button.setTextFill(Color.BLACK);
+			abilityBox.getChildren().add(button);
+			button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0) {
-					// int[] ar2=getCoords();
-					// System.out.println(ar2[0]+" "+ar2[1]);
-					Button[] movesbut = new Button[4];
-					movesbut[0] = new Button("Up");
-					movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.move(model.world.Direction.UP);
-								updateGrid(grid);
-								hideButtons(moveBox);
-							} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					movesbut[1] = new Button("Right");
-					movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.move(model.world.Direction.RIGHT);
-								updateGrid(grid);
-								hideButtons(moveBox);
-							} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					movesbut[2] = new Button("Left");
-					movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.move(model.world.Direction.LEFT);
-								updateGrid(grid);
-								hideButtons(moveBox);
-							} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					movesbut[3] = new Button("Down");
-					movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.move(model.world.Direction.DOWN);
-								updateGrid(grid);
-								hideButtons(moveBox);
-							} catch (NotEnoughResourcesException | UnallowedMovementException e) {
-
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					for (int i = 0; i < 4; i++) {
-						moveBox.getChildren().add(movesbut[i]);
+					if(justAbilities.contains(a)) {
+						castJustAbility(game.getCurrentChampion(),a);
 					}
 				}
-
 			});
-			leftpane.getChildren().add(moveBox);
-		}
-		if (c.getCurrentActionPoints() >= 2) {
-			HBox attackBox = new HBox();
-			Button attack = new Button("Attack");
-			attackBox.getChildren().add(attack);
-			attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-				public void handle(Event arg0) {
-					// int[] ar2=getCoords();
-					// System.out.println(ar2[0]+" "+ar2[1]);
-					Button[] movesbut = new Button[4];
-					movesbut[0] = new Button("Up");
-					movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.attack(model.world.Direction.UP);
-								System.out.println("here");
-								updateGrid(grid);
-								hideButtons(attackBox);
-								gameOver(stage);
-							} catch (NotEnoughResourcesException | ChampionDisarmedException
-									| InvalidTargetException e) {
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					movesbut[1] = new Button("Right");
-					movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.attack(model.world.Direction.RIGHT);
-								updateGrid(grid);
-								hideButtons(attackBox);
-								gameOver(stage);
-							} catch (NotEnoughResourcesException | ChampionDisarmedException
-									| InvalidTargetException e) {
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					movesbut[2] = new Button("Left");
-					movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.attack(model.world.Direction.LEFT);
-								updateGrid(grid);
-								hideButtons(attackBox);
-								gameOver(stage);
-							} catch (NotEnoughResourcesException | ChampionDisarmedException
-									| InvalidTargetException e) {
-								new errormes("Error", e.toString());
-							}
-						}
-					});
-					movesbut[3] = new Button("Down");
-					movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-						public void handle(Event arg0) {
-							try {
-								game.attack(model.world.Direction.DOWN);
-								updateGrid(grid);
-								hideButtons(attackBox);
-								gameOver(stage);
-							} catch (NotEnoughResourcesException|ChampionDisarmedException|InvalidTargetException e) {
-								new errormes("Error",e.toString());
-							}
-						}
-					});
-					for (int i = 0; i < 4; i++) {
-						attackBox.getChildren().add(movesbut[i]);
-					}
-				}
-
-			});
-			leftpane.getChildren().add(attackBox);
+			
 		}
 
+	}
+
+	public static void castJustAbility(Champion currentChampion, Ability a) {
+		try {
+			game.castAbility(a);
+		}catch (Exception e) {
+			new errormes("error", e.getMessage());
+		}
 	}
 
 	public static void dispalystats(Label node, VBox rightpane) {
 		Label l = new Label(node.getText());
 		l.setFont(Font.font("verdana", 14));
 		l.setTextFill(Color.BLACK);
+		VBox n = new VBox();
 		while (rightpane.getChildren().size() != 1) {
-			rightpane.getChildren().remove(1);
+			if (rightpane.getChildren().get(1) instanceof VBox) {
+				n = (VBox) rightpane.getChildren().remove(1);
+			} else {
+				rightpane.getChildren().remove(1);
+			}
 		}
 		rightpane.getChildren().add(l);
+		rightpane.getChildren().add(n);
 	}
 
 	public static void updateGrid(GridPane grid) {
@@ -522,7 +580,8 @@ public class Main extends Application {
 						Label l2 = new Label(enhancedToString(c));
 						l2.setVisible(false);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
-						//System.out.println(((Champion)d).getName()+" "+((Champion)d).getCurrentActionPoints());
+						// System.out.println(((Champion)d).getName()+"
+						// "+((Champion)d).getCurrentActionPoints());
 					} else {
 						Label l = new Label("Cover");
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l);
@@ -622,20 +681,21 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	public static void hideButtons(HBox moveBox) {
+	public static void hideButtons(HBox box) {
 		for (int i = 0; i < 4; i++)
-			moveBox.getChildren().remove(1);
+			box.getChildren().remove(1);
 	}
+
 	public static void gameOver(Stage stage) {
-		if(game.checkGameOver()==null) {
+		if (game.checkGameOver() == null) {
 			return;
-		}else if (game.checkGameOver().equals(player1)) {
+		} else if (game.checkGameOver().equals(player1)) {
 			System.out.println("game 0ver");
 			//
-		}else {
+		} else {
 			System.out.println("game 0ver");
 			//
 		}
-		
+
 	}
 }
