@@ -421,18 +421,18 @@ public class Main extends Application {
 					if (xyAbilities.contains(a)) {
 						HBox xyBox = new HBox();
 						 //castJustAbility(game.getCurrentChampion(),a);
-						Text getx = new Text("enter position X");
-						getx.setFont(Font.font("verdana", 28));
+						Text getx = new Text("Enter X Position");
+						getx.setFont(Font.font("verdana", 15));
 
 						TextField thex = new TextField();
-						thex.setFont(Font.font("verdana", 28));
+						thex.setFont(Font.font("verdana", 15));
 
-						Text gety = new Text("Please enter Player 2 name.");
-						gety.setFont(Font.font("verdana", 28));
+						Text gety = new Text("Enter Y Position");
+						gety.setFont(Font.font("verdana", 15));
 
 						TextField they = new TextField();
 						
-						they.setFont(Font.font("verdana", 28));
+						they.setFont(Font.font("verdana", 15));
 						xyBox.getChildren().add(thex);
 						xyBox.getChildren().add(they);
 						leftpane.getChildren().add(xyBox);
@@ -442,7 +442,7 @@ public class Main extends Application {
 							public void handle(Event arg0) {
 								int x = Integer.parseInt(thex.getText());
 								int y = Integer.parseInt(they.getText());
-								castxyabilities(c, a,x,y);
+								castxyabilities(c, a,x,y,grid);
 								
 							}
 						});
@@ -468,7 +468,7 @@ public class Main extends Application {
 		endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				game.endTurn();
-				System.out.println(game.getCurrentChampion().getName());
+				//System.out.println(game.getCurrentChampion().getName());
 				current.setText("Current Champion: " + game.getCurrentChampion().getName());
 				try {
 					Champion c = (Champion) game.getTurnOrder().remove();
@@ -492,10 +492,13 @@ public class Main extends Application {
 		});
 
 	}
-	public static void castxyabilities(Champion c, Ability a, int x,int y) {
+	public static void castxyabilities(Champion c, Ability a, int x,int y,GridPane grid) {
 		try {
-			game.castAbility(a, x, y);
+			System.out.println(((Damageable)game.getBoard()[x][y]).getCurrentHP());
+			System.out.println(((Label)((VBox)getNodeFromGrid(grid, 4-x, y)).getChildren().get(1)).getText());
+			game.castAbility(a, 4-x, y);
 		}catch (Exception e) {
+			System.out.println(e);
 			new errormes("Error", e.getMessage());
 		}
 	}
