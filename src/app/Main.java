@@ -419,7 +419,34 @@ public class Main extends Application {
 						actionDirectional(moveBox, grid, stage, "castAbility", a);
 					}
 					if (xyAbilities.contains(a)) {
-						// castJustAbility(game.getCurrentChampion(),a);
+						HBox xyBox = new HBox();
+						 //castJustAbility(game.getCurrentChampion(),a);
+						Text getx = new Text("enter position X");
+						getx.setFont(Font.font("verdana", 28));
+
+						TextField thex = new TextField();
+						thex.setFont(Font.font("verdana", 28));
+
+						Text gety = new Text("Please enter Player 2 name.");
+						gety.setFont(Font.font("verdana", 28));
+
+						TextField they = new TextField();
+						
+						they.setFont(Font.font("verdana", 28));
+						xyBox.getChildren().add(thex);
+						xyBox.getChildren().add(they);
+						leftpane.getChildren().add(xyBox);
+					
+						Button submit = new Button("submit");
+						submit.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+							public void handle(Event arg0) {
+								int x = Integer.parseInt(thex.getText());
+								int y = Integer.parseInt(they.getText());
+								castxyabilities(c, a,x,y);
+								
+							}
+						});
+						leftpane.getChildren().add(submit);
 					}
 				}
 			});
@@ -464,6 +491,13 @@ public class Main extends Application {
 
 		});
 
+	}
+	public static void castxyabilities(Champion c, Ability a, int x,int y) {
+		try {
+			game.castAbility(a, x, y);
+		}catch (Exception e) {
+			new errormes("Error", e.getMessage());
+		}
 	}
 
 	public static void useLeaderAbility() {
