@@ -363,6 +363,9 @@ public class Main extends Application {
 	}
 
 	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage) {
+		while(leftpane.getChildren().size()!=2) {
+			leftpane.getChildren().remove(2);
+		}
 		HBox moveBox = new HBox();
 		Button move = new Button("Move");
 		move.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
@@ -397,6 +400,9 @@ public class Main extends Application {
 			} else {
 				justAbilities.add(a);
 			}
+		}
+		while(abilityBox.getChildren().size()!=1) {
+			abilityBox.getChildren().remove(1);
 		}
 		for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
 			Ability a = game.getCurrentChampion().getAbilities().get(i);
@@ -453,6 +459,7 @@ public class Main extends Application {
 				}
 				updateGrid(grid);
 				gameOver(stage);
+				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage);
 			}
 
 		});
