@@ -35,6 +35,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -67,7 +68,7 @@ public class Main extends Application {
 
 		BorderPane border = new BorderPane();
 		Scene scene = new Scene(border);
-		border.setStyle("-fx-background-color: #87CEEB;");
+		border.setStyle("-fx-background-image: url(\"/Assets//Marvel_background1.jpg\");");
 		stage.setScene(scene);
 		stage.setWidth(1000);
 		stage.setHeight(700);
@@ -77,13 +78,13 @@ public class Main extends Application {
 
 		Text player1text = new Text("Please enter Player 1 name.");
 		player1text.setFont(Font.font("verdana", 28));
-
+		player1text.setFill(Color.WHITE);
 		TextField player1field = new TextField();
 		player1field.setFont(Font.font("verdana", 28));
 
 		Text player2text = new Text("Please enter Player 2 name.");
 		player2text.setFont(Font.font("verdana", 28));
-
+		player2text.setFill(Color.WHITE);
 		TextField player2field = new TextField();
 		player2field.setFont(Font.font("verdana", 28));
 
@@ -269,8 +270,8 @@ public class Main extends Application {
 		Scene scene = new Scene(border);
 		border.setStyle("-fx-background-color: #87CEEB;");
 		stage.setScene(scene);
-		stage.setWidth(1001);
-		stage.setHeight(701);
+		stage.setWidth(1002);
+		stage.setHeight(702);
 
 		current = new Label("Current Champion: " + game.getCurrentChampion().getName());
 		current.setFont(Font.font("verdana", 30));
