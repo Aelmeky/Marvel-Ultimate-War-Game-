@@ -34,6 +34,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
@@ -177,11 +178,57 @@ public class Main extends Application {
 
 		GridPane grid = new GridPane();
 		Button[] arr = new Button[15];
-		arr[0] = new Button("B0");
-		arr[1] = new Button("B1");
-		arr[2] = new Button("B2");
-		arr[3] = new Button("B3");
-		arr[4] = new Button("B4");
+		arr[0] = new Button();
+		Image ca = new Image("/Assets/captain-america-1.png"); 
+		ImageView ca1 = new ImageView(ca);
+		ca1.setFitHeight(70);
+		//ca1.maxHeight(50);
+		ca1.setFitWidth(70);
+		arr[0].setGraphic(ca1);
+		arr[0].setMaxHeight(70);
+		arr[0].setMaxWidth(70);
+		
+		arr[1] = new Button();
+		Image dp = new Image("/Assets/deadpool-1.jpg"); 
+		ImageView dp1 = new ImageView(dp);
+		dp1.setFitHeight(70);
+		//ca1.maxHeight(50);
+		dp1.setFitWidth(70);
+		arr[1].setGraphic(dp1);
+		arr[1].setMaxHeight(70);
+		arr[1].setMaxWidth(70);
+		
+		arr[2] = new Button();
+		Image dr = new Image("/Assets/dr-strange.jpg"); 
+		ImageView dr1 = new ImageView(dr);
+		dr1.setFitHeight(70);
+		//ca1.maxHeight(50);
+		dr1.setFitWidth(70);
+		arr[2].setGraphic(dr1);
+		arr[2].setMaxHeight(70);
+		arr[2].setMaxWidth(70);
+		
+		
+		arr[3] = new Button();
+		Image el = new Image("/Assets/electro.png"); 
+		ImageView el1 = new ImageView(el);
+		el1.setFitHeight(70);
+		//ca1.maxHeight(50);
+		el1.setFitWidth(70);
+		arr[3].setGraphic(el1);
+		arr[3].setMaxHeight(70);
+		arr[3].setMaxWidth(70);		
+		
+		arr[4] = new Button();
+		Image gr = new Image("/Assets/ghost-rider.jpg"); 
+		ImageView gr1 = new ImageView(gr);
+		gr1.setFitHeight(70);
+		//ca1.maxHeight(50);
+		gr1.setFitWidth(70);
+		arr[4].setGraphic(gr1);
+		arr[4].setMaxHeight(70);
+		arr[4].setMaxWidth(70);		
+		
 		arr[5] = new Button("B5");
 		arr[6] = new Button("B6");
 		arr[7] = new Button("B7");
@@ -261,7 +308,9 @@ public class Main extends Application {
 	}
 
 	public static void scene4(Stage stage) {
-		// TODO abilities to string somewhere
+		// TODO effects update
+		// TODO end Turn
+		// TODO xyAbility exception=hide buttons
 		game.prepareChampionTurns();
 		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
 		BorderPane border = new BorderPane();
@@ -270,8 +319,8 @@ public class Main extends Application {
 		Scene scene = new Scene(border);
 		border.setStyle("-fx-background-color: #87CEEB;");
 		stage.setScene(scene);
-		stage.setWidth(1002);
-		stage.setHeight(702);
+		stage.setWidth(1001);
+		stage.setHeight(701);
 
 		current = new Label("Current Champion: " + game.getCurrentChampion().getName());
 		current.setFont(Font.font("verdana", 30));
@@ -426,10 +475,12 @@ public class Main extends Application {
 				public void handle(Event arg0) {
 					if (justAbilities.contains(a)) {
 						castJustAbility(game.getCurrentChampion(), a);
+						updateGrid(grid);
 						gameOver(stage);
 					}
 					if (directionalAbilities.contains(a)) {
 						actionDirectional(moveBox, grid, stage, "castAbility", a);
+						updateGrid(grid);
 					}
 					if (xyAbilities.contains(a)) {
 						HBox xyBox = new HBox();
@@ -530,6 +581,8 @@ public class Main extends Application {
 	}
 
 	public static void castJustAbility(Champion currentChampion, Ability a) {
+		System.out.println("here");
+		System.out.println(a.getName());
 		try {
 			game.castAbility(a);
 		} catch (Exception e) {
