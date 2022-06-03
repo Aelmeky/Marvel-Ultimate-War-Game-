@@ -47,6 +47,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -69,7 +70,12 @@ public class Main extends Application {
 
 		BorderPane border = new BorderPane();
 		Scene scene = new Scene(border);
-		border.setStyle("-fx-background-image: url(\"/Assets//Marvel_background1.jpg\");" + "-fx-background-size: cover;");
+		Image back1 = new Image("\\Assets\\Marvel_background1.jpg"); 
+		ImageView bk1 = new ImageView(back1);
+		bk1.fitHeightProperty().bind(stage.heightProperty());
+		bk1.fitWidthProperty().bind(stage.widthProperty());
+		
+		border.getChildren().add(bk1);
 		stage.setScene(scene);
 		stage.setWidth(1000);
 		stage.setHeight(700);
@@ -82,20 +88,34 @@ public class Main extends Application {
 		player1text.setFill(Color.WHITE);
 		TextField player1field = new TextField();
 		player1field.setFont(Font.font("verdana", 28));
-
+		player1field.setMaxWidth(250);
+		player1field.setStyle("-fx-background-image: url(\"/Assets//redfield.jpg\");" + "-fx-text-fill: white;");
+		player1field.setBackground(Background.fill(Color.BLACK));
 		Text player2text = new Text("Please enter Player 2 name.");
 		player2text.setFont(Font.font("verdana", 28));
 		player2text.setFill(Color.WHITE);
 		TextField player2field = new TextField();
 		player2field.setFont(Font.font("verdana", 28));
-
+		player2field.setMaxWidth(250);
+		player2field.setStyle("-fx-background-image: url(\"/Assets//redfield.jpg\");" + "-fx-text-fill: white;");
+		player2field.setBackground(Background.fill(Color.BLACK));
+		
 		vbox.getChildren().add(player1text);
 		vbox.getChildren().add(player1field);
 		vbox.getChildren().add(player2text);
 		vbox.getChildren().add(player2field);
 		border.setLeft(vbox);
 
-		Button toscene2 = new Button("Continue");
+		Button toscene2 = new Button();
+		toscene2.setShape(new Circle(5));
+		Image bu = new Image("/Assets/button.jpg"); 
+		ImageView bu1 = new ImageView(bu);
+		bu1.setFitHeight(50);
+		bu1.setFitWidth(50);
+		toscene2.setGraphic(bu1);
+//		toscene2.setMaxHeight(70);
+//		toscene2.setMaxWidth(70);
+		toscene2.setBackground(Background.fill(Color.BLACK));
 		EventHandler<ActionEvent> proceed = new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				if (!player1field.getText().equals("") && !player2field.getText().equals("")) {
@@ -121,9 +141,9 @@ public class Main extends Application {
 		};
 		toscene2.setOnAction(proceed);
 		toscene2.setPadding(new Insets(10));
-		border.setBottom(toscene2);
-		border.setMargin(border.getBottom(), new Insets(50));
-		border.setAlignment(toscene2, Pos.BOTTOM_RIGHT);
+		border.setTop(toscene2);
+//		border.setMargin(border.getBottom(), new Insets(50));
+		border.setAlignment(toscene2, Pos.TOP_CENTER);
 		stage.show();
 	}
 
@@ -132,7 +152,7 @@ public class Main extends Application {
 		border.setPrefHeight(1000);
 		border.setPrefWidth(700);
 		Scene scene = new Scene(border);
-		border.setStyle("-fx-background-color: #87CEEB;");
+		border.setStyle("-fx-background-image: url(\"/Assets//Marvel_background2.jpg\");" + "-fx-background-size: cover;");
 		stage.setScene(scene);
 		stage.setWidth(1001);
 		stage.setHeight(701);
@@ -141,21 +161,22 @@ public class Main extends Application {
 		tostring.setSpacing(14);
 		tostring.setMaxWidth(200);
 		tostring.setMinWidth(200);
-		tostring.setStyle("-fx-background-color: #123456;");
+//		tostring.setStyle("-fx-background-color: #123456;");
 
 		VBox selected = new VBox();
 		selected.setSpacing(8);
 		selected.setPrefWidth(200);
-		selected.setStyle("-fx-background-color: #aaaaaa;");
+//		selected.setStyle("-fx-background-color: #aaaaaa;");
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(8);
 		leftpane.setPrefWidth(200);
-		leftpane.setStyle("-fx-background-color: #aaaaaa;");
+		
 		leftpane.getChildren().add(selected);
 		Button removeChampion = new Button("Remove Last Champion");
 		leftpane.getChildren().add(removeChampion);
 		Button toscene3 = new Button("Continue");
 		border.setBottom(toscene3);
+		border.setAlignment(toscene3, Pos.BOTTOM_CENTER);
 		toscene3.setVisible(false);
 		ToggleGroup tog = new ToggleGroup();
 		tog.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
@@ -174,151 +195,145 @@ public class Main extends Application {
 
 		Text t2 = new Text("Your Team:");
 		t2.setFont(Font.font("verdana", 15));
+		t2.setFill(Color.WHITE);
 		selected.getChildren().add(t2);
 
 		GridPane grid = new GridPane();
 		Button[] arr = new Button[15];
+		ImageView [] images = new ImageView[15];
 		arr[0] = new Button();
 		Image ca = new Image("/Assets/captain-america-1.png"); 
-		ImageView ca1 = new ImageView(ca);
-		ca1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		ca1.setFitWidth(70);
-		arr[0].setGraphic(ca1);
+		images[0] = new ImageView(ca);
+		images[0].setFitHeight(70);
+		images[0].setFitWidth(70);
+		arr[0].setGraphic(images[0]);
 		arr[0].setMaxHeight(70);
 		arr[0].setMaxWidth(70);
 		
 		arr[1] = new Button();
 		Image dp = new Image("/Assets/deadpool-1.jpg"); 
-		ImageView dp1 = new ImageView(dp);
-		dp1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		dp1.setFitWidth(70);
-		arr[1].setGraphic(dp1);
+		images[1] = new ImageView(dp);
+		images[1].setFitHeight(70);
+		images[1].setFitWidth(70);
+		arr[1].setGraphic(images[1]);
 		arr[1].setMaxHeight(70);
 		arr[1].setMaxWidth(70);
 		
 		arr[2] = new Button();
 		Image dr = new Image("/Assets/dr-strange.jpg"); 
-		ImageView dr1 = new ImageView(dr);
-		dr1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		dr1.setFitWidth(70);
-		arr[2].setGraphic(dr1);
+		images[2] = new ImageView(dr);
+		images[2].setFitHeight(70);
+		images[2].setFitWidth(70);
+		arr[2].setGraphic(images[2]);
 		arr[2].setMaxHeight(70);
 		arr[2].setMaxWidth(70);
 		
 		
 		arr[3] = new Button();
 		Image el = new Image("/Assets/electro.png"); 
-		ImageView el1 = new ImageView(el);
-		el1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		el1.setFitWidth(70);
-		arr[3].setGraphic(el1);
+		images[3] = new ImageView(el);
+		images[3].setFitHeight(70);
+		images[3].setFitWidth(70);
+		arr[3].setGraphic(images[3]);
 		arr[3].setMaxHeight(70);
 		arr[3].setMaxWidth(70);		
 		
 		arr[4] = new Button();
 		Image gr = new Image("/Assets/ghost-rider.jpg"); 
-		ImageView gr1 = new ImageView(gr);
-		gr1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		gr1.setFitWidth(70);
-		arr[4].setGraphic(gr1);
+		images[4] = new ImageView(gr);
+		images[4].setFitHeight(70);
+		images[4].setFitWidth(70);
+		arr[4].setGraphic(images[4]);
 		arr[4].setMaxHeight(70);
 		arr[4].setMaxWidth(70);		
 		
 		arr[5] = new Button();
 		Image hl = new Image("/Assets/hela.png"); 
-		ImageView hl1 = new ImageView(hl);
-		hl1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		hl1.setFitWidth(70);
-		arr[5].setGraphic(hl1);
+		images[5] = new ImageView(hl);
+		images[5].setFitHeight(70);
+		images[5].setFitWidth(70);
+		arr[5].setGraphic(images[5]);
 		arr[5].setMaxHeight(70);
 		arr[5].setMaxWidth(70);	
 		
 		arr[6] = new Button();
 		Image hu = new Image("/Assets/hulk.jpg"); 
-		ImageView hu1 = new ImageView(hu);
-		hu1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		hu1.setFitWidth(70);
-		arr[6].setGraphic(hu1);
+		images[6] = new ImageView(hu);
+		images[6].setFitHeight(70);
+		images[6].setFitWidth(70);
+		arr[6].setGraphic(images[6]);
 		arr[6].setMaxHeight(70);
 		arr[6].setMaxWidth(70);	
 		
 		arr[7] = new Button();
 		Image ice = new Image("/Assets/iceman.jpg"); 
-		ImageView ice1 = new ImageView(ice);
-		ice1.setFitHeight(70);
-		//ca1.maxHeight(50);
-		ice1.setFitWidth(70);
-		arr[7].setGraphic(ice1);
+		images[7] = new ImageView(ice);
+		images[7].setFitHeight(70);
+		images[7].setFitWidth(70);
+		arr[7].setGraphic(images[7]);
 		arr[7].setMaxHeight(70);
 		arr[7].setMaxWidth(70);	
 		
 		arr[8] = new Button();
 		Image im = new Image("/Assets/ironman.png"); 
-		ImageView im1 = new ImageView(im);
-		im1.setFitHeight(70);
-		im1.setFitWidth(70);
-		arr[8].setGraphic(im1);
+		images[8] = new ImageView(im);
+		images[8].setFitHeight(70);
+		images[8].setFitWidth(70);
+		arr[8].setGraphic(images[8]);
 		arr[8].setMaxHeight(70);
 		arr[8].setMaxWidth(70);	
 		
 		arr[9] = new Button();
 		Image lo = new Image("/Assets/loki.jpg"); 
-		ImageView lo1 = new ImageView(lo);
-		lo1.setFitHeight(70);
-		lo1.setFitWidth(70);
-		arr[9].setGraphic(lo1);
+		images[9] = new ImageView(lo);
+		images[9].setFitHeight(70);
+		images[9].setFitWidth(70);
+		arr[9].setGraphic(images[9]);
 		arr[9].setMaxHeight(70);
 		arr[9].setMaxWidth(70);	
 		
 		arr[10] = new Button();
 		Image qs = new Image("/Assets/quicksilver.jpg"); 
-		ImageView qs1 = new ImageView(qs);
-		qs1.setFitHeight(70);
-		qs1.setFitWidth(70);
-		arr[10].setGraphic(qs1);
+		images[10] = new ImageView(qs);
+		images[10].setFitHeight(70);
+		images[10].setFitWidth(70);
+		arr[10].setGraphic(images[10]);
 		arr[10].setMaxHeight(70);
 		arr[10].setMaxWidth(70);	
 		
 		arr[11] = new Button();
 		Image sp = new Image("/Assets/spiderman.jpg"); 
-		ImageView sp1 = new ImageView(sp);
-		sp1.setFitHeight(70);
-		sp1.setFitWidth(70);
-		arr[11].setGraphic(sp1);
+		images[11] = new ImageView(sp);
+		images[11].setFitHeight(70);
+		images[11].setFitWidth(70);
+		arr[11].setGraphic(images[11]);
 		arr[11].setMaxHeight(70);
 		arr[11].setMaxWidth(70);	
 		
 		arr[12] = new Button();
 		Image th = new Image("/Assets/thor.jpg"); 
-		ImageView th1 = new ImageView(th);
-		th1.setFitHeight(70);
-		th1.setFitWidth(70);
-		arr[12].setGraphic(th1);
+		images[12] = new ImageView(th);
+		images[12].setFitHeight(70);
+		images[12].setFitWidth(70);
+		arr[12].setGraphic(images[12]);
 		arr[12].setMaxHeight(70);
 		arr[12].setMaxWidth(70);	
 		
 		arr[13] = new Button();
 		Image vn = new Image("/Assets/venom.jpg"); 
-		ImageView vn1 = new ImageView(vn);
-		vn1.setFitHeight(70);
-		vn1.setFitWidth(70);
-		arr[13].setGraphic(vn1);
+		images[13] = new ImageView(vn);
+		images[13].setFitHeight(70);
+		images[13].setFitWidth(70);
+		arr[13].setGraphic(images[13]);
 		arr[13].setMaxHeight(70);
 		arr[13].setMaxWidth(70);	
 		
 		arr[14] = new Button();
 		Image yj = new Image("/Assets/yellowjacket.png"); 
-		ImageView yj1 = new ImageView(yj);
-		yj1.setFitHeight(70);
-		yj1.setFitWidth(70);
-		arr[14].setGraphic(yj1);
+		images[14] = new ImageView(yj);
+		images[14].setFitHeight(70);
+		images[14].setFitWidth(70);
+		arr[14].setGraphic(images[14]);
 		arr[14].setMaxHeight(70);
 		arr[14].setMaxWidth(70);	
 		
@@ -353,6 +368,7 @@ public class Main extends Application {
 				Node n = selected.getChildren().remove(selected.getChildren().size() - 1);
 				int x = chosenChamions.remove(chosenChamions.size() - 1);
 				final int j = x;
+				arr[j].setGraphic(images[j]);
 				arr[j].setVisible(true);
 				
 				p.getTeam().remove(p.getTeam().size() - 1);
@@ -360,113 +376,7 @@ public class Main extends Application {
 			}
 		});
 
-		
-	
-		
-		ca1.setFitWidth(70);
-		arr[0].setGraphic(ca1);
-		arr[0].setMaxHeight(70);
-		arr[0].setMaxWidth(70);
-		
-	
-	
-		dp1.setFitWidth(70);
-		arr[1].setGraphic(dp1);
-		arr[1].setMaxHeight(70);
-		arr[1].setMaxWidth(70);
-		
-		
-		
-		dr1.setFitWidth(70);
-		arr[2].setGraphic(dr1);
-		arr[2].setMaxHeight(70);
-		arr[2].setMaxWidth(70);
-		
-		
-		
-		
-		el1.setFitWidth(70);
-		arr[3].setGraphic(el1);
-		arr[3].setMaxHeight(70);
-		arr[3].setMaxWidth(70);		
-		
-	
-	
-		gr1.setFitWidth(70);
-		arr[4].setGraphic(gr1);
-		arr[4].setMaxHeight(70);
-		arr[4].setMaxWidth(70);		
-		
-		
-		
-		hl1.setFitWidth(70);
-		arr[5].setGraphic(hl1);
-		arr[5].setMaxHeight(70);
-		arr[5].setMaxWidth(70);	
-		
-
-		
-		hu1.setFitWidth(70);
-		arr[6].setGraphic(hu1);
-		arr[6].setMaxHeight(70);
-		arr[6].setMaxWidth(70);	
-		
-
-	
-		ice1.setFitWidth(70);
-		arr[7].setGraphic(ice1);
-		arr[7].setMaxHeight(70);
-		arr[7].setMaxWidth(70);	
-		
-
-	
-		im1.setFitHeight(70);
-		im1.setFitWidth(70);
-		arr[8].setGraphic(im1);
-		arr[8].setMaxHeight(70);
-		arr[8].setMaxWidth(70);	
-
-		
-		lo1.setFitHeight(70);
-		lo1.setFitWidth(70);
-		arr[9].setGraphic(lo1);
-		arr[9].setMaxHeight(70);
-		arr[9].setMaxWidth(70);	
-
-		
-		qs1.setFitHeight(70);
-		qs1.setFitWidth(70);
-		arr[10].setGraphic(qs1);
-		arr[10].setMaxHeight(70);
-		arr[10].setMaxWidth(70);	
-		
-		
-		sp1.setFitHeight(70);
-		sp1.setFitWidth(70);
-		arr[11].setGraphic(sp1);
-		arr[11].setMaxHeight(70);
-		arr[11].setMaxWidth(70);	
-		
-
-		
-		th1.setFitHeight(70);
-		th1.setFitWidth(70);
-		arr[12].setGraphic(th1);
-		arr[12].setMaxHeight(70);
-
-
-		vn1.setFitHeight(70);
-		vn1.setFitWidth(70);
-		arr[13].setGraphic(vn1);
-		arr[13].setMaxHeight(70);
-		arr[13].setMaxWidth(70);	
-	
-	
-		yj1.setFitHeight(70);
-		yj1.setFitWidth(70);
-		arr[14].setGraphic(yj1);
-		arr[14].setMaxHeight(70);
-		arr[14].setMaxWidth(70);	
+				
 		
 		grid.setHgap(20);
 		grid.setVgap(20);
@@ -474,13 +384,14 @@ public class Main extends Application {
 
 		Label t = new Label("Select Champions For " + p.getName() + ":");
 		t.setFont(Font.font("verdana", 30));
+		t.setTextFill(Color.WHITE);
 		
-
+		leftpane.setBackground(Background.fill(Color.TRANSPARENT));
 		border.setRight(tostring);
 		border.setLeft(leftpane);
 		border.setTop(t);
 		border.setCenter(grid);
-		border.getCenter().setStyle("-fx-background-image: url(\"/Assets//Marvel_background2.jpg\");" + "-fx-background-size: cover;");
+//		border.getCenter().setStyle("-fx-background-image: url(\"/Assets//Marvel_background2.jpg\");" + "-fx-background-size: cover;");
 		//border.getCenter().setStyle();
 		toscene3.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
@@ -506,6 +417,7 @@ public class Main extends Application {
 		// TODO effects update
 		// TODO end Turn
 		// TODO xyAbility exception=hide buttons
+		// TODO removing leader from selected champion is not working
 		game.prepareChampionTurns();
 		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
 		BorderPane border = new BorderPane();
@@ -900,7 +812,7 @@ public class Main extends Application {
 		}
 //		Text t=new Text(game.getAvailableChampions().get(i).getName());
 //		t.setFont(Font.font("verdana",15));
-		RadioButton rb = new RadioButton();
+		RadioButton rb = new RadioButton(game.getAvailableChampions().get(i).getName());
 		rb.setGraphic(arr[i].getGraphic());
 		rb.setToggleGroup(t);
 		selected.getChildren().add(rb);
@@ -914,10 +826,12 @@ public class Main extends Application {
 	public static void viewChampionStats(VBox tostring, int i) {
 		Text t = new Text(game.getAvailableChampions().get(i).toString());
 		t.setFont(Font.font("verdana", 15));
+		t.setFill(Color.WHITE);
 		if (!tostring.getChildren().isEmpty()) {
 			tostring.getChildren().remove(0);
 		}
 		tostring.getChildren().add(t);
+		
 	}
 
 	public static void main(String[] args) {
