@@ -833,6 +833,8 @@ public class Main extends Application {
 	}
 
 	public static String enhancedToString(Champion c) {
+		// TODO handle duplicate shield names
+		// TODO damaging ability worked on cover only(i think so )
 		String s2 = "";
 		if (c instanceof Champion) {
 			s2 = "Champion";
@@ -849,8 +851,12 @@ public class Main extends Application {
 		}
 		String eff = "";
 		for (int j = 0; j < c.getAppliedEffects().size(); j++) {
-			s3 += c.getAppliedEffects().get(j).getName() + " Duration=" + c.getAppliedEffects().get(j).getDuration()
+			eff += c.getAppliedEffects().get(j).getName() + " Duration=" + c.getAppliedEffects().get(j).getDuration()
 					+ "\n";
+		}
+		if(c.getAppliedEffects().size()!=0) {
+			System.out.println(c.getAppliedEffects());
+			System.out.println(eff);
 		}
 		if (c.equals(game.getCurrentChampion())) {
 			String s = "name=" + c.getName() + "\n" + "Type=" + s2 + "\n" + "currentHP=" + c.getCurrentHP() + "\n"
