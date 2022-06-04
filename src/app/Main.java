@@ -70,7 +70,7 @@ public class Main extends Application {
 
 		BorderPane border = new BorderPane();
 		Scene scene = new Scene(border);
-		Image back1 = new Image("\\Assets\\Marvel_background1.jpg"); 
+		Image back1 = new Image("/Assets/Marvel_background1.jpg"); 
 		ImageView bk1 = new ImageView(back1);
 		bk1.fitHeightProperty().bind(stage.heightProperty());
 		bk1.fitWidthProperty().bind(stage.widthProperty());
