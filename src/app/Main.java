@@ -368,9 +368,13 @@ public class Main extends Application {
 				Node n = selected.getChildren().remove(selected.getChildren().size() - 1);
 				int x = chosenChamions.remove(chosenChamions.size() - 1);
 				final int j = x;
+				System.out.println(arr[j].getGraphic());
 				arr[j].setGraphic(images[j]);
+				System.out.println(arr[j].getGraphic());
 				arr[j].setVisible(true);
-				
+				if(p.getTeam().size()!=0&&p.getLeader()!=null&&p.getLeader().getName().equals(p.getTeam().get(p.getTeam().size()-1).getName())) {
+					p.setLeader(null);
+				}
 				p.getTeam().remove(p.getTeam().size() - 1);
 				toscene3.setVisible(false);
 			}
