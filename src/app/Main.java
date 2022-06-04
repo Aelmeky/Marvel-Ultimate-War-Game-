@@ -736,7 +736,11 @@ public class Main extends Application {
 						l2.setVisible(false);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
 					} else {
-						Label l = new Label("Cover");
+						//Label l = new Label("Cover");
+						Image cover = new Image("\\Assets\\cover.png");
+						ImageView l = new ImageView(cover);
+						l.setFitHeight(100);
+						l.setFitWidth(100);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l);
 						Label l2 = new Label(((Cover) d).toString());
 						l2.setVisible(false);
