@@ -728,7 +728,11 @@ public class Main extends Application {
 					int x = ((Damageable) d).getLocation().x;
 					int y = ((Damageable) d).getLocation().y;
 					if (d instanceof Champion) {
-						Label l = new Label(((Champion) d).getName());
+						String name = (((Champion) d).getName());
+						Image ch = new Image(geticon(name));
+						ImageView l = new ImageView(ch);
+						l.setFitHeight(100);
+						l.setFitWidth(100);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l);
 						Champion c = (Champion) d;
 						Label l2 = new Label(enhancedToString(c));
@@ -751,6 +755,32 @@ public class Main extends Application {
 		}
 	}
 
+	public static String geticon(String s)
+	{
+		
+			switch(s)
+			{
+			case("Captain America"): return "\\Assets\\Captain-america-2.png";
+			case("Deadpool"): return "\\Assets\\deadpool-2.jpg";
+			case("Dr Strange") : return "\\Assets\\dr-strange-2.jpg";
+			case("Electro"):return "\\Assets\\electro-2.png";
+			case("Ghost Rider") : return "\\Assets\\ghost-rider-2.jpg";
+			case("Hela") : return "\\Assets\\hela-2.jpg";
+			case("Hulk"): return "\\Assets\\hulk-2.jpg";
+			case("Iceman"):return "\\Assets\\iceman-2.jpg";
+			case("Ironman"): return "\\Assets\\ironman-2.png";
+			case("Loki"):return "\\Assets\\loki-2.png";
+			case("Quicksilver"):return "\\Assets\\\\quicksilver-2.jpg";
+			case("Spiderman"):return "\\Assets\\\\spiderman-2.jpg";
+			case("Thor") :return "Thorbat.png";
+			case("Venom"):return "Venombat.png";
+			default : return "\\Assets\\deadpool-2.jpg";
+			
+			}
+		
+			
+	}
+	
 	public static String enhancedToString(Champion c) {
 		// TODO handle duplicate shield names
 		// TODO damaging ability worked on cover only(i think so )
