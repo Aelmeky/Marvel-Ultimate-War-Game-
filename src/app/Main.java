@@ -89,7 +89,7 @@ public class Main extends Application {
 		TextField player1field = new TextField();
 		player1field.setFont(Font.font("verdana", 28));
 		player1field.setMaxWidth(250);
-		player1field.setStyle("-fx-background-image: url(\"/Assets//redfield.jpg\");" + "-fx-text-fill: white;");
+		player1field.setStyle("-fx-background-image: url(\"/Assets//textBoxBackground.png\");" + "-fx-text-fill: white;");
 		player1field.setBackground(Background.fill(Color.BLACK));
 		Text player2text = new Text("Please enter Player 2 name.");
 		player2text.setFont(Font.font("verdana", 28));
