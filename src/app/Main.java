@@ -736,7 +736,7 @@ public class Main extends Application {
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
 					} else {
 						//Label l = new Label("Cover");
-						Image cover = new Image("\\Assets\\cover.png");
+						Image cover = new Image("Assets/cover.png");
 						ImageView l = new ImageView(cover);
 						l.setFitHeight(100);
 						l.setFitWidth(100);
@@ -820,6 +820,8 @@ public class Main extends Application {
 //		Text t=new Text(game.getAvailableChampions().get(i).getName());
 //		t.setFont(Font.font("verdana",15));
 		RadioButton rb = new RadioButton(game.getAvailableChampions().get(i).getName());
+		rb.setFont(Font.font("verdana", 13));
+		rb.setStyle("-fx-text-fill: White");
 		rb.setGraphic(arr[i].getGraphic());
 		rb.setToggleGroup(t);
 		selected.getChildren().add(rb);
