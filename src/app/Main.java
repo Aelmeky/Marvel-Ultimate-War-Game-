@@ -641,6 +641,7 @@ public class Main extends Application {
 		Button endTurn = new Button("End Turn");
 		leftpane.getChildren().add(endTurn);
 		endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+			// TODO when the next Champion dies he should be removed from top labels
 			public void handle(Event arg0) {
 				game.endTurn();
 				//System.out.println(game.getCurrentChampion().getName());
@@ -648,11 +649,15 @@ public class Main extends Application {
 				try {
 					Champion c = (Champion) game.getTurnOrder().remove();
 					if (game.getTurnOrder().size() == 0) {
+						game.prepareChampionTurns();
+						fastestChampion=((Champion)game.getTurnOrder().peekMin()).getName();
 						next.setText("next Champion: " + fastestChampion);
+						while(game.getTurnOrder().size()!=0) {
+							game.getTurnOrder().remove();
+						}
 					} else {
 						next.setText("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
 					}
-					// System.out.println(((Champion)game.getTurnOrder().peekMin()).getName());
 					game.getTurnOrder().insert(c);
 				} catch (Exception e) {
 					System.out.println("exc");
@@ -761,21 +766,21 @@ public class Main extends Application {
 		
 			switch(s)
 			{
-			case("Captain America"): return "\\Assets\\Captain-america-2.png";
-			case("Deadpool"): return "\\Assets\\deadpool-2.jpg";
-			case("Dr Strange") : return "\\Assets\\dr-strange-2.jpg";
-			case("Electro"):return "\\Assets\\electro-2.png";
-			case("Ghost Rider") : return "\\Assets\\ghost-rider-2.jpg";
-			case("Hela") : return "\\Assets\\hela-2.jpg";
-			case("Hulk"): return "\\Assets\\hulk-2.jpg";
-			case("Iceman"):return "\\Assets\\iceman-2.jpg";
-			case("Ironman"): return "\\Assets\\ironman-2.png";
-			case("Loki"):return "\\Assets\\loki-2.png";
-			case("Quicksilver"):return "\\Assets\\\\quicksilver-2.jpg";
-			case("Spiderman"):return "\\Assets\\\\spiderman-2.jpg";
-			case("Thor") :return "Thorbat.png";
-			case("Venom"):return "Venombat.png";
-			default : return "\\Assets\\deadpool-2.jpg";
+			case("Captain America"): return "/Assets/captain-america-1.png";
+			case("Deadpool"): return "/Assets/deadpool-1.jpg";
+			case("Dr Strange") : return "/Assets/dr-strange.jpg";
+			case("Electro"):return "/Assets/electro.png";
+			case("Ghost Rider") : return "/Assets/ghost-rider.jpg";
+			case("Hela") : return "/Assets/hela.png";
+			case("Hulk"): return "/Assets/hulk.jpg";
+			case("Iceman"):return "/Assets/iceman.jpg";
+			case("Ironman"): return "/Assets/ironman.png";
+			case("Loki"):return "/Assets/loki.jpg";
+			case("Quicksilver"):return "/Assets/quicksilver.jpg";
+			case("Spiderman"):return "/Assets/spiderman.jpg";
+			case("Thor") :return "/Thorbat.jpg";
+			case("Venom"):return "/Venom.jpg";
+			default : return "/Assets/yellowjacket.png";
 			
 			}
 		
