@@ -40,25 +40,39 @@ public class driver {
 				.add(game.getAvailableChampions().get(4));
 		game.getSecondPlayer().getTeam()
 				.add(game.getAvailableChampions().get(5));
-		
 		game.placeChampions();
 		game.prepareChampionTurns();
-		
-		Disarm e=new Disarm(2);
-		game.getFirstPlayer().getTeam().get(0).getAppliedEffects().add(e);
+
 		printGame(game);
 		Game game2 = clone(game);
 		printGame(game2);
+
 	}
 
 	public static void printGame(Game game) {
-//		 System.out.println(game);
-//		 System.out.println(game.getFirstPlayer());
-//		 System.out.println(game.getFirstPlayer().getName());
-		//System.out.println(game.getFirstPlayer().getTeam().get(0).getAppliedEffects().get(0).getDuration());
-//		 System.out.println(game.getSecondPlayer());
-//		 System.out.println(game.getSecondPlayer().getName());
-//		System.out.println(game.getSecondPlayer().getTeam().get(0).getAppliedEffects().get(0));
+		// System.out.println(game);
+		// System.out.println(game.getFirstPlayer());
+		// System.out.println(game.getFirstPlayer().getName());
+		// System.out.println(game.getFirstPlayer().getTeam().get(0).getAppliedEffects().get(0).getDuration());
+		// System.out.println(game.getSecondPlayer());
+		// System.out.println(game.getSecondPlayer().getName());
+		// System.out.println(game.getSecondPlayer().getTeam().get(0).getAppliedEffects().get(0));
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (game.getBoard()[i][j] == null) {
+					System.out.print(" ");
+				}
+				if (game.getBoard()[i][j] != null) {
+					if (game.getBoard()[i][j] instanceof Champion) {
+						System.out.print("C");
+					}
+					if (game.getBoard()[i][j] instanceof Cover) {
+						System.out.print("v");
+					}
+				}
+			}
+			System.out.println();
+		}
 		System.out.println("-------------");
 	}
 
@@ -72,61 +86,30 @@ public class driver {
 		cloneChampions(game.getSecondPlayer(), p2);
 		newGame.placeChampions();
 		newGame.prepareChampionTurns();
-//		for(int i=0;i<5;i++){
-//			for(int j=0;j<5;j++){
-//				if(game.getBoard()[i][j]==null){
-//					System.out.print(" ");
-//				}
-//				if(game.getBoard()[i][j]!=null){
-//					if(game.getBoard()[i][j]instanceof Champion){
-//						System.out.print("C");
-//					}
-//					if(game.getBoard()[i][j]instanceof Cover){
-//						System.out.print("v");
-//					}
-//				}
-//			}
-//			System.out.println();
-//		}
-		for(int i=0;i<5;i++){
-			for(int j=0;j<5;j++){
-				if(newGame.getBoard()[i][j] instanceof Cover){
-					newGame.getBoard()[i][j]=null;
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (newGame.getBoard()[i][j] instanceof Cover) {
+					newGame.getBoard()[i][j] = null;
 				}
 			}
 		}
-		for(int i=0;i<5;i++){
-			for(int j=0;j<5;j++){
-				if(game.getBoard()[i][j]!=null){
-//					if(game.getBoard()[i][j] instanceof Champion){
-//						System.out.println(((Champion)game.getBoard()[i][j]).getName()+"||"+((Champion)newGame.getBoard()[i][j]).getName());
-//					}
-					if(game.getBoard()[i][j] instanceof Cover){
-						Cover c=new Cover(i,j);
-						c.setCurrentHP(((Cover)game.getBoard()[i][j]).getCurrentHP());
-						newGame.getBoard()[i][j]=c;
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (game.getBoard()[i][j] != null) {
+					// if(game.getBoard()[i][j] instanceof Champion){
+					// System.out.println(((Champion)game.getBoard()[i][j]).getName()+"||"+((Champion)newGame.getBoard()[i][j]).getName());
+					// }
+					if (game.getBoard()[i][j] instanceof Cover) {
+						Cover c = new Cover(i, j);
+						c.setCurrentHP(((Cover) game.getBoard()[i][j])
+								.getCurrentHP());
+						newGame.getBoard()[i][j] = c;
 					}
-				}else{
+				} else {
 					continue;
 				}
 			}
 		}
-//		for(int i=0;i<5;i++){
-//			for(int j=0;j<5;j++){
-//				if(newGame.getBoard()[i][j]==null){
-//					System.out.print(" ");
-//				}
-//				if(newGame.getBoard()[i][j]!=null){
-//					if(newGame.getBoard()[i][j]instanceof Champion){
-//						System.out.print("C");
-//					}
-//					if(newGame.getBoard()[i][j]instanceof Cover){
-//						System.out.print("v");
-//					}
-//				}
-//			}
-//			System.out.println();
-//		}
 		return newGame;
 	}
 
@@ -182,13 +165,70 @@ public class driver {
 					c2.getAbilities().add(a2);
 				}
 			}
-			for(Effect e:c.getAppliedEffects()){
+			for (Effect e : c.getAppliedEffects()) {
 				try {
-					Effect e2=(Effect) e.clone();
+					Effect e2 = (Effect) e.clone();
 					c2.getAppliedEffects().add(e2);
-				} catch (CloneNotSupportedException e1){}
+				} catch (CloneNotSupportedException e1) {
+				}
 			}
 			p2.getTeam().add(c2);
 		}
 	}
+
+	public static int evaluate(Object[][] o, Object[][] n, Player me) {
+		int sum = 0;
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (o[i][j] == n[i][j]) {
+					continue;
+				} else if(o[i][j] instanceof Champion) {
+					if (isFriend(me, ((Champion) n[i][j]))) {
+						//effect on a friend
+						
+					}
+					if (!isFriend(me, ((Champion) n[i][j]))) {
+						//effect on an enemy
+						if(n[i][j]==null){
+							//killed an enemy
+							sum+=2*((Champion) o[i][j]).getMaxHP();
+						}
+						
+					}
+				}
+			}
+		}
+		return sum;
+	}
+
+	public static boolean isFriend(Player me, Champion c) {
+		for (Champion c2 : me.getTeam()) {
+			if (c2 == c) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
