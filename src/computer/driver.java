@@ -40,21 +40,22 @@ public class driver {
 				.add(game.getAvailableChampions().get(4));
 		game.getSecondPlayer().getTeam()
 				.add(game.getAvailableChampions().get(5));
-
-		//printGame(game);
-		game.getFirstPlayer().getTeam().get(0).setCurrentHP(1);
+		
+		Disarm e=new Disarm(2);
+		game.getFirstPlayer().getTeam().get(0).getAppliedEffects().add(e);
+		printGame(game);
 		Game game2 = clone(game);
-		//printGame(game2);
+		printGame(game2);
 	}
 
 	public static void printGame(Game game) {
-		// System.out.println(game);
-		// System.out.println(game.getFirstPlayer());
-		// System.out.println(game.getFirstPlayer().getName());
-		//System.out.println(game.getFirstPlayer().getTeam().get(0));
-		// System.out.println(game.getSecondPlayer());
-		// System.out.println(game.getSecondPlayer().getName());
-		//System.out.println(game.getSecondPlayer().getTeam().get(0));
+//		 System.out.println(game);
+//		 System.out.println(game.getFirstPlayer());
+//		 System.out.println(game.getFirstPlayer().getName());
+		//System.out.println(game.getFirstPlayer().getTeam().get(0).getAppliedEffects().get(0).getDuration());
+//		 System.out.println(game.getSecondPlayer());
+//		 System.out.println(game.getSecondPlayer().getName());
+//		System.out.println(game.getSecondPlayer().getTeam().get(0).getAppliedEffects().get(0));
 		System.out.println("-------------");
 	}
 
@@ -120,6 +121,12 @@ public class driver {
 							((DamagingAbility) a).getDamageAmount());
 					c2.getAbilities().add(a2);
 				}
+			}
+			for(Effect e:c.getAppliedEffects()){
+				try {
+					Effect e2=(Effect) e.clone();
+					c2.getAppliedEffects().add(e2);
+				} catch (CloneNotSupportedException e1){}
 			}
 			p2.getTeam().add(c2);
 		}
