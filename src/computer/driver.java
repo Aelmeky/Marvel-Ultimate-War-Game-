@@ -7,12 +7,12 @@ import model.effects.*;
 import engine.Game;
 import engine.Player;
 import model.abilities.Ability;
-import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
 import model.abilities.DamagingAbility;
 import model.abilities.HealingAbility;
 import model.world.AntiHero;
 import model.world.Champion;
+import model.world.Cover;
 import model.world.Hero;
 import model.world.Villain;
 
@@ -41,6 +41,9 @@ public class driver {
 		game.getSecondPlayer().getTeam()
 				.add(game.getAvailableChampions().get(5));
 		
+		game.placeChampions();
+		game.prepareChampionTurns();
+		
 		Disarm e=new Disarm(2);
 		game.getFirstPlayer().getTeam().get(0).getAppliedEffects().add(e);
 		printGame(game);
@@ -67,6 +70,63 @@ public class driver {
 		Game newGame = new Game(p1, p2);
 		cloneChampions(game.getFirstPlayer(), p1);
 		cloneChampions(game.getSecondPlayer(), p2);
+		newGame.placeChampions();
+		newGame.prepareChampionTurns();
+//		for(int i=0;i<5;i++){
+//			for(int j=0;j<5;j++){
+//				if(game.getBoard()[i][j]==null){
+//					System.out.print(" ");
+//				}
+//				if(game.getBoard()[i][j]!=null){
+//					if(game.getBoard()[i][j]instanceof Champion){
+//						System.out.print("C");
+//					}
+//					if(game.getBoard()[i][j]instanceof Cover){
+//						System.out.print("v");
+//					}
+//				}
+//			}
+//			System.out.println();
+//		}
+		for(int i=0;i<5;i++){
+			for(int j=0;j<5;j++){
+				if(newGame.getBoard()[i][j] instanceof Cover){
+					newGame.getBoard()[i][j]=null;
+				}
+			}
+		}
+		for(int i=0;i<5;i++){
+			for(int j=0;j<5;j++){
+				if(game.getBoard()[i][j]!=null){
+//					if(game.getBoard()[i][j] instanceof Champion){
+//						System.out.println(((Champion)game.getBoard()[i][j]).getName()+"||"+((Champion)newGame.getBoard()[i][j]).getName());
+//					}
+					if(game.getBoard()[i][j] instanceof Cover){
+						Cover c=new Cover(i,j);
+						c.setCurrentHP(((Cover)game.getBoard()[i][j]).getCurrentHP());
+						newGame.getBoard()[i][j]=c;
+					}
+				}else{
+					continue;
+				}
+			}
+		}
+//		for(int i=0;i<5;i++){
+//			for(int j=0;j<5;j++){
+//				if(newGame.getBoard()[i][j]==null){
+//					System.out.print(" ");
+//				}
+//				if(newGame.getBoard()[i][j]!=null){
+//					if(newGame.getBoard()[i][j]instanceof Champion){
+//						System.out.print("C");
+//					}
+//					if(newGame.getBoard()[i][j]instanceof Cover){
+//						System.out.print("v");
+//					}
+//				}
+//			}
+//			System.out.println();
+//		}
 		return newGame;
 	}
 
