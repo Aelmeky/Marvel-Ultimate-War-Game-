@@ -3,16 +3,20 @@ package computer;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import model.effects.*;
 import engine.Game;
 import engine.Player;
 import model.abilities.Ability;
+import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
 import model.abilities.DamagingAbility;
 import model.abilities.HealingAbility;
 import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Cover;
+import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
 
@@ -176,7 +180,15 @@ public class driver {
 		}
 	}
 
-	public static int evaluate(Object[][] o, Object[][] n, Player me) {
+	public static int evaluate(Game ogame, Game ngame, Player me) {
+		Object[][] n=ngame.getBoard();
+		Object[][] o=ogame.getBoard();
+		if(ngame.getSecondPlayer().getTeam().size()==0){
+			return Integer.MIN_VALUE;
+		}
+		if(ngame.getFirstPlayer().getTeam().size()==0){
+			return Integer.MAX_VALUE;
+		}
 		int sum = 0;
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -185,15 +197,23 @@ public class driver {
 				} else if(o[i][j] instanceof Champion) {
 					if (isFriend(me, ((Champion) n[i][j]))) {
 						//effect on a friend
-						
+						if(n[i][j]==null){
+							//a friend got killed
+							sum-=2*((Champion) o[i][j]).getMaxHP();
+						}else{
+							//A friend got damaged
+							sum-=((Champion) o[i][j]).getCurrentHP()-((Champion) n[i][j]).getCurrentHP();
+						}
 					}
 					if (!isFriend(me, ((Champion) n[i][j]))) {
 						//effect on an enemy
 						if(n[i][j]==null){
 							//killed an enemy
 							sum+=2*((Champion) o[i][j]).getMaxHP();
+						}else{
+							//damaged an enemy
+							sum+=((Champion) o[i][j]).getCurrentHP()-((Champion) n[i][j]).getCurrentHP();
 						}
-						
 					}
 				}
 			}
@@ -210,7 +230,61 @@ public class driver {
 		return false;
 	}
 
-	
+	public static ArrayList<String> getAvailableActions(Game game,Champion c){
+		ArrayList<String>sol=new ArrayList<String>();
+		try {
+			game.move(Direction.UP);
+			sol.add("moveup");
+		} catch (Exception e) {}
+		try {
+			game.move(Direction.DOWN);
+			sol.add("movedown");
+		} catch (Exception e) {}
+		try {
+			game.move(Direction.RIGHT);
+			sol.add("moveright");
+		} catch (Exception e) {}
+		try {
+			game.move(Direction.LEFT);
+			sol.add("moveleft");
+		} catch (Exception e) {}
+		try {
+			game.useLeaderAbility();;
+			sol.add("leaderability");
+		} catch (Exception e) {}
+		
+		try {
+			game.attack(Direction.UP);
+			sol.add("attackup");
+		} catch (Exception e) {}
+		try {
+			game.attack(Direction.DOWN);
+			sol.add("attackdown");
+		} catch (Exception e) {}
+		try {
+			game.attack(Direction.RIGHT);
+			sol.add("attackright");
+		} catch (Exception e) {}
+		try {
+			game.attack(Direction.LEFT);
+			sol.add("attackleft");
+		} catch (Exception e) {}
+		for(int i=0;i<c.getAbilities().size();i++){
+			Ability a=c.getAbilities().get(i);
+			if (a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
+				//directionalAbilities.add(a);
+			}
+			if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
+				//xyAbilities.add(a);
+			} else {
+				try {
+					game.castAbility(a);;
+					sol.add("cast"+i);
+				} catch (Exception e) {}
+			}
+		}
+		return sol;
+	}
 	
 	
 	
