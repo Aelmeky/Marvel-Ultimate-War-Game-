@@ -2,9 +2,6 @@ package computer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import model.effects.*;
 import engine.Game;
 import engine.Player;
@@ -230,60 +227,85 @@ public class driver {
 		return false;
 	}
 
-	public static ArrayList<String> getAvailableActions(Game game,Champion c){
-		ArrayList<String>sol=new ArrayList<String>();
+	public static ArrayList<String> max(Game oldGame,Game game,Champion c,ArrayList<String> arr,Player p ){
+		if(c.getCurrentActionPoints()==0) {
+			int x=evaluate(oldGame,game,p);
+			arr.add(x+"");
+			return arr;
+		}
+		System.out.println("here");
 		try {
-			game.move(Direction.UP);
-			sol.add("moveup");
+			Game ngame=clone(game);
+			ngame.move(Direction.UP);
+			arr.add("moveup");
+			arr=max(oldGame,ngame,c,arr,p);
+			return arr;
 		} catch (Exception e) {}
 		try {
+			Game ngame=clone(game);
 			game.move(Direction.DOWN);
-			sol.add("movedown");
+			arr.add("moveup");
+			arr=max(oldGame,ngame,c,arr,p);
+			return arr;
 		} catch (Exception e) {}
 		try {
+			Game ngame=clone(game);
 			game.move(Direction.RIGHT);
-			sol.add("moveright");
+			arr.add("moveup");
+			arr=max(oldGame,ngame,c,arr,p);
+			return arr;
 		} catch (Exception e) {}
 		try {
+			Game ngame=clone(game);
 			game.move(Direction.LEFT);
-			sol.add("moveleft");
-		} catch (Exception e) {}
-		try {
-			game.useLeaderAbility();;
-			sol.add("leaderability");
+			arr.add("moveup");
+			arr=max(oldGame,ngame,c,arr,p);
+			return arr;
 		} catch (Exception e) {}
 		
-		try {
-			game.attack(Direction.UP);
-			sol.add("attackup");
-		} catch (Exception e) {}
-		try {
-			game.attack(Direction.DOWN);
-			sol.add("attackdown");
-		} catch (Exception e) {}
-		try {
-			game.attack(Direction.RIGHT);
-			sol.add("attackright");
-		} catch (Exception e) {}
-		try {
-			game.attack(Direction.LEFT);
-			sol.add("attackleft");
-		} catch (Exception e) {}
-		for(int i=0;i<c.getAbilities().size();i++){
-			Ability a=c.getAbilities().get(i);
-			if (a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
-				//directionalAbilities.add(a);
-			}
-			if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
-				//xyAbilities.add(a);
-			} else {
-				try {
-					game.castAbility(a);;
-					sol.add("cast"+i);
-				} catch (Exception e) {}
-			}
-		}
-		return sol;
+		
+		
+		
+		
+//		try {
+//			game.useLeaderAbility();;
+//			sol.add("leaderability");
+//		} catch (Exception e) {}
+//		
+//		try {
+//			game.attack(Direction.UP);
+//			sol.add("attackup");
+//		} catch (Exception e) {}
+//		try {
+//			game.attack(Direction.DOWN);
+//			sol.add("attackdown");
+//		} catch (Exception e) {}
+//		try {
+//			game.attack(Direction.RIGHT);
+//			sol.add("attackright");
+//		} catch (Exception e) {}
+//		try {
+//			game.attack(Direction.LEFT);
+//			sol.add("attackleft");
+//		} catch (Exception e) {}
+//		for(int i=0;i<c.getAbilities().size();i++){
+//			Ability a=c.getAbilities().get(i);
+//			if (a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
+//				try {
+//					game.castAbility(a);;
+//					sol.add("cast"+i);
+//				} catch (Exception e) {}
+//			}
+//			if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
+//				//xyAbilities.add(a);
+//			} else {
+//				try {
+//					game.castAbility(a);;
+//					sol.add("cast"+i);
+//				} catch (Exception e) {}
+//			}
+//		}
+		return null;
 	}
 	
 	
