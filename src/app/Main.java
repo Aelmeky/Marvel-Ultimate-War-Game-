@@ -63,6 +63,7 @@ public class Main extends Application {
 	static String fastestChampion;
 
 	public void start(Stage stage) {
+		// TODO: add punch ability when champion is disarmed
 		chosenChamions = new ArrayList<Integer>();
 		stage.setTitle("Marvel game");
 		Image icon = new Image("/Assets/Marvel_Logo.png");
