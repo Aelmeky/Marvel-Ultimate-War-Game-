@@ -46,20 +46,22 @@ public class driver {
 		game.prepareChampionTurns();
 		try {
 			game.move(Direction.DOWN);
+			game.move(Direction.DOWN);
+			game.move(Direction.DOWN);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-//		System.out.println(game.getCurrentChampion().getName());
-//		System.out.println(game.getCurrentChampion().getLocation());
 		printGame(game);
 		Game game2 = clone(game);
 		printGame(game2);
-		game2.getCurrentChampion().setCurrentActionPoints(2);
+		game2.getCurrentChampion().setCurrentActionPoints(8);
 		ArrayList<String>arr=new ArrayList<String>();
-		minimax(game, game2, game2.getSecondPlayer(), arr, 2);
-		
-
-	}
+		((Champion)game2.getBoard()[0][3]).setCurrentHP(450);
+		arr=minimax(game, game2, game2.getSecondPlayer(), arr,4);
+		System.out.println("------------");
+		System.out.println(arr);
+		System.out.println(((Champion)game2.getBoard()[0][3]).getCurrentHP());
+		}
 
 	public static void printGame(Game game) {
 		for (int i = 0; i < 5; i++) {
@@ -109,12 +111,12 @@ public class driver {
 						c.setLocation(new Point(((Champion)game.getBoard()[4-i][j]).getLocation().x,((Champion)game.getBoard()[4-i][j]).getLocation().y));
 						newGame.getBoard()[4-i][j]=c;
 					}
-					if (game.getBoard()[4-i][j] instanceof Cover) {
-						Cover c = new Cover(i, j);
-						c.setCurrentHP(((Cover) game.getBoard()[4-i][j])
-								.getCurrentHP());
-						newGame.getBoard()[4-c.getLocation().x][c.getLocation().y] = c;
-					}
+//					if (game.getBoard()[4-i][j] instanceof Cover) {
+//						Cover c = new Cover(i, j);
+//						c.setCurrentHP(((Cover) game.getBoard()[4-i][j])
+//								.getCurrentHP());
+//						newGame.getBoard()[4-c.getLocation().x][c.getLocation().y] = c;
+//					}
 				}				
 			}
 		}
@@ -337,10 +339,10 @@ return null;
 		arr.add("moveleft");
 		arr.add("moveright");
 		arr.add("movedown");
-//		arr.add("attackup");
-//		arr.add("attackleft");
-//		arr.add("attackwright");
-//		arr.add("attackdown");
+		arr.add("attackup");
+		arr.add("attackleft");
+		arr.add("attackwright");
+		arr.add("attackdown");
 //		arr.add("useleaderability");
 //		arr.add("ability0");
 //		arr.add("ability1");
@@ -352,7 +354,7 @@ return null;
 		ArrayList<String>sol=null;
 		System.out.println(i+" | "+depth+" | "+arr);
 		i++;
-		if(depth==0){
+		if(depth==0||game.getCurrentChampion().getCurrentActionPoints()==0){
 			int x=evaluate(oldgame, game, p);
 			arr.add(x+"");
 			return arr;
@@ -369,7 +371,7 @@ return null;
 						arr2.add("moveup");
 						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
 						int x=Integer.parseInt(arr3.get(arr3.size()-1));
-						if(x<value){
+						if(x>value){
 							value=x;
 							sol=arr3;
 						}	
@@ -383,7 +385,7 @@ return null;
 						arr2.add("movedown");
 						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
 						int x=Integer.parseInt(arr3.get(arr3.size()-1));
-						if(x<value){
+						if(x>value){
 							value=x;
 							sol=arr3;
 						}	
@@ -397,7 +399,7 @@ return null;
 						arr2.add("moveleft");
 						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
 						int x=Integer.parseInt(arr3.get(arr3.size()-1));
-						if(x<value){
+						if(x>value){
 							value=x;
 							sol=arr3;
 						}	
@@ -411,7 +413,65 @@ return null;
 						arr2.add("movereight");
 						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
 						int x=Integer.parseInt(arr3.get(arr3.size()-1));
-						if(x<value){
+						if(x>value){
+							value=x;
+							sol=arr3;
+						}	
+					} catch (Exception e) {}
+					break;
+				case "attackup":
+					try {
+						Game ngame=clone(game);
+						ngame.attack(Direction.UP);
+						ArrayList<String>arr2=(ArrayList<String>) arr.clone();
+						arr2.add("attackup");
+						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
+						int x=Integer.parseInt(arr3.get(arr3.size()-1));
+						if(x>value){
+							value=x;
+							sol=arr3;
+						}	
+					} catch (Exception e) {}
+					break;
+				case "attackdown":
+					try {
+						Game ngame=clone(game);
+						ngame.attack(Direction.DOWN);
+						ArrayList<String>arr2=(ArrayList<String>) arr.clone();
+						arr2.add("attackdown");
+						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
+						System.out.print("here"+arr3+" ");
+						int x=Integer.parseInt(arr3.get(arr3.size()-1));
+						System.out.println(x);
+						if(x>value){
+							value=x;
+							sol=arr3;
+						}	
+					} catch (Exception e) {}
+					break;
+				case "attackleft":
+					try {
+						Game ngame=clone(game);
+						ngame.attack(Direction.LEFT);
+						ArrayList<String>arr2=(ArrayList<String>) arr.clone();
+						arr2.add("attackleft");
+						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
+						int x=Integer.parseInt(arr3.get(arr3.size()-1));
+						if(x>value){
+							value=x;
+							sol=arr3;
+						}	
+					} catch (Exception e) {}
+					break;
+				case "attackright":
+					try {
+						Game ngame=clone(game);
+						ngame.attack(Direction.RIGHT);
+						ArrayList<String>arr2=(ArrayList<String>) arr.clone();
+						arr2.add("attackreight");
+						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
+						int x=Integer.parseInt(arr3.get(arr3.size()-1));
+						if(x>value){
 							value=x;
 							sol=arr3;
 						}	

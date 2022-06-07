@@ -269,8 +269,10 @@ public class Game {
 			throws NotEnoughResourcesException, ChampionDisarmedException, InvalidTargetException {
 		if (hasEffect(getCurrentChampion(), "Disarm"))
 			throw new ChampionDisarmedException("Can not attack while being disarmed");
-		if (getCurrentChampion().getCurrentActionPoints() < 2)
+		if (getCurrentChampion().getCurrentActionPoints() < 2) {
 			throw new NotEnoughResourcesException("You need at least two action point to perform a normal attack");
+		}
+		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints()-2);
 		int currx = (int) getCurrentChampion().getLocation().getX();
 		int curry = (int) getCurrentChampion().getLocation().getY();
 		for (int i = 0; i < getCurrentChampion().getAttackRange(); i++) {
@@ -290,12 +292,10 @@ public class Game {
 					curhp -= getCurrentChampion().getAttackDamage();
 					((Cover) board[currx][curry]).setCurrentHP(curhp);
 					Champion curr = getCurrentChampion();
-					curr.setCurrentActionPoints(curr.getCurrentActionPoints() - 2);
 					if (curhp <= 0)
 						board[currx][curry] = null;
 					return;
 				} else if (board[currx][curry] instanceof Champion) {
-
 					int damage = getCurrentChampion().getAttackDamage();
 					Champion target = (Champion) board[currx][curry];
 					if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(target))
@@ -307,7 +307,6 @@ public class Game {
 					 if (hasEffect(target, "Dodge")) {
 						int r = ((int) (Math.random() * 100)) + 1;
 						if (r <= 50) {
-							curr.setCurrentActionPoints(curr.getCurrentActionPoints() - 2);
 							return;
 						}
 					} 
@@ -316,12 +315,10 @@ public class Game {
 							if (e.getName().equals("Shield")) {
 								e.remove(target);
 								target.getAppliedEffects().remove(e);
-								curr.setCurrentActionPoints(curr.getCurrentActionPoints() - 2);
 								return;
 							}
 						}
 					}
-					
 					else if ((curr instanceof Hero && !(target instanceof Hero))
 							|| (curr instanceof Villain && !(target instanceof Villain))
 							|| (curr instanceof AntiHero && !(target instanceof AntiHero)))
@@ -329,7 +326,6 @@ public class Game {
 
 					target.setCurrentHP(target.getCurrentHP() - damage);
 					//System.out.println(curr.getCurrentActionPoints()+" 1");
-					curr.setCurrentActionPoints(curr.getCurrentActionPoints() - 2);
 					//System.out.println(curr.getCurrentActionPoints()+" 2");
 					ArrayList<Damageable> targets = new ArrayList<Damageable>();
 					targets.add(target);
