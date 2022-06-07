@@ -59,6 +59,8 @@ public class Main extends Application {
 	static Label player1stat;
 	static Label player2stat;
 	static Label current;
+	static ImageView l;
+	static ImageView l2;
 	static Label next;
 	static String fastestChampion;
 
@@ -451,16 +453,16 @@ public class Main extends Application {
 		
 		toprow1.getChildren().add(current);
 		Image ch = new Image(geticon(curr));
-		ImageView l = new ImageView(ch);
+		l = new ImageView(ch);
 		l.setFitHeight(70);
 		l.setFitWidth(70);
 		toprow1.getChildren().add(l);
 		toprow1.getChildren().add(next);
 		Image ch1 = new Image(geticon(n));
-		ImageView l1 = new ImageView(ch1);
-		l1.setFitHeight(70);
-		l1.setFitWidth(70);
-		toprow1.getChildren().add(l1);
+		l2 = new ImageView(ch1);
+		l2.setFitHeight(70);
+		l2.setFitWidth(70);
+		toprow1.getChildren().add(l2);
 
 		VBox toprow2 = new VBox();
 
@@ -664,24 +666,47 @@ public class Main extends Application {
 			public void handle(Event arg0) {
 				game.endTurn();
 				//System.out.println(game.getCurrentChampion().getName());
-				current.setText("Current Champion: " + game.getCurrentChampion().getName());
+				String curr =  game.getCurrentChampion().getName();
+				current.setText("Current Champion: " );
+				Image ch = new Image(geticon(curr));
+				l.setImage(ch);
+				l.setFitHeight(70);
+				l.setFitWidth(70);
 				try {
 					Champion c = (Champion) game.getTurnOrder().remove();
 					if (game.getTurnOrder().size() == 0) {
 						game.prepareChampionTurns();
 						fastestChampion=((Champion)game.getTurnOrder().peekMin()).getName();
-						next.setText("next Champion: " + fastestChampion);
+						next.setText("next Champion: ");
 						while(game.getTurnOrder().size()!=0) {
 							game.getTurnOrder().remove();
 						}
+						Image ch1 = new Image(geticon(fastestChampion));
+						l2.setImage(ch1);
+						l2.setFitHeight(70);
+						l2.setFitWidth(70);
+						
+
 					} else {
-						next.setText("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
+						String n = ((Champion) game.getTurnOrder().peekMin()).getName();
+						next.setText("next Champion: " );
+						Image ch1 = new Image(geticon(n));
+						l2.setImage(ch1);
+						l2.setFitHeight(70);
+						l2.setFitWidth(70);
+						
 					}
 					game.getTurnOrder().insert(c);
 				} catch (Exception e) {
 					System.out.println("exc");
 					game.prepareChampionTurns();
-					next.setText("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
+					String n = ((Champion) game.getTurnOrder().peekMin()).getName();
+					next.setText("next Champion: " );
+					Image ch1 = new Image(geticon(n));
+					l2.setImage(ch1);
+					l2.setFitHeight(70);
+					l2.setFitWidth(70);
+					
 				}
 				updateGrid(grid);
 				gameOver(stage);
