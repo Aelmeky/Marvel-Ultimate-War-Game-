@@ -62,14 +62,8 @@ public class driver {
 	}
 
 	public static void printGame(Game game) {
-		// System.out.println(game);
-		// System.out.println(game.getFirstPlayer());
-		// System.out.println(game.getFirstPlayer().getName());
-		// System.out.println(game.getFirstPlayer().getTeam().get(0).getAppliedEffects().get(0).getDuration());
-		// System.out.println(game.getSecondPlayer());
-		// System.out.println(game.getSecondPlayer().getName());
-		// System.out.println(game.getSecondPlayer().getTeam().get(0).getAppliedEffects().get(0));
 		for (int i = 0; i < 5; i++) {
+			System.out.print("|");
 			for (int j = 0; j < 5; j++) {
 				if (game.getBoard()[4-i][j] == null) {
 					System.out.print(" ");
@@ -84,6 +78,7 @@ public class driver {
 					}
 				}
 			}
+			System.out.print("|");
 			System.out.println();
 		}
 		System.out.println("-------------");
@@ -248,7 +243,7 @@ public class driver {
 
 	public static boolean isFriend(Player me, Champion c) {
 		for (Champion c2 : me.getTeam()) {
-			if (c2 == c) {
+			if (c2.getName().equals(c.getName())) {
 				return true;
 			}
 		}
@@ -365,9 +360,6 @@ return null;
 		if(isFriend(p, game.getCurrentChampion())){
 			int value=Integer.MIN_VALUE;
 			for(String s:getAvailableActions()){
-				if(depth==1){
-					System.out.println("here");
-				}
 				switch (s) {
 				case "moveup":
 					try {
