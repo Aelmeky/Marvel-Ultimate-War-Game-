@@ -1,15 +1,12 @@
 package computer;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import model.effects.*;
 import engine.Game;
 import engine.Player;
-import exceptions.NotEnoughResourcesException;
-import exceptions.UnallowedMovementException;
 import model.abilities.Ability;
-import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
 import model.abilities.DamagingAbility;
 import model.abilities.HealingAbility;
@@ -47,22 +44,19 @@ public class driver {
 				.add(game.getAvailableChampions().get(10));
 		game.placeChampions();
 		game.prepareChampionTurns();
-		
-		System.out.println(game.getCurrentChampion().getName());
-		System.out.println(game.getCurrentChampion().getLocation());
 		try {
 			game.move(Direction.DOWN);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+//		System.out.println(game.getCurrentChampion().getName());
+//		System.out.println(game.getCurrentChampion().getLocation());
 		printGame(game);
 		Game game2 = clone(game);
 		printGame(game2);
 		game2.getCurrentChampion().setCurrentActionPoints(2);
 		ArrayList<String>arr=new ArrayList<String>();
-		System.out.println(game.getCurrentChampion().getName());
-		System.out.println(game2.getCurrentChampion().getLocation());
-//		minimax(game, game2, game2.getSecondPlayer(), arr, 2);
+		minimax(game, game2, game2.getSecondPlayer(), arr, 2);
 		
 
 	}
@@ -107,7 +101,7 @@ public class driver {
 		newGame.prepareChampionTurns();
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				if (newGame.getBoard()[4-i][j] instanceof Cover) {
+				if (newGame.getBoard()[4-i][j]!=null) {
 					newGame.getBoard()[4-i][j] = null;
 				}
 			}
@@ -115,17 +109,16 @@ public class driver {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (game.getBoard()[4-i][j] != null) {
-					if(game.getBoard()[i][j] instanceof Champion){
-						//System.out.print(((Champion)game.getBoard()[i][j]).getName());
-						Champion c=getChampionByName(newGame,((Champion)game.getBoard()[i][j]).getName());
-						//System.out.println(c.getName());
+					if(game.getBoard()[4-i][j] instanceof Champion){
+						Champion c=getChampionByName(newGame,((Champion)game.getBoard()[4-i][j]).getName());
+						c.setLocation(new Point(((Champion)game.getBoard()[4-i][j]).getLocation().x,((Champion)game.getBoard()[4-i][j]).getLocation().y));
 						newGame.getBoard()[4-i][j]=c;
 					}
 					if (game.getBoard()[4-i][j] instanceof Cover) {
 						Cover c = new Cover(i, j);
 						c.setCurrentHP(((Cover) game.getBoard()[4-i][j])
 								.getCurrentHP());
-						newGame.getBoard()[4-i][j] = c;
+						newGame.getBoard()[4-c.getLocation().x][c.getLocation().y] = c;
 					}
 				}				
 			}
@@ -168,7 +161,7 @@ public class driver {
 			c2.setCurrentHP(c.getCurrentHP());
 			c2.setCurrentActionPoints(c.getCurrentActionPoints());
 			c2.setCondition(c.getCondition());
-			c2.setLocation(c.getLocation());
+			c2.setLocation(new Point(c.getLocation().x,c.getLocation().y));
 			c2.setMana(c.getMana());
 			for (Ability a : c.getAbilities()) {
 				Ability a2 = null;
@@ -359,6 +352,7 @@ return null;
 //		arr.add("ability2");
 		return arr;
 	}
+	
 	public static ArrayList<String> minimax(Game oldgame,Game game,Player p,ArrayList<String>arr, int depth){
 		ArrayList<String>sol=null;
 		System.out.println(i+" | "+depth+" | "+arr);
