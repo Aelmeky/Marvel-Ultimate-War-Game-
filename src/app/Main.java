@@ -429,36 +429,54 @@ public class Main extends Application {
 		border.setPrefHeight(1000);
 		border.setPrefWidth(700);
 		Scene scene = new Scene(border);
-		border.setStyle("-fx-background-color: #87CEEB;");
+		//border.setStyle("-fx-background-color: #87CEEB;");
+		border.setStyle("-fx-background-image: url(\"/Assets//scene4b.jpg\");" + "-fx-background-size: cover;");
 		stage.setScene(scene);
 		stage.setWidth(1001);
 		stage.setHeight(701);
 
-		current = new Label("Current Champion: " + game.getCurrentChampion().getName());
-		current.setFont(Font.font("verdana", 30));
+		current = new Label("Current Champion: " );
+		String curr = game.getCurrentChampion().getName();
+		current.setFont(Font.font("verdana", 20));
+		current.setTextFill(Color.WHITE);
 		Champion c = (Champion) game.getTurnOrder().remove();
-		next = new Label("next Champion: " + ((Champion) game.getTurnOrder().peekMin()).getName());
+		String n = ((Champion) game.getTurnOrder().peekMin()).getName();
+		next = new Label("next Champion: ");
 		game.getTurnOrder().insert(c);
-		next.setFont(Font.font("verdana", 30));
+		next.setFont(Font.font("verdana", 20));
+		next.setTextFill(Color.WHITE);
 
 		HBox toprow1 = new HBox();
 		toprow1.setSpacing(14);
+		
 		toprow1.getChildren().add(current);
+		Image ch = new Image(geticon(curr));
+		ImageView l = new ImageView(ch);
+		l.setFitHeight(70);
+		l.setFitWidth(70);
+		toprow1.getChildren().add(l);
 		toprow1.getChildren().add(next);
+		Image ch1 = new Image(geticon(n));
+		ImageView l1 = new ImageView(ch1);
+		l1.setFitHeight(70);
+		l1.setFitWidth(70);
+		toprow1.getChildren().add(l1);
 
-		HBox toprow2 = new HBox();
+		VBox toprow2 = new VBox();
 
 		player1stat = new Label(
 				game.getFirstPlayer().getName() + " used Leader Ability=" + game.isFirstLeaderAbilityUsed());
-		player1stat.setFont(Font.font("verdana", 30));
+		player1stat.setFont(Font.font("verdana", 20));
+		player1stat.setTextFill(Color.WHITE);
 		player2stat = new Label(
 				game.getSecondPlayer().getName() + " used Leader Ability=" + game.isSecondLeaderAbilityUsed());
-		player2stat.setFont(Font.font("verdana", 30));
+		player2stat.setFont(Font.font("verdana", 20));
+		player2stat.setTextFill(Color.WHITE);
 		toprow2.setSpacing(14);
 		toprow2.getChildren().add(player1stat);
 		toprow2.getChildren().add(player2stat);
 
-		VBox top = new VBox();
+		HBox top = new HBox();
 		top.setSpacing(14);
 		top.getChildren().add(toprow1);
 		top.getChildren().add(toprow2);
@@ -467,22 +485,22 @@ public class Main extends Application {
 		rightpane.setSpacing(14);
 		rightpane.setMaxWidth(200);
 		rightpane.setMinWidth(200);
-		rightpane.setStyle("-fx-background-color: #123456;");
+		//rightpane.setStyle("-fx-background-color: #123456;");
 		Label stat = new Label("Stats:");
-		stat.setTextFill(Color.BLACK);
+		stat.setTextFill(Color.WHITE);
 		stat.setFont(Font.font("verdana", 19));
 		rightpane.getChildren().add(stat);
 
 		Label abilityData=new Label();
 		abilityData.setFont(Font.font("verdana", 14));
-		abilityData.setTextFill(Color.BLACK);
+		abilityData.setTextFill(Color.WHITE);
 
 		
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(14);
 		leftpane.setMaxWidth(250);
 		leftpane.setMinWidth(250);
-		leftpane.setStyle("-fx-background-color: #CAFFEE;");
+		//leftpane.setStyle("-fx-background-color: #CAFFEE;");
 		Label ava = new Label("Available Actions:");
 		ava.setFont(Font.font("verdana", 19));
 		leftpane.getChildren().add(ava);
@@ -490,7 +508,7 @@ public class Main extends Application {
 		VBox abilityBox = new VBox(14);
 		leftpane.getChildren().add(abilityBox);
 		Label abilityLabel = new Label("Your Abilities:");
-		abilityLabel.setTextFill(Color.BLACK);
+		abilityLabel.setTextFill(Color.WHITE);
 		abilityBox.getChildren().add(abilityLabel);
 
 		GridPane grid = new GridPane();
@@ -710,7 +728,7 @@ public class Main extends Application {
 	public static void dispalystats(Label node, VBox rightpane) {
 		Label l = new Label(node.getText());
 		l.setFont(Font.font("verdana", 14));
-		l.setTextFill(Color.BLACK);
+		l.setTextFill(Color.WHITE);
 		Label n = new Label();
 		while (rightpane.getChildren().size() != 1) {
 			if (rightpane.getChildren().get(1) instanceof Label) {
