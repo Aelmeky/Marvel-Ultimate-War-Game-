@@ -6,30 +6,46 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import engine.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-public class serverside implements Runnable{
+public class serverside {
 
 	
-	
-    private Socket socket;
-    private Player player;
-	
+	public class theplayer implements Runnable{
 
-	public serverside(Socket socket,Player player) {
-		this.socket = socket;
-		this.player = player;
-		
-		
-	} 
-	public void start() {
-		new Thread(this).start(); // start running of the server
-	}
-		
-	@Override
-	public void run() {
+		theplayer opponent;
+        Socket socket;
+        String input;
+        String output;
+        
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
+	
+	
+	
+	
+    public static void main(String[] args) throws Exception {
+
+	try (var listener = new ServerSocket(58901)) {
+        System.out.println("Tic Tac Toe Server is Running...");
+        var pool = Executors.newFixedThreadPool(200);
+        while (true) {
+            
+           // pool.execute(game.new Player(listener.accept(), 'X'));
+            //pool.execute(game.new Player(listener.accept(), 'O'));
+        }
+    }
+    }
 	
 }
+	
+
