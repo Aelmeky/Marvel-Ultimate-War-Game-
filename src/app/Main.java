@@ -779,8 +779,8 @@ public class Main extends Application {
 			case("Loki"):return "/Assets/loki.jpg";
 			case("Quicksilver"):return "/Assets/quicksilver.jpg";
 			case("Spiderman"):return "/Assets/spiderman.jpg";
-			case("Thor") :return "/Thorbat.jpg";
-			case("Venom"):return "/Venom.jpg";
+			case("Thor") :return "/Assets/thor.jpg";
+			case("Venom"):return "/Assests/venom.png";
 			default : return "/Assets/yellowjacket.png";
 			
 			}
