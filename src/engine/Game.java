@@ -295,7 +295,6 @@ public class Game {
 						board[currx][curry] = null;
 					return;
 				} else if (board[currx][curry] instanceof Champion) {
-
 					int damage = getCurrentChampion().getAttackDamage();
 					Champion target = (Champion) board[currx][curry];
 					if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(target))
@@ -321,7 +320,6 @@ public class Game {
 							}
 						}
 					}
-					
 					else if ((curr instanceof Hero && !(target instanceof Hero))
 							|| (curr instanceof Villain && !(target instanceof Villain))
 							|| (curr instanceof AntiHero && !(target instanceof AntiHero)))

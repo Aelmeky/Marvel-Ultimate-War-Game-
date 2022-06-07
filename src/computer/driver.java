@@ -54,7 +54,7 @@ public class driver {
 		printGame(game2);
 		game2.getCurrentChampion().setCurrentActionPoints(2);
 		ArrayList<String>arr=new ArrayList<String>();
-		arr=minimax(game, game2, game2.getSecondPlayer(), arr, 3);
+		arr=minimax(game, game2, game2.getSecondPlayer(), arr, 4);
 		System.out.println("------------");
 		System.out.println(arr);
 		}
@@ -348,9 +348,9 @@ return null;
 	
 	public static ArrayList<String> minimax(Game oldgame,Game game,Player p,ArrayList<String>arr, int depth){
 		ArrayList<String>sol=null;
-		System.out.println(i+" | "+depth+" | "+arr);
+		System.out.println(i+" | "+depth+" | "+arr+" | "+game.getCurrentChampion().getCurrentActionPoints());
 		i++;
-		if(depth==0){
+		if(depth==0||game.getCurrentChampion().getCurrentActionPoints()==0){
 			int x=evaluate(oldgame, game, p);
 			arr.add(x+"");
 			return arr;
@@ -446,7 +446,9 @@ return null;
 				case "attackleft":
 					try {
 						Game ngame=clone(game);
+						System.out.println(ngame.getCurrentChampion().getCurrentActionPoints());
 						ngame.attack(Direction.LEFT);
+						System.out.println(ngame.getCurrentChampion().getCurrentActionPoints());
 						ArrayList<String>arr2=(ArrayList<String>) arr.clone();
 						arr2.add("attackleft");
 						ArrayList<String> arr3 =minimax(oldgame, ngame, p, arr2, depth-1);
