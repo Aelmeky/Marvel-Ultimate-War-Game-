@@ -575,6 +575,9 @@ public class Game {
 			}
 		}
 		getCurrentChampion().useLeaderAbility(targets);
+		ArrayList<Damageable> targetsCleanUp = new ArrayList<Damageable>();
+		for(int i =0;i<targets.size();i++)targetsCleanUp.add(targets.get(i));
+		cleanup(targetsCleanUp);
 		if (getCurrentChampion() == firstPlayer.getLeader())
 			firstLeaderAbilityUsed = true;
 		else if (getCurrentChampion() == secondPlayer.getLeader())
