@@ -550,7 +550,6 @@ public class Game {
 		if (getCurrentChampion() instanceof Hero) {
 			ArrayList<Champion> team = getCurrentChampion() == firstPlayer.getLeader() ? firstPlayer.getTeam()
 					: secondPlayer.getTeam();
-			targets.add(getCurrentChampion());
 			for (Champion c : team)
 				targets.add(c);
 		} else if (getCurrentChampion() instanceof AntiHero) {
