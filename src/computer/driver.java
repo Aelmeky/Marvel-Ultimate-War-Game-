@@ -221,7 +221,7 @@ public class driver {
 		}
 		//prioritizing down movement
 		if(ngame.getCurrentChampion().getLocation().x<ogame.getCurrentChampion().getLocation().x) {
-			sum+=5;
+			sum+=15;
 		}
 		//handling covers
 		for (int i = 0; i < 5; i++) {
@@ -295,9 +295,8 @@ public class driver {
 			return arr;
 		}
 		if (isFriend(p, game.getCurrentChampion())) {
-			int value = Integer.MIN_VALUE;
+			int value = -1;
 			for (String s:getAvailableActions()) {
-				System.out.println(s+" "+i+" "+getAvailableActions().size());
 				switch (s) {
 				case "moveup":
 					if (arr==null||arr.size()==0||(arr != null && arr.size() != 0 && !arr.get(arr.size() - 1).equals("movedown"))) {
@@ -418,31 +417,26 @@ public class driver {
 							value = x;
 							sol = arr3;
 						}
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 					break;
-				case "useleaderability":
-					if(!arr.contains("useleaderability")) {
-						try {
-							Game ngame = clone(game);
-							ngame.useLeaderAbility();
-							System.out.println("arr "+i+" "+arr);
-							ArrayList<String> arr2 = (ArrayList<String>)arr.clone();
-							arr2.add("useleaderability");
-							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
-							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
-							if (x > value) {
-								value = x;
-								sol = arr3;
-							}
-						} catch (Exception e) {
-							System.out.println(e);
-						}
-					}
-					break;
+//				case "useleaderability":
+//					if(!arr.contains("useleaderability")&&game.getCurrentChampion().getCurrentActionPoints()<=2) {
+//						try {
+//							Game ngame = clone(game);
+//							ngame.useLeaderAbility();
+//							ArrayList<String> arr2 = (ArrayList<String>)arr.clone();
+//							arr2.add("useleaderability");
+//							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+//							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+//							if (x > value) {
+//								value = x;
+//								sol = arr3;
+//							}
+//						} catch (Exception e) {}
+//					}
+//					break;
 				}
 			}
-
 			return sol;
 		} else {
 			return null;
