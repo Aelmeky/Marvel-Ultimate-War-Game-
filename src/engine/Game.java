@@ -272,7 +272,7 @@ public class Game {
 		if (getCurrentChampion().getCurrentActionPoints() < 2) {
 			throw new NotEnoughResourcesException("You need at least two action point to perform a normal attack");
 		}
-		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints()-2);
+		this.getCurrentChampion().setCurrentActionPoints(this.getCurrentChampion().getCurrentActionPoints() - 2);
 		int currx = (int) getCurrentChampion().getLocation().getX();
 		int curry = (int) getCurrentChampion().getLocation().getY();
 		for (int i = 0; i < getCurrentChampion().getAttackRange(); i++) {
@@ -304,12 +304,12 @@ public class Game {
 							&& secondPlayer.getTeam().contains(target))
 						continue;
 					Champion curr = getCurrentChampion();
-					 if (hasEffect(target, "Dodge")) {
+					if (hasEffect(target, "Dodge")) {
 						int r = ((int) (Math.random() * 100)) + 1;
 						if (r <= 50) {
 							return;
 						}
-					} 
+					}
 					if (hasEffect(target, "Shield")) {
 						for (Effect e : target.getAppliedEffects()) {
 							if (e.getName().equals("Shield")) {
@@ -318,15 +318,14 @@ public class Game {
 								return;
 							}
 						}
-					}
-					else if ((curr instanceof Hero && !(target instanceof Hero))
+					} else if ((curr instanceof Hero && !(target instanceof Hero))
 							|| (curr instanceof Villain && !(target instanceof Villain))
 							|| (curr instanceof AntiHero && !(target instanceof AntiHero)))
 						damage = (int) (damage * 1.5);
 
 					target.setCurrentHP(target.getCurrentHP() - damage);
-					//System.out.println(curr.getCurrentActionPoints()+" 1");
-					//System.out.println(curr.getCurrentActionPoints()+" 2");
+					// System.out.println(curr.getCurrentActionPoints()+" 1");
+					// System.out.println(curr.getCurrentActionPoints()+" 2");
 					ArrayList<Damageable> targets = new ArrayList<Damageable>();
 					targets.add(target);
 					cleanup(targets);
@@ -408,7 +407,9 @@ public class Game {
 
 	public void castAbility(Ability a, Direction d)
 			throws NotEnoughResourcesException, AbilityUseException, CloneNotSupportedException {
+		System.out.println("h"+a.getCurrentCooldown());
 		validateCastAbility(a);
+		System.out.println(a.getName());
 		ArrayList<Point> possiblePoints = new ArrayList<Point>();
 		int currx = (int) getCurrentChampion().getLocation().getX();
 		int curry = (int) getCurrentChampion().getLocation().getY();
@@ -571,7 +572,8 @@ public class Game {
 		}
 		getCurrentChampion().useLeaderAbility(targets);
 		ArrayList<Damageable> targetsCleanUp = new ArrayList<Damageable>();
-		for(int i =0;i<targets.size();i++)targetsCleanUp.add(targets.get(i));
+		for (int i = 0; i < targets.size(); i++)
+			targetsCleanUp.add(targets.get(i));
 		cleanup(targetsCleanUp);
 		if (getCurrentChampion() == firstPlayer.getLeader())
 			firstLeaderAbilityUsed = true;
@@ -605,10 +607,12 @@ public class Game {
 		turnOrder.remove();
 		if (turnOrder.isEmpty())
 			prepareChampionTurns();
-		while (!turnOrder.isEmpty() && hasEffect((Champion) turnOrder.peekMin(), "Stun")) {
+		while (hasEffect((Champion) turnOrder.peekMin(), "Stun")) {
 			Champion current = (Champion) turnOrder.peekMin();
 			updateTimers(current);
 			turnOrder.remove();
+			if (turnOrder.isEmpty())
+				prepareChampionTurns();
 		}
 		Champion current = (Champion) turnOrder.peekMin();
 		updateTimers(current);
@@ -628,8 +632,15 @@ public class Game {
 				i++;
 		}
 		for (Ability a : current.getAbilities()) {
-			if (a.getCurrentCooldown() > 0)
+			if(a.getName().equals("Spiderverse")) {
+				System.out.println("v"+a.getCurrentCooldown()+a.getName());
+			}
+			if (a.getCurrentCooldown() > 0) {
 				a.setCurrentCooldown(a.getCurrentCooldown() - 1);
+			}
+			if(a.getName().equals("Spiderverse")) {
+				System.out.println(a.getCurrentCooldown());
+			}
 		}
 	}
 

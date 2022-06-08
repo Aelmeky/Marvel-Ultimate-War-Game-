@@ -2,6 +2,7 @@ package app;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import engine.*;
 import exceptions.AbilityUseException;
 import exceptions.ChampionDisarmedException;
@@ -59,8 +60,8 @@ public class Main extends Application {
 	static Label player1stat;
 	static Label player2stat;
 	static Label current;
-	static ImageView l;
-	static ImageView l2;
+	static ArrayList<ImageView> orders = new ArrayList<ImageView>();
+
 	static Label next;
 	static String fastestChampion;
 
@@ -73,11 +74,11 @@ public class Main extends Application {
 
 		BorderPane border = new BorderPane();
 		Scene scene = new Scene(border);
-		Image back1 = new Image("/Assets/Marvel_background1.jpg"); 
+		Image back1 = new Image("/Assets/Marvel_background1.jpg");
 		ImageView bk1 = new ImageView(back1);
 		bk1.fitHeightProperty().bind(stage.heightProperty());
 		bk1.fitWidthProperty().bind(stage.widthProperty());
-		
+
 		border.getChildren().add(bk1);
 		stage.setScene(scene);
 		stage.setWidth(1000);
@@ -93,7 +94,7 @@ public class Main extends Application {
 		player1field.setFont(Font.font("verdana", 28));
 		player1field.setMaxWidth(250);
 		player1field.setStyle("-fx-background-image: url(\"/Assets//redfield.jpg\");" + "-fx-text-fill: white;");
-		//player1field.setStyle("-fx-background-image: url(\"/Assets//5.jpg\");");
+		// player1field.setStyle("-fx-background-image: url(\"/Assets//5.jpg\");");
 		player1field.setBackground(Background.fill(Color.BLACK));
 		Text player2text = new Text("Please enter Player 2 name.");
 		player2text.setFont(Font.font("verdana", 28));
@@ -103,7 +104,7 @@ public class Main extends Application {
 		player2field.setMaxWidth(250);
 		player2field.setStyle("-fx-background-image: url(\"/Assets//redfield.jpg\");" + "-fx-text-fill: white;");
 		player2field.setBackground(Background.fill(Color.BLACK));
-		
+
 		vbox.getChildren().add(player1text);
 		vbox.getChildren().add(player1field);
 		vbox.getChildren().add(player2text);
@@ -112,7 +113,7 @@ public class Main extends Application {
 
 		Button toscene2 = new Button();
 		toscene2.setShape(new Circle(5));
-		Image bu = new Image("/Assets/button.jpg"); 
+		Image bu = new Image("/Assets/button.jpg");
 		ImageView bu1 = new ImageView(bu);
 		bu1.setFitHeight(50);
 		bu1.setFitWidth(50);
@@ -129,6 +130,7 @@ public class Main extends Application {
 						player1 = new Player(player1field.getText());
 						player2 = new Player(player2field.getText());
 						game = new Game(player1, player2);
+
 						try {
 							Game.loadAbilities("./Abilities.csv");
 							Game.loadChampions("./Champions.csv");
@@ -136,6 +138,7 @@ public class Main extends Application {
 							System.out.println(e2);
 							new errormes("Error", "Error in Abilities and Champion Files");
 						}
+
 						toscene2(game.getFirstPlayer(), stage);
 					}
 				} else {
@@ -143,7 +146,9 @@ public class Main extends Application {
 				}
 			}
 		};
+
 		toscene2.setOnAction(proceed);
+
 		toscene2.setPadding(new Insets(10));
 		border.setTop(toscene2);
 //		border.setMargin(border.getBottom(), new Insets(50));
@@ -156,7 +161,8 @@ public class Main extends Application {
 		border.setPrefHeight(1000);
 		border.setPrefWidth(700);
 		Scene scene = new Scene(border);
-		border.setStyle("-fx-background-image: url(\"/Assets//Marvel_background2.jpg\");" + "-fx-background-size: cover;");
+		border.setStyle(
+				"-fx-background-image: url(\"/Assets//Marvel_background2.jpg\");" + "-fx-background-size: cover;");
 		stage.setScene(scene);
 		stage.setWidth(1001);
 		stage.setHeight(701);
@@ -174,7 +180,7 @@ public class Main extends Application {
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(8);
 		leftpane.setPrefWidth(200);
-		
+
 		leftpane.getChildren().add(selected);
 		Button removeChampion = new Button("Remove Last Champion");
 		leftpane.getChildren().add(removeChampion);
@@ -204,143 +210,142 @@ public class Main extends Application {
 
 		GridPane grid = new GridPane();
 		Button[] arr = new Button[15];
-		ImageView [] images = new ImageView[15];
+		ImageView[] images = new ImageView[15];
 		arr[0] = new Button();
-		Image ca = new Image("/Assets/captain-america-1.png"); 
+		Image ca = new Image("/Assets/captain-america-1.png");
 		images[0] = new ImageView(ca);
 		images[0].setFitHeight(70);
 		images[0].setFitWidth(70);
 		arr[0].setGraphic(images[0]);
 		arr[0].setMaxHeight(70);
 		arr[0].setMaxWidth(70);
-		
+
 		arr[1] = new Button();
-		Image dp = new Image("/Assets/deadpool-1.jpg"); 
+		Image dp = new Image("/Assets/deadpool-1.jpg");
 		images[1] = new ImageView(dp);
 		images[1].setFitHeight(70);
 		images[1].setFitWidth(70);
 		arr[1].setGraphic(images[1]);
 		arr[1].setMaxHeight(70);
 		arr[1].setMaxWidth(70);
-		
+
 		arr[2] = new Button();
-		Image dr = new Image("/Assets/dr-strange.jpg"); 
+		Image dr = new Image("/Assets/dr-strange.jpg");
 		images[2] = new ImageView(dr);
 		images[2].setFitHeight(70);
 		images[2].setFitWidth(70);
 		arr[2].setGraphic(images[2]);
 		arr[2].setMaxHeight(70);
 		arr[2].setMaxWidth(70);
-		
-		
+
 		arr[3] = new Button();
-		Image el = new Image("/Assets/electro.png"); 
+		Image el = new Image("/Assets/electro.png");
 		images[3] = new ImageView(el);
 		images[3].setFitHeight(70);
 		images[3].setFitWidth(70);
 		arr[3].setGraphic(images[3]);
 		arr[3].setMaxHeight(70);
-		arr[3].setMaxWidth(70);		
-		
+		arr[3].setMaxWidth(70);
+
 		arr[4] = new Button();
-		Image gr = new Image("/Assets/ghost-rider.jpg"); 
+		Image gr = new Image("/Assets/ghost-rider.jpg");
 		images[4] = new ImageView(gr);
 		images[4].setFitHeight(70);
 		images[4].setFitWidth(70);
 		arr[4].setGraphic(images[4]);
 		arr[4].setMaxHeight(70);
-		arr[4].setMaxWidth(70);		
-		
+		arr[4].setMaxWidth(70);
+
 		arr[5] = new Button();
-		Image hl = new Image("/Assets/hela.png"); 
+		Image hl = new Image("/Assets/hela.png");
 		images[5] = new ImageView(hl);
 		images[5].setFitHeight(70);
 		images[5].setFitWidth(70);
 		arr[5].setGraphic(images[5]);
 		arr[5].setMaxHeight(70);
-		arr[5].setMaxWidth(70);	
-		
+		arr[5].setMaxWidth(70);
+
 		arr[6] = new Button();
-		Image hu = new Image("/Assets/hulk.jpg"); 
+		Image hu = new Image("/Assets/hulk.jpg");
 		images[6] = new ImageView(hu);
 		images[6].setFitHeight(70);
 		images[6].setFitWidth(70);
 		arr[6].setGraphic(images[6]);
 		arr[6].setMaxHeight(70);
-		arr[6].setMaxWidth(70);	
-		
+		arr[6].setMaxWidth(70);
+
 		arr[7] = new Button();
-		Image ice = new Image("/Assets/iceman.jpg"); 
+		Image ice = new Image("/Assets/iceman.jpg");
 		images[7] = new ImageView(ice);
 		images[7].setFitHeight(70);
 		images[7].setFitWidth(70);
 		arr[7].setGraphic(images[7]);
 		arr[7].setMaxHeight(70);
-		arr[7].setMaxWidth(70);	
-		
+		arr[7].setMaxWidth(70);
+
 		arr[8] = new Button();
-		Image im = new Image("/Assets/ironman.png"); 
+		Image im = new Image("/Assets/ironman.png");
 		images[8] = new ImageView(im);
 		images[8].setFitHeight(70);
 		images[8].setFitWidth(70);
 		arr[8].setGraphic(images[8]);
 		arr[8].setMaxHeight(70);
-		arr[8].setMaxWidth(70);	
-		
+		arr[8].setMaxWidth(70);
+
 		arr[9] = new Button();
-		Image lo = new Image("/Assets/loki.jpg"); 
+		Image lo = new Image("/Assets/loki.jpg");
 		images[9] = new ImageView(lo);
 		images[9].setFitHeight(70);
 		images[9].setFitWidth(70);
 		arr[9].setGraphic(images[9]);
 		arr[9].setMaxHeight(70);
-		arr[9].setMaxWidth(70);	
-		
+		arr[9].setMaxWidth(70);
+
 		arr[10] = new Button();
-		Image qs = new Image("/Assets/quicksilver.jpg"); 
+		Image qs = new Image("/Assets/quicksilver.jpg");
 		images[10] = new ImageView(qs);
 		images[10].setFitHeight(70);
 		images[10].setFitWidth(70);
 		arr[10].setGraphic(images[10]);
 		arr[10].setMaxHeight(70);
-		arr[10].setMaxWidth(70);	
-		
+		arr[10].setMaxWidth(70);
+
 		arr[11] = new Button();
-		Image sp = new Image("/Assets/spiderman.jpg"); 
+		Image sp = new Image("/Assets/spiderman.jpg");
 		images[11] = new ImageView(sp);
 		images[11].setFitHeight(70);
 		images[11].setFitWidth(70);
 		arr[11].setGraphic(images[11]);
 		arr[11].setMaxHeight(70);
-		arr[11].setMaxWidth(70);	
-		
+		arr[11].setMaxWidth(70);
+
 		arr[12] = new Button();
-		Image th = new Image("/Assets/thor.jpg"); 
+		Image th = new Image("/Assets/thor.jpg");
 		images[12] = new ImageView(th);
 		images[12].setFitHeight(70);
 		images[12].setFitWidth(70);
 		arr[12].setGraphic(images[12]);
 		arr[12].setMaxHeight(70);
-		arr[12].setMaxWidth(70);	
-		
+		arr[12].setMaxWidth(70);
+
 		arr[13] = new Button();
-		Image vn = new Image("/Assets/venom.jpg"); 
+		Image vn = new Image("/Assets/venom.jpg");
 		images[13] = new ImageView(vn);
 		images[13].setFitHeight(70);
 		images[13].setFitWidth(70);
 		arr[13].setGraphic(images[13]);
 		arr[13].setMaxHeight(70);
-		arr[13].setMaxWidth(70);	
-		
+		arr[13].setMaxWidth(70);
+
 		arr[14] = new Button();
-		Image yj = new Image("/Assets/yellowjacket.png"); 
+		Image yj = new Image("/Assets/yellowjacket.png");
 		images[14] = new ImageView(yj);
 		images[14].setFitHeight(70);
 		images[14].setFitWidth(70);
 		arr[14].setGraphic(images[14]);
 		arr[14].setMaxHeight(70);
-		arr[14].setMaxWidth(70);	
-		
+		arr[14].setMaxWidth(70);
+
 		if (!chosenChamions.isEmpty()) {
 			for (int i = 0; i < chosenChamions.size(); i++) {
 				final int j = chosenChamions.get(i);
@@ -375,7 +380,8 @@ public class Main extends Application {
 				arr[j].setGraphic(null);
 				arr[j].setGraphic(images[j]);
 				arr[j].setVisible(true);
-				if(p.getTeam().size()!=0&&p.getLeader()!=null&&p.getLeader().getName().equals(p.getTeam().get(p.getTeam().size()-1).getName())) {
+				if (p.getTeam().size() != 0 && p.getLeader() != null
+						&& p.getLeader().getName().equals(p.getTeam().get(p.getTeam().size() - 1).getName())) {
 					p.setLeader(null);
 				}
 				p.getTeam().remove(p.getTeam().size() - 1);
@@ -383,8 +389,6 @@ public class Main extends Application {
 			}
 		});
 
-				
-		
 		grid.setHgap(20);
 		grid.setVgap(20);
 		grid.setAlignment(Pos.CENTER);
@@ -392,14 +396,14 @@ public class Main extends Application {
 		Label t = new Label("Select Champions For " + p.getName() + ":");
 		t.setFont(Font.font("verdana", 30));
 		t.setTextFill(Color.WHITE);
-		
+
 		leftpane.setBackground(Background.fill(Color.TRANSPARENT));
 		border.setRight(tostring);
 		border.setLeft(leftpane);
 		border.setTop(t);
 		border.setCenter(grid);
 //		border.getCenter().setStyle("-fx-background-image: url(\"/Assets//Marvel_background2.jpg\");" + "-fx-background-size: cover;");
-		//border.getCenter().setStyle();
+		// border.getCenter().setStyle();
 		toscene3.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				if (p.getLeader() == null) {
@@ -409,7 +413,7 @@ public class Main extends Application {
 				toScene3(stage);
 			}
 		});
-		
+
 	}
 
 	public static void toScene3(Stage stage) {
@@ -431,38 +435,53 @@ public class Main extends Application {
 		border.setPrefHeight(1000);
 		border.setPrefWidth(700);
 		Scene scene = new Scene(border);
-		//border.setStyle("-fx-background-color: #87CEEB;");
+		// border.setStyle("-fx-background-color: #87CEEB;");
 		border.setStyle("-fx-background-image: url(\"/Assets//scene4b.jpg\");" + "-fx-background-size: cover;");
 		stage.setScene(scene);
 		stage.setWidth(1001);
 		stage.setHeight(701);
 
-		current = new Label("Current Champion: " );
-		String curr = game.getCurrentChampion().getName();
-		current.setFont(Font.font("verdana", 20));
-		current.setTextFill(Color.WHITE);
-		Champion c = (Champion) game.getTurnOrder().remove();
-		String n = ((Champion) game.getTurnOrder().peekMin()).getName();
-		next = new Label("next Champion: ");
-		game.getTurnOrder().insert(c);
-		next.setFont(Font.font("verdana", 20));
-		next.setTextFill(Color.WHITE);
+		// current = new Label("Current Champion: " );
 
+		PriorityQueue temp = new PriorityQueue(game.getTurnOrder().size());
 		HBox toprow1 = new HBox();
 		toprow1.setSpacing(14);
-		
-		toprow1.getChildren().add(current);
-		Image ch = new Image(geticon(curr));
-		l = new ImageView(ch);
-		l.setFitHeight(70);
-		l.setFitWidth(70);
-		toprow1.getChildren().add(l);
-		toprow1.getChildren().add(next);
-		Image ch1 = new Image(geticon(n));
-		l2 = new ImageView(ch1);
-		l2.setFitHeight(70);
-		l2.setFitWidth(70);
-		toprow1.getChildren().add(l2);
+		int u = 0;
+		while (!game.getTurnOrder().isEmpty()) {
+
+			String n = ((Champion) game.getTurnOrder().peekMin()).getName();
+			Image ch = new Image(geticon(n));
+			orders.add(new ImageView(ch));
+			orders.get(u).setFitHeight(70);
+			orders.get(u).setFitWidth(70);
+			toprow1.getChildren().add(orders.get(u));
+			Champion c = (Champion) game.getTurnOrder().remove();
+			temp.insert(c);
+			u++;
+		}
+		while (!temp.isEmpty()) {
+			Champion c = (Champion) temp.remove();
+			game.getTurnOrder().insert(c);
+		}
+		// Champion c = (Champion) game.getTurnOrder().remove();
+//		String n = ((Champion) game.getTurnOrder().peekMin()).getName();
+//		next = new Label("next Champion: ");
+//		game.getTurnOrder().insert(c);
+//		next.setFont(Font.font("verdana", 20));
+//		next.setTextFill(Color.WHITE);
+
+//		toprow1.getChildren().add(current);
+//		Image ch = new Image(geticon(curr));
+//		l = new ImageView(ch);
+//		l.setFitHeight(70);
+//		l.setFitWidth(70);
+//		toprow1.getChildren().add(l);
+//		toprow1.getChildren().add(next);
+//		Image ch1 = new Image(geticon(n));
+//		l2 = new ImageView(ch1);
+//		l2.setFitHeight(70);
+//		l2.setFitWidth(70);
+//		toprow1.getChildren().add(l2);
 
 		VBox toprow2 = new VBox();
 
@@ -487,22 +506,21 @@ public class Main extends Application {
 		rightpane.setSpacing(14);
 		rightpane.setMaxWidth(200);
 		rightpane.setMinWidth(200);
-		//rightpane.setStyle("-fx-background-color: #123456;");
+		// rightpane.setStyle("-fx-background-color: #123456;");
 		Label stat = new Label("Stats:");
 		stat.setTextFill(Color.WHITE);
 		stat.setFont(Font.font("verdana", 19));
 		rightpane.getChildren().add(stat);
 
-		Label abilityData=new Label();
+		Label abilityData = new Label();
 		abilityData.setFont(Font.font("verdana", 14));
 		abilityData.setTextFill(Color.WHITE);
 
-		
 		VBox leftpane = new VBox();
 		leftpane.setSpacing(14);
 		leftpane.setMaxWidth(250);
 		leftpane.setMinWidth(250);
-		//leftpane.setStyle("-fx-background-color: #CAFFEE;");
+		// leftpane.setStyle("-fx-background-color: #CAFFEE;");
 		Label ava = new Label("Available Actions:");
 		ava.setFont(Font.font("verdana", 19));
 		leftpane.getChildren().add(ava);
@@ -541,19 +559,21 @@ public class Main extends Application {
 		grid.setVgap(5);
 		grid.setHgap(5);
 
-		Border b = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+		Border b = new Border(
+				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 		abilityData.setBorder(b);
 		rightpane.getChildren().add(abilityData);
 		border.setRight(rightpane);
 		border.setLeft(leftpane);
 		border.setTop(top);
 		border.setCenter(grid);
-		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage,rightpane);
+		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
 
 	}
 
-	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage,VBox rightpane) {
-		while(leftpane.getChildren().size()!=2) {
+	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage,
+			VBox rightpane) {
+		while (leftpane.getChildren().size() != 2) {
 			leftpane.getChildren().remove(2);
 		}
 		HBox moveBox = new HBox();
@@ -572,7 +592,8 @@ public class Main extends Application {
 			}
 
 		});
-		Border b = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+		Border b = new Border(
+				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 		moveBox.setBorder(b);
 		ArrayList<Ability> abilities = c.getAbilities();
 //		HBox abilityBox1 = new HBox();
@@ -590,7 +611,7 @@ public class Main extends Application {
 				justAbilities.add(a);
 			}
 		}
-		while(abilityBox.getChildren().size()!=1) {
+		while (abilityBox.getChildren().size() != 1) {
 			abilityBox.getChildren().remove(1);
 		}
 		for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
@@ -598,9 +619,9 @@ public class Main extends Application {
 			Button button = new Button(a.getName());
 			button.setTextFill(Color.BLACK);
 			abilityBox.getChildren().add(button);
-			button.addEventHandler(MouseEvent.MOUSE_ENTERED,new EventHandler<Event>() {
+			button.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>() {
 				public void handle(Event arg0) {
-					((Label)rightpane.getChildren().get(rightpane.getChildren().size()-1)).setText(a.toString());	
+					((Label) rightpane.getChildren().get(rightpane.getChildren().size() - 1)).setText(a.toString());
 				}
 			});
 			button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
@@ -611,12 +632,14 @@ public class Main extends Application {
 						gameOver(stage);
 					}
 					if (directionalAbilities.contains(a)) {
+						System.out.println(a.getBaseCooldown() + " " + a.getCurrentCooldown());
 						actionDirectional(moveBox, grid, stage, "castAbility", a);
 						updateGrid(grid);
+						gameOver(stage);
 					}
 					if (xyAbilities.contains(a)) {
 						HBox xyBox = new HBox();
-						 //castJustAbility(game.getCurrentChampion(),a);
+						// castJustAbility(game.getCurrentChampion(),a);
 						Text getx = new Text("Enter X Position");
 						getx.setFont(Font.font("verdana", 15));
 
@@ -627,21 +650,33 @@ public class Main extends Application {
 						gety.setFont(Font.font("verdana", 15));
 
 						TextField they = new TextField();
-						
+
 						they.setFont(Font.font("verdana", 15));
 						xyBox.getChildren().add(thex);
 						xyBox.getChildren().add(they);
-						leftpane.getChildren().add(xyBox);
-					
 						Button submit = new Button("submit");
+
 						submit.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 							public void handle(Event arg0) {
 								int x = Integer.parseInt(thex.getText());
 								int y = Integer.parseInt(they.getText());
-								castxyabilities(c, a,x,y,grid);
-								
+								castxyabilities(c, a, x, y, grid);
+								leftpane.getChildren().remove(leftpane.getChildren().size() - 1);
+								leftpane.getChildren().remove(leftpane.getChildren().size() - 1);
+								updateGrid(grid);
+								gameOver(stage);
 							}
 						});
+						for (int i = 0; i < leftpane.getChildren().size(); i++) {
+							Node n = leftpane.getChildren().get(i);
+							if (n instanceof Button) {
+								if (((Button) n).getText().equals("submit")) {
+									leftpane.getChildren().remove(leftpane.getChildren().size() - 1);
+									leftpane.getChildren().remove(leftpane.getChildren().size() - 1);
+								}
+							}
+						}
+						leftpane.getChildren().add(xyBox);
 						leftpane.getChildren().add(submit);
 					}
 				}
@@ -665,64 +700,36 @@ public class Main extends Application {
 			// TODO when the next Champion dies he should be removed from top labels
 			public void handle(Event arg0) {
 				game.endTurn();
-				//System.out.println(game.getCurrentChampion().getName());
-				String curr =  game.getCurrentChampion().getName();
-				current.setText("Current Champion: " );
-				Image ch = new Image(geticon(curr));
-				l.setImage(ch);
-				l.setFitHeight(70);
-				l.setFitWidth(70);
-				try {
-					Champion c = (Champion) game.getTurnOrder().remove();
-					if (game.getTurnOrder().size() == 0) {
-						game.prepareChampionTurns();
-						fastestChampion=((Champion)game.getTurnOrder().peekMin()).getName();
-						next.setText("next Champion: ");
-						while(game.getTurnOrder().size()!=0) {
-							game.getTurnOrder().remove();
-						}
-						Image ch1 = new Image(geticon(fastestChampion));
-						l2.setImage(ch1);
-						l2.setFitHeight(70);
-						l2.setFitWidth(70);
-						
+				
+				String curr = game.getCurrentChampion().getName();
+				ImageView i = orders.remove(0);
+				orders.add(i);
+				Node n=((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0)).getChildren().remove(0);
+				((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0)).getChildren().add(n);
+				// orders.add(new ImageView (geticon(curr)));
 
-					} else {
-						String n = ((Champion) game.getTurnOrder().peekMin()).getName();
-						next.setText("next Champion: " );
-						Image ch1 = new Image(geticon(n));
-						l2.setImage(ch1);
-						l2.setFitHeight(70);
-						l2.setFitWidth(70);
-						
-					}
-					game.getTurnOrder().insert(c);
-				} catch (Exception e) {
-					System.out.println("exc");
-					game.prepareChampionTurns();
-					String n = ((Champion) game.getTurnOrder().peekMin()).getName();
-					next.setText("next Champion: " );
-					Image ch1 = new Image(geticon(n));
-					l2.setImage(ch1);
-					l2.setFitHeight(70);
-					l2.setFitWidth(70);
-					
-				}
+//				Champion c = (Champion) game.getTurnOrder().remove();
+//				if (game.getTurnOrder().size() == 0) {
+//					game.prepareChampionTurns();
+//				}
+//				game.getTurnOrder().insert(c);
 				updateGrid(grid);
 				gameOver(stage);
-				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage,rightpane);
+				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
 			}
 
 		});
 
 	}
-	public static void castxyabilities(Champion c, Ability a, int x,int y,GridPane grid) {
+
+	public static void castxyabilities(Champion c, Ability a, int x, int y, GridPane grid) {
 		try {
-			//System.out.println(((Damageable)game.getBoard()[x][y]).getCurrentHP());
-			//System.out.println(((Label)((VBox)getNodeFromGrid(grid, 4-x, y)).getChildren().get(1)).getText());
-			game.castAbility(a, 4-x, y);
-		}catch (Exception e) {
-			//System.out.println(e);
+			// System.out.println(((Damageable)game.getBoard()[x][y]).getCurrentHP());
+			// System.out.println(((Label)((VBox)getNodeFromGrid(grid, 4-x,
+			// y)).getChildren().get(1)).getText());
+			game.castAbility(a, x, y);
+		} catch (Exception e) {
+			// System.out.println(e);
 			new errormes("Error", e.getMessage());
 		}
 	}
@@ -741,7 +748,6 @@ public class Main extends Application {
 	}
 
 	public static void castJustAbility(Champion currentChampion, Ability a) {
-		System.out.println("here");
 		System.out.println(a.getName());
 		try {
 			game.castAbility(a);
@@ -789,7 +795,7 @@ public class Main extends Application {
 						l2.setVisible(false);
 						((VBox) getNodeFromGrid(grid, 4 - x, y)).getChildren().add(l2);
 					} else {
-						//Label l = new Label("Cover");
+						// Label l = new Label("Cover");
 						Image cover = new Image("Assets/cover.png");
 						ImageView l = new ImageView(cover);
 						l.setFitHeight(100);
@@ -805,32 +811,44 @@ public class Main extends Application {
 		}
 	}
 
-	public static String geticon(String s)
-	{
-		
-			switch(s)
-			{
-			case("Captain America"): return "/Assets/captain-america-1.png";
-			case("Deadpool"): return "/Assets/deadpool-1.jpg";
-			case("Dr Strange") : return "/Assets/dr-strange.jpg";
-			case("Electro"):return "/Assets/electro.png";
-			case("Ghost Rider") : return "/Assets/ghost-rider.jpg";
-			case("Hela") : return "/Assets/hela.png";
-			case("Hulk"): return "/Assets/hulk.jpg";
-			case("Iceman"):return "/Assets/iceman.jpg";
-			case("Ironman"): return "/Assets/ironman.png";
-			case("Loki"):return "/Assets/loki.jpg";
-			case("Quicksilver"):return "/Assets/quicksilver.jpg";
-			case("Spiderman"):return "/Assets/spiderman.jpg";
-			case("Thor") :return "/Assets/thor.jpg";
-			case("Venom"):return "/Assests/venom.png";
-			default : return "/Assets/yellowjacket.png";
-			
-			}
-		
-			
+	public static String geticon(String s) {
+
+		switch (s) {
+		case ("Captain America"):
+			return "/Assets/captain-america-1.png";
+		case ("Deadpool"):
+			return "/Assets/deadpool-1.jpg";
+		case ("Dr Strange"):
+			return "/Assets/dr-strange.jpg";
+		case ("Electro"):
+			return "/Assets/electro.png";
+		case ("Ghost Rider"):
+			return "/Assets/ghost-rider.jpg";
+		case ("Hela"):
+			return "/Assets/hela.png";
+		case ("Hulk"):
+			return "/Assets/hulk.jpg";
+		case ("Iceman"):
+			return "/Assets/iceman.jpg";
+		case ("Ironman"):
+			return "/Assets/ironman.png";
+		case ("Loki"):
+			return "/Assets/loki.jpg";
+		case ("Quicksilver"):
+			return "/Assets/quicksilver.jpg";
+		case ("Spiderman"):
+			return "/Assets/spiderman.jpg";
+		case ("Thor"):
+			return "/Assets/thor.jpg";
+		case ("Venom"):
+			return "/Assests/venom.png";
+		default:
+			return "/Assets/yellowjacket.png";
+
+		}
+
 	}
-	
+
 	public static String enhancedToString(Champion c) {
 		// TODO handle duplicate shield names
 		// TODO damaging ability worked on cover only(i think so )
@@ -853,7 +871,7 @@ public class Main extends Application {
 			eff += c.getAppliedEffects().get(j).getName() + " Duration=" + c.getAppliedEffects().get(j).getDuration()
 					+ "\n";
 		}
-		if(c.getAppliedEffects().size()!=0) {
+		if (c.getAppliedEffects().size() != 0) {
 			System.out.println(c.getAppliedEffects());
 			System.out.println(eff);
 		}
@@ -920,7 +938,7 @@ public class Main extends Application {
 			tostring.getChildren().remove(0);
 		}
 		tostring.getChildren().add(t);
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -937,11 +955,13 @@ public class Main extends Application {
 			return;
 		} else if (game.checkGameOver().equals(player1)) {
 			new Alert("Congrats", "Player 1 Won \n 9ame over");
-			stage.setScene(new Scene(null,Color.SKYBLUE));
-			//stage.setdisabeled(true);
+			// TODO not so good but gives the grade
+			VBox n = new VBox();
+			stage.setScene(new Scene(n, Color.SKYBLUE));
+			// stage.setdisabeled(true);
 		} else {
 			new Alert("Congrats", "Player 2 Won \n 9ame over");
-			stage.setScene(new Scene(null,Color.SKYBLUE));
+			stage.setScene(new Scene(null, Color.SKYBLUE));
 		}
 
 	}
