@@ -292,8 +292,9 @@ public class Game {
 					curhp -= getCurrentChampion().getAttackDamage();
 					((Cover) board[currx][curry]).setCurrentHP(curhp);
 					Champion curr = getCurrentChampion();
-					if (curhp <= 0)
+					if (curhp <= 0) {
 						board[currx][curry] = null;
+					}
 					return;
 				} else if (board[currx][curry] instanceof Champion) {
 					int damage = getCurrentChampion().getAttackDamage();

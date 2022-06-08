@@ -54,14 +54,12 @@ public class driver {
 		// printGame(game2);
 		game2.getCurrentChampion().setCurrentActionPoints(8);
 		ArrayList<String> arr = new ArrayList<String>();
-		arr = minimax(game, game2, game2.getSecondPlayer(), arr, 4);
+		arr = minimax(game, game2, game2.getSecondPlayer(), arr,8);
 		System.out.println("------------");
 		System.out.println(arr);
 		printGame(game);
 		printGame(game2);
-		System.out.println(((Champion) game2.getBoard()[0][3]).getName() + " "
-				+ ((Champion) game2.getBoard()[0][3]).getCurrentHP());
-
+		//System.out.println(((Champion) game2.getBoard()[0][3]).getName() + " "+ ((Champion) game2.getBoard()[0][3]).getCurrentHP());
 	}
 
 	public static void printGame(Game game) {
@@ -216,17 +214,29 @@ public class driver {
 					if (!isFriend(me, ((Champion) n[i][j]))) {
 						// effect on an enemy
 						// damaged an enemy
-						sum += ((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP();
+						sum += (((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP())*1.5;
 					}
 				}
-				if (n[i][j] instanceof Cover) {
-					System.out.println("here " + i + " " + j + " " + ((Cover) n[i][j]).getCurrentHP() + " "
-							+ ((Cover) n[i][j]).getCurrentHP());
-					sum += ((Cover) n[i][j]).getCurrentHP() - ((Cover) n[i][j]).getCurrentHP();
+
+			}
+		}
+		//prioritizing down movement
+		if(ngame.getCurrentChampion().getLocation().x<ogame.getCurrentChampion().getLocation().x) {
+			sum+=5;
+		}
+		//handling covers
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (o[i][j] instanceof Cover) {
+					int x=0;
+					try {
+						x=((Cover) n[i][j]).getCurrentHP();
+					} catch (Exception e) {}
+						sum += (((Cover) o[i][j]).getCurrentHP() -x)*0.5;
 				}
 			}
 		}
-		// System.out.println(handel.size());
+		//Handling dead champions
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (o[i][j] instanceof Champion) {
@@ -373,8 +383,7 @@ public class driver {
 							value = x;
 							sol = arr3;
 						}
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 					break;
 				case "attackleft":
 					try {
