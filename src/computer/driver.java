@@ -3,8 +3,6 @@ package computer;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Handler;
-
 import model.effects.*;
 import engine.Game;
 import engine.Player;
@@ -21,9 +19,9 @@ import model.world.Villain;
 
 public class driver {
 	static int i = 1;
-
+	static Player p1;
 	public static void main(String[] args) {
-		Player p1 = new Player("Ahmed");
+		p1 = new Player("Ahmed");
 		Player p2 = new Player("meky");
 		Game game = new Game(p1, p2);
 		ArrayList<Champion> team1 = new ArrayList<Champion>();
@@ -39,27 +37,22 @@ public class driver {
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(0));
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(5));
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(10));
+		p2.setLeader(game.getAvailableChampions().get(5));
+		p1.setLeader(game.getAvailableChampions().get(1));
 		game.placeChampions();
 		game.prepareChampionTurns();
-		try {
-			game.move(Direction.DOWN);
-			game.move(Direction.DOWN);
-			game.move(Direction.DOWN);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		// printGame(game);
-		((Champion) game.getBoard()[0][3]).setCurrentHP(410);
+		game.endTurn();
+		game.endTurn();
+		game.endTurn();
+		game.endTurn();
+		//((Champion) game.getBoard()[0][3]).setCurrentHP(200);
 		Game game2 = clone(game);
-		// printGame(game2);
-		game2.getCurrentChampion().setCurrentActionPoints(8);
 		ArrayList<String> arr = new ArrayList<String>();
 		arr = minimax(game, game2, game2.getSecondPlayer(), arr,8);
 		System.out.println("------------");
 		System.out.println(arr);
 		printGame(game);
 		printGame(game2);
-		//System.out.println(((Champion) game2.getBoard()[0][3]).getName() + " "+ ((Champion) game2.getBoard()[0][3]).getCurrentHP());
 	}
 
 	public static void printGame(Game game) {
@@ -118,6 +111,9 @@ public class driver {
 					}
 				}
 			}
+		}
+		while(!((Champion)newGame.getTurnOrder().peekMin()).getName().equals(((Champion)game.getTurnOrder().peekMin()).getName())){
+			newGame.getTurnOrder().remove();
 		}
 		return newGame;
 	}
@@ -187,6 +183,9 @@ public class driver {
 				}
 			}
 			p2.getTeam().add(c2);
+			if(p1.getLeader().getName().equals(c2.getName())) {
+				p2.setLeader(c2);
+			}
 		}
 	}
 
@@ -251,6 +250,12 @@ public class driver {
 				}
 			}
 		}
+		//using Leader ability
+		if(ngame.isSecondLeaderAbilityUsed()&&!ogame.isSecondLeaderAbilityUsed()) {
+			if(sum<1000) {
+				sum-=2000;
+			}
+		}
 		return sum;
 	}
 
@@ -273,7 +278,7 @@ public class driver {
 		arr.add("attackleft");
 		arr.add("attackright");
 		arr.add("attackdown");
-		// arr.add("useleaderability");
+		arr.add("useleaderability");
 		// arr.add("ability0");
 		// arr.add("ability1");
 		// arr.add("ability2");
@@ -291,7 +296,8 @@ public class driver {
 		}
 		if (isFriend(p, game.getCurrentChampion())) {
 			int value = Integer.MIN_VALUE;
-			for (String s : getAvailableActions()) {
+			for (String s:getAvailableActions()) {
+				System.out.println(s+" "+i+" "+getAvailableActions().size());
 				switch (s) {
 				case "moveup":
 					if (arr==null||arr.size()==0||(arr != null && arr.size() != 0 && !arr.get(arr.size() - 1).equals("movedown"))) {
@@ -413,6 +419,25 @@ public class driver {
 							sol = arr3;
 						}
 					} catch (Exception e) {
+					}
+					break;
+				case "useleaderability":
+					if(!arr.contains("useleaderability")) {
+						try {
+							Game ngame = clone(game);
+							ngame.useLeaderAbility();
+							System.out.println("arr "+i+" "+arr);
+							ArrayList<String> arr2 = (ArrayList<String>)arr.clone();
+							arr2.add("useleaderability");
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+							if (x > value) {
+								value = x;
+								sol = arr3;
+							}
+						} catch (Exception e) {
+							System.out.println(e);
+						}
 					}
 					break;
 				}
