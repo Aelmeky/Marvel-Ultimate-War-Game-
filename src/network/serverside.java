@@ -1,6 +1,8 @@
 package network;
 
 import java.io.IOException;
+import engine.*;
+import app.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -18,12 +20,38 @@ public class serverside {
 	public class theplayer implements Runnable{
 
 		theplayer opponent;
+		static Player player1;
+		static Player player2;
         Socket socket;
         String input;
         String output;
         
+         public theplayer(Socket socket, String name) {
+        	 this.socket = socket;
+        	 player1 = new Player(name);
+		}
+         
+        
 		@Override
 		public void run() {
+			try {
+                setup();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (opponent != null && opponent.output != null) {
+                    opponent.output = ("OTHER_PLAYER_LEFT");
+                }
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                }
+            }
+			
+		}
+
+
+		private void setup() {
 			// TODO Auto-generated method stub
 			
 		}
@@ -36,7 +64,7 @@ public class serverside {
     public static void main(String[] args) throws Exception {
 
 	try (var listener = new ServerSocket(58901)) {
-        System.out.println("Tic Tac Toe Server is Running...");
+        System.out.println("Server is Running...");
         var pool = Executors.newFixedThreadPool(200);
         while (true) {
             
