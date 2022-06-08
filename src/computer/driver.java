@@ -3,6 +3,8 @@ package computer;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Handler;
+
 import model.effects.*;
 import engine.Game;
 import engine.Player;
@@ -53,11 +55,11 @@ public class driver {
 			System.out.println(e);
 		}
 		//printGame(game);
+		((Champion)game.getBoard()[0][3]).setCurrentHP(410);
 		Game game2 = clone(game);
 		//printGame(game2);
 		game2.getCurrentChampion().setCurrentActionPoints(8);
 		ArrayList<String> arr = new ArrayList<String>();
-		((Champion)game2.getBoard()[0][3]).setCurrentHP(450);
 		arr = minimax(game, game2, game2.getSecondPlayer(), arr, 4);
 		System.out.println("------------");
 		System.out.println(arr);
@@ -220,30 +222,38 @@ public class driver {
 			return Integer.MAX_VALUE;
 		}
 		int sum = 0;
+		ArrayList<String>handel=new ArrayList<String>();
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (n[i][j] instanceof Champion) {
-					// System.out.println(((Champion) n[i][j]).getName());
-					if (isFriend(me, ((Champion) n[i][j]))&&!ngame.getCurrentChampion().getName().equals(((Champion) n[i][j]).getName())) {
-						// effect on a friend
-						if (n[i][j] == null) {
-							// a friend got killed
-							sum -= 2 * ((Champion) o[i][j]).getMaxHP();
-						} else {
-							// A friend got damaged
-							sum -= ((Champion) o[i][j]).getCurrentHP()
-									- ((Champion) n[i][j]).getCurrentHP();
-						}
+					handel.add(((Champion) n[i][j]).getName());
+					//System.out.println("in "+((Champion) n[i][j]).getName());
+					if (isFriend(me, ((Champion) n[i][j]))&&!ngame.getCurrentChampion().getName().equals(((Champion) n[i][j]).getName())) {					
+						// A friend got damaged
+						sum -= ((Champion) o[i][j]).getCurrentHP()- ((Champion) n[i][j]).getCurrentHP();
 					}
 					if (!isFriend(me, ((Champion) n[i][j]))) {
 						// effect on an enemy
-						if (n[i][j] == null) {
-							// killed an enemy
-							sum += 2 * ((Champion) o[i][j]).getMaxHP();
-						} else {
-							// damaged an enemy
-							sum += ((Champion) o[i][j]).getCurrentHP()
-									- ((Champion) n[i][j]).getCurrentHP();
+						// damaged an enemy
+						sum += ((Champion) o[i][j]).getCurrentHP()- ((Champion) n[i][j]).getCurrentHP();
+					}
+				}
+				if(n[i][j] instanceof Cover){
+					System.out.println("here "+i+" "+j+" "+((Cover)n[i][j]).getCurrentHP()+" "+((Cover)n[i][j]).getCurrentHP());
+					sum+=((Cover)n[i][j]).getCurrentHP()-((Cover)n[i][j]).getCurrentHP();
+				}
+			}
+		}
+		//System.out.println(handel.size());
+		for(int i=0;i<5;i++){
+			for(int j=0;j<5;j++){
+				if(o[i][j] instanceof Champion){
+					Champion c=(Champion)o[i][j];
+					if(!handel.contains(c.getName())){
+						if(isFriend(me,c)){
+							sum-=c.getMaxHP();
+						}else{
+							sum+=c.getMaxHP();
 						}
 					}
 				}
