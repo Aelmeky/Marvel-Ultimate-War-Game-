@@ -704,8 +704,15 @@ public class Main extends Application {
 				String curr = game.getCurrentChampion().getName();
 				ImageView i = orders.remove(0);
 				orders.add(i);
-				Node n=((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0)).getChildren().remove(0);
-				((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0)).getChildren().add(n);
+				HBox toprow = ((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0));
+				for (int j=0;j<toprow.getChildren().size();j++) {
+					toprow.getChildren().remove(0);
+					j--;
+				}
+				for (int j=0;j<orders.size();j++) {
+					toprow.getChildren().add(orders.get(j));
+					
+				}
 				// orders.add(new ImageView (geticon(curr)));
 
 //				Champion c = (Champion) game.getTurnOrder().remove();
