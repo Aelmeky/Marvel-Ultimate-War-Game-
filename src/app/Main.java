@@ -61,7 +61,7 @@ public class Main extends Application {
 	static Label player2stat;
 	static Label current;
 	static ArrayList<ImageView> orders = new ArrayList<ImageView>();
-
+	static HBox toprow1;
 	static Label next;
 	static String fastestChampion;
 
@@ -444,7 +444,7 @@ public class Main extends Application {
 		// current = new Label("Current Champion: " );
 
 		PriorityQueue temp = new PriorityQueue(game.getTurnOrder().size());
-		HBox toprow1 = new HBox();
+		 toprow1 = new HBox();
 		toprow1.setSpacing(14);
 		int u = 0;
 		while (!game.getTurnOrder().isEmpty()) {
@@ -698,19 +698,19 @@ public class Main extends Application {
 			// TODO when the next Champion dies he should be removed from top labels
 			public void handle(Event arg0) {
 				game.endTurn();
-				
-				String curr = game.getCurrentChampion().getName();
-				ImageView i = orders.remove(0);
-				orders.add(i);
-				HBox toprow = ((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0));
-				for (int j=0;j<toprow.getChildren().size();j++) {
-					toprow.getChildren().remove(0);
-					j--;
-				}
-				for (int j=0;j<orders.size();j++) {
-					toprow.getChildren().add(orders.get(j));
-					
-				}
+				updateturnorder();
+//				String curr = game.getCurrentChampion().getName();
+//				ImageView i = orders.remove(0);
+//				orders.add(i);
+//				HBox toprow = ((HBox)((HBox)((BorderPane)stage.getScene().getRoot()).getTop()).getChildren().get(0));
+//				for (int j=0;j<toprow.getChildren().size();j++) {
+//					toprow.getChildren().remove(0);
+//					j--;
+//				}
+//				for (int j=0;j<orders.size();j++) {
+//					toprow.getChildren().add(orders.get(j));
+//					
+//				}
 				// orders.add(new ImageView (geticon(curr)));
 
 //				Champion c = (Champion) game.getTurnOrder().remove();
@@ -718,6 +718,7 @@ public class Main extends Application {
 //					game.prepareChampionTurns();
 //				}
 //				game.getTurnOrder().insert(c);
+				//updateturnorder();
 				updateGrid(grid);
 				gameOver(stage);
 				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
@@ -1058,5 +1059,80 @@ public class Main extends Application {
 		for (int i = 0; i < 4; i++) {
 			directionBox.getChildren().add(movesbut[i]);
 		}
+	}
+	public static void updateturnorder() {
+//		PriorityQueue temp = new PriorityQueue(game.getTurnOrder().size());
+//		for(int i =0;i<toprow1.getChildren().size();i++) {
+//			toprow1.getChildren().remove(i);
+//			i--;
+//		}
+//		int u = 0;
+//		String curr = game.getCurrentChampion().getName();
+//	
+//		while (!game.getTurnOrder().isEmpty()) {
+//			
+//			
+//			String n = ((Champion) game.getTurnOrder().peekMin()).getName();
+//		
+//			Image ch = new Image(geticon(n));
+//			orders.add(new ImageView(ch));
+//			orders.get(u).setFitHeight(70);
+//			orders.get(u).setFitWidth(70);
+//			toprow1.getChildren().add(orders.get(u));
+//			Champion c = (Champion) game.getTurnOrder().remove();
+//			temp.insert(c);
+//			u++;
+//		}
+//		while (!temp.isEmpty()) {
+//			Champion c = (Champion) temp.remove();
+//			game.getTurnOrder().insert(c);
+//		}
+		PriorityQueue temp = new PriorityQueue(game.getTurnOrder().size());
+		String curr = game.getCurrentChampion().getName();
+		while(orders.size()!=0) {
+			orders.remove(0);
+		}
+		while (!game.getTurnOrder().isEmpty()) {
+			String s = ((Champion) game.getTurnOrder().peekMin()).getName();
+ 			
+			if(!s.equals(curr)) {
+				ImageView i = new ImageView(geticon(s)); 
+				i.setFitHeight(70);
+				i.setFitWidth(70);
+				orders.add(i);	
+			}
+			
+			Champion c = (Champion) game.getTurnOrder().remove();
+			temp.insert(c);
+			
+		}
+		
+		while (!temp.isEmpty()) {
+			Champion c = (Champion) temp.remove();
+			game.getTurnOrder().insert(c);
+		}
+		
+		ImageView i = new ImageView(geticon(curr)); 
+		i.setFitHeight(70);
+		i.setFitWidth(70);
+		orders.add(i);
+		
+		for (int j=0;j<toprow1.getChildren().size();j++) {
+			toprow1.getChildren().remove(0);
+			j--;
+		}
+		for (int j=0;j<orders.size();j++) {
+			toprow1.getChildren().add(orders.get(j));
+			
+		}
+
+		//Champion c = (Champion) game.getTurnOrder().remove();
+		if (game.getTurnOrder().size() == 0) {
+			game.prepareChampionTurns();
+		}
+		//game.getTurnOrder().insert(c);
+
+		
+	
 	}
 }
