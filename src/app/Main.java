@@ -581,6 +581,16 @@ public class Main extends Application {
 		});
 		
 		leftpane.getChildren().add(move);
+		if(c.getAppliedEffects().contains("Disarm")) {
+			Button attack = new Button("Punch");
+			leftpane.getChildren().add(attack);
+			attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+				public void handle(Event arg0) {
+					actionDirectional(moveBox, grid, stage, "punch", null);
+				}
+
+			});
+		}
 		Button attack = new Button("Attack");
 		leftpane.getChildren().add(attack);
 		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
@@ -980,6 +990,8 @@ public class Main extends Application {
 						game.attack(model.world.Direction.UP);
 					} else if (s.equals("castAbility")) {
 						game.castAbility(a, model.world.Direction.UP);
+					}else if(s.equals("Punch")) {
+						
 					}
 					updateGrid(grid);
 					hideButtons(directionBox);
