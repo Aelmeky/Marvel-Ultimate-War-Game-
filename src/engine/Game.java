@@ -383,7 +383,6 @@ public class Game {
 			possiblePoints.add(new Point(currx - 1, curry + 1));
 			targets = prepareTargetsFromPoints(a, possiblePoints);
 		}
-
 		a.execute(targets);
 		getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
 		getCurrentChampion()
@@ -440,8 +439,9 @@ public class Game {
 		getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
 		getCurrentChampion()
 				.setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
-
+		System.out.println("directional class "+a.getCurrentCooldown());
 		a.setCurrentCooldown(a.getBaseCooldown());
+		System.out.println("directional class "+a.getCurrentCooldown());
 		cleanup(targets);
 
 	}
@@ -633,14 +633,8 @@ public class Game {
 				i++;
 		}
 		for (Ability a : current.getAbilities()) {
-			if(a.getName().equals("Spiderverse")) {
-				System.out.println("v"+a.getCurrentCooldown()+a.getName());
-			}
 			if (a.getCurrentCooldown() > 0) {
 				a.setCurrentCooldown(a.getCurrentCooldown() - 1);
-			}
-			if(a.getName().equals("Spiderverse")) {
-				System.out.println(a.getCurrentCooldown());
 			}
 		}
 	}

@@ -3,7 +3,6 @@ package computer;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 import model.effects.*;
 import engine.Game;
@@ -21,45 +20,42 @@ import model.world.Villain;
 
 public class driver {
 	static int i = 1;
+	static Player p1;
 
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
-		Player p1 = new Player("Ahmed");
+		p1 = new Player("Ahmed");
 		Player p2 = new Player("meky");
 		Game game = new Game(p1, p2);
-		ArrayList<Champion> team1 = new ArrayList<Champion>();
 		try {
 			Game.loadAbilities("./Abilities.csv");
 			Game.loadChampions("./Champions.csv");
 		} catch (IOException e) {
 		}
 		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(1));
-		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(6));
+		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(5));
 		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(11));
-
+		
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(0));
-		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(5));
+		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(6));
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(10));
+		p1.setLeader(game.getAvailableChampions().get(1));
+		p2.setLeader(game.getAvailableChampions().get(6));
+		//p2.getTeam().get(1).setCurrentHP(200);
 		game.placeChampions();
 		game.prepareChampionTurns();
-		try {
-			game.move(Direction.DOWN);
-			game.move(Direction.DOWN);
-			game.move(Direction.DOWN);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		// printGame(game);
-		((Champion) game.getBoard()[0][3]).setCurrentHP(410);
+		game.endTurn();
+		game.endTurn();
+		game.endTurn();
+		game.endTurn();
+		game.endTurn();
 		Game game2 = clone(game);
-		// printGame(game2);
-		game2.getCurrentChampion().setCurrentActionPoints(8);
 		ArrayList<String> arr = new ArrayList<String>();
-		arr = minimax(game, game2, game2.getSecondPlayer(), arr,8);
+		arr = minimax(game, game2, game2.getSecondPlayer(), arr, game.getCurrentChampion().getCurrentActionPoints());
 		System.out.println("------------");
 		System.out.println(arr);
 		printGame(game);
 		printGame(game2);
-		//System.out.println(((Champion) game2.getBoard()[0][3]).getName() + " "+ ((Champion) game2.getBoard()[0][3]).getCurrentHP());
 	}
 
 	public static void printGame(Game game) {
@@ -95,6 +91,8 @@ public class driver {
 		cloneChampions(game.getSecondPlayer(), p2);
 		newGame.placeChampions();
 		newGame.prepareChampionTurns();
+		
+
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (newGame.getBoard()[4 - i][j] != null) {
@@ -106,18 +104,28 @@ public class driver {
 			for (int j = 0; j < 5; j++) {
 				if (game.getBoard()[4 - i][j] != null) {
 					if (game.getBoard()[4 - i][j] instanceof Champion) {
-						Champion c = getChampionByName(newGame, ((Champion) game.getBoard()[4 - i][j]).getName());
-						c.setLocation(new Point(((Champion) game.getBoard()[4 - i][j]).getLocation().x,
-								((Champion) game.getBoard()[4 - i][j]).getLocation().y));
+						Champion c = getChampionByName(newGame,
+								((Champion) game.getBoard()[4 - i][j])
+										.getName());
+						c.setLocation(new Point(
+								((Champion) game.getBoard()[4 - i][j])
+										.getLocation().x, ((Champion) game
+										.getBoard()[4 - i][j]).getLocation().y));
 						newGame.getBoard()[4 - i][j] = c;
 					}
 					if (game.getBoard()[4 - i][j] instanceof Cover) {
 						Cover c = new Cover(i, j);
-						c.setCurrentHP(((Cover) game.getBoard()[4 - i][j]).getCurrentHP());
-						newGame.getBoard()[4 - c.getLocation().x][c.getLocation().y] = c;
+						c.setCurrentHP(((Cover) game.getBoard()[4 - i][j])
+								.getCurrentHP());
+						newGame.getBoard()[4 - c.getLocation().x][c
+								.getLocation().y] = c;
 					}
 				}
 			}
+		}
+		while (!((Champion) newGame.getTurnOrder().peekMin()).getName().equals(
+				((Champion) game.getTurnOrder().peekMin()).getName())) {
+			newGame.getTurnOrder().remove();
 		}
 		return newGame;
 	}
@@ -140,15 +148,18 @@ public class driver {
 		for (Champion c : p1.getTeam()) {
 			Champion c2 = null;
 			if (c instanceof Hero) {
-				c2 = new Hero(c.getName(), c.getMaxHP(), c.getMana(), c.getMaxActionPointsPerTurn(), c.getSpeed(),
+				c2 = new Hero(c.getName(), c.getMaxHP(), c.getMana(),
+						c.getMaxActionPointsPerTurn(), c.getSpeed(),
 						c.getAttackRange(), c.getAttackDamage());
 			}
 			if (c instanceof Villain) {
-				c2 = new Villain(c.getName(), c.getMaxHP(), c.getMana(), c.getMaxActionPointsPerTurn(), c.getSpeed(),
+				c2 = new Villain(c.getName(), c.getMaxHP(), c.getMana(),
+						c.getMaxActionPointsPerTurn(), c.getSpeed(),
 						c.getAttackRange(), c.getAttackDamage());
 			}
 			if (c instanceof AntiHero) {
-				c2 = new AntiHero(c.getName(), c.getMaxHP(), c.getMana(), c.getMaxActionPointsPerTurn(), c.getSpeed(),
+				c2 = new AntiHero(c.getName(), c.getMaxHP(), c.getMana(),
+						c.getMaxActionPointsPerTurn(), c.getSpeed(),
 						c.getAttackRange(), c.getAttackDamage());
 			}
 			c2.setCurrentHP(c.getCurrentHP());
@@ -161,21 +172,31 @@ public class driver {
 				if (a instanceof CrowdControlAbility) {
 					Effect f = null;
 					try {
-						f = (Effect) ((CrowdControlAbility) a).getEffect().clone();
+						f = (Effect) ((CrowdControlAbility) a).getEffect()
+								.clone();
 					} catch (CloneNotSupportedException e) {
 					}
-					a2 = new CrowdControlAbility(a.getName(), a.getManaCost(), a.getBaseCooldown(), a.getCastRange(),
+					a2 = new CrowdControlAbility(a.getName(), a.getManaCost(),
+							a.getBaseCooldown(), a.getCastRange(),
 							a.getCastArea(), a.getRequiredActionPoints(), f);
+					a2.setCurrentCooldown(a.getCurrentCooldown());;
 					c2.getAbilities().add(a2);
 				}
 				if (a instanceof HealingAbility) {
-					a2 = new HealingAbility(a.getName(), a.getManaCost(), a.getBaseCooldown(), a.getCastRange(),
-							a.getCastArea(), a.getRequiredActionPoints(), ((HealingAbility) a).getHealAmount());
+					a2 = new HealingAbility(a.getName(), a.getManaCost(),
+							a.getBaseCooldown(), a.getCastRange(),
+							a.getCastArea(), a.getRequiredActionPoints(),
+							((HealingAbility) a).getHealAmount());
+					
+					a2.setCurrentCooldown(a.getCurrentCooldown());;
 					c2.getAbilities().add(a2);
 				}
 				if (a instanceof DamagingAbility) {
-					a2 = new DamagingAbility(a.getName(), a.getManaCost(), a.getBaseCooldown(), a.getCastRange(),
-							a.getCastArea(), a.getRequiredActionPoints(), ((DamagingAbility) a).getDamageAmount());
+					a2 = new DamagingAbility(a.getName(), a.getManaCost(),
+							a.getBaseCooldown(), a.getCastRange(),
+							a.getCastArea(), a.getRequiredActionPoints(),
+							((DamagingAbility) a).getDamageAmount());
+					a2.setCurrentCooldown(a.getCurrentCooldown());;
 					c2.getAbilities().add(a2);
 				}
 			}
@@ -183,10 +204,12 @@ public class driver {
 				try {
 					Effect e2 = (Effect) e.clone();
 					c2.getAppliedEffects().add(e2);
-				} catch (CloneNotSupportedException e1) {
-				}
+				} catch (CloneNotSupportedException e1) {}
 			}
 			p2.getTeam().add(c2);
+			if (p1.getLeader().getName().equals(c2.getName())) {
+				p2.setLeader(c2);
+			}
 		}
 	}
 
@@ -206,37 +229,39 @@ public class driver {
 				if (n[i][j] instanceof Champion) {
 					handel.add(((Champion) n[i][j]).getName());
 					// System.out.println("in "+((Champion) n[i][j]).getName());
-					if (isFriend(me, ((Champion) n[i][j]))
-							&& !ngame.getCurrentChampion().getName().equals(((Champion) n[i][j]).getName())) {
+					if (isFriend(me, ((Champion) n[i][j]))) {
 						// A friend got damaged
-						sum -= ((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP();
+						sum -= ((Champion) o[i][j]).getCurrentHP()- ((Champion) n[i][j]).getCurrentHP();
 					}
 					if (!isFriend(me, ((Champion) n[i][j]))) {
 						// effect on an enemy
 						// damaged an enemy
-						sum += (((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP())*1.5;
+						sum += (((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j])
+								.getCurrentHP()) * 1.5;
 					}
 				}
 
 			}
 		}
-		//prioritizing down movement
-		if(ngame.getCurrentChampion().getLocation().x<ogame.getCurrentChampion().getLocation().x) {
-			sum+=5;
+		// prioritizing down movement
+		if (ngame.getCurrentChampion().getLocation().x < ogame
+				.getCurrentChampion().getLocation().x) {
+			sum += 15;
 		}
-		//handling covers
+		// handling covers
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (o[i][j] instanceof Cover) {
-					int x=0;
+					int x = 0;
 					try {
-						x=((Cover) n[i][j]).getCurrentHP();
-					} catch (Exception e) {}
-						sum += (((Cover) o[i][j]).getCurrentHP() -x)*0.5;
+						x = ((Cover) n[i][j]).getCurrentHP();
+					} catch (Exception e) {
+					}
+					sum += (((Cover) o[i][j]).getCurrentHP() - x) * 0.5;
 				}
 			}
 		}
-		//Handling dead champions
+		// Handling dead champions
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (o[i][j] instanceof Champion) {
@@ -249,6 +274,13 @@ public class driver {
 						}
 					}
 				}
+			}
+		}
+		// using Leader ability
+		if (ngame.isSecondLeaderAbilityUsed()
+				&& !ogame.isSecondLeaderAbilityUsed()) {
+			if (sum < 1000) {
+				sum -= 2000;
 			}
 		}
 		return sum;
@@ -273,156 +305,208 @@ public class driver {
 		arr.add("attackleft");
 		arr.add("attackright");
 		arr.add("attackdown");
-		// arr.add("useleaderability");
-		// arr.add("ability0");
-		// arr.add("ability1");
-		// arr.add("ability2");
+		//arr.add("useleaderability");
+		arr.add("ability");
 		return arr;
 	}
 
-	public static ArrayList<String> minimax(Game oldgame, Game game, Player p, ArrayList<String> arr, int depth) {
-		ArrayList<String> sol = null;
+	@SuppressWarnings("unchecked")
+	public static ArrayList<String> minimax(Game oldgame, Game game, Player p,
+			ArrayList<String> arr, int depth) {
+		ArrayList<String> sol = arr;
 		System.out.println(i + " | " + depth + " | " + arr);
 		i++;
-		if (depth == 0 || game.getCurrentChampion().getCurrentActionPoints() == 0) {
+		if (depth == 0
+				|| game.getCurrentChampion().getCurrentActionPoints() == 0) {
 			int x = evaluate(oldgame, game, p);
 			arr.add(x + "");
 			return arr;
 		}
 		if (isFriend(p, game.getCurrentChampion())) {
 			int value = Integer.MIN_VALUE;
-			for (String s : getAvailableActions()) {
-				switch (s) {
-				case "moveup":
-					if (arr==null||arr.size()==0||(arr != null && arr.size() != 0 && !arr.get(arr.size() - 1).equals("movedown"))) {
+			if (isFriend(p, game.getCurrentChampion())) {
+				for (String s : getAvailableActions()) {
+					switch (s) {
+					case "moveup":
 						try {
 							Game ngame = clone(game);
 							ngame.move(Direction.UP);
 							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
 							arr2.add("moveup");
-							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,
+									arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {}
-					}
-					break;
-				case "movedown":
-					if (arr==null||arr.size()==0||(arr != null && arr.size() != 0 && !arr.get(arr.size() - 1).equals("moveup"))) {
+						} catch (Exception e) {
+						}
+						break;
+					case "movedown":
 						try {
 							Game ngame = clone(game);
 							ngame.move(Direction.DOWN);
 							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
 							arr2.add("movedown");
-							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,
+									arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {}
-					}
-					break;
-				case "moveleft":
-					if (arr==null||arr.size()==0||(arr != null && arr.size() != 0 && !arr.get(arr.size() - 1).equals("moveright"))) {
+						} catch (Exception e) {
+						}
+						break;
+					case "moveleft":
 						try {
 							Game ngame = clone(game);
 							ngame.move(Direction.LEFT);
 							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
 							arr2.add("moveleft");
-							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,
+									arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {}
-					}
-					break;
-				case "moveright":
-					if (arr==null||arr.size()==0||(arr != null &&arr.size()!=0&& !arr.get(arr.size() - 1).equals("moveleft"))) {
+						} catch (Exception e) {
+						}
+						break;
+					case "moveright":
 						try {
 							Game ngame = clone(game);
 							ngame.move(Direction.RIGHT);
 							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-							arr2.add("moveright");
-							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+							arr2.add("movereight");
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,
+									arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {}
+						} catch (Exception e) {
+						}
+						break;
+					case "attackup":
+						try {
+							Game ngame = clone(game);
+							ngame.attack(Direction.UP);
+							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+							arr2.add("attackup");
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,
+									arr2, depth - 1);
+							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+							if (x > value) {
+								value = x;
+								sol = arr3;
+							}
+						} catch (Exception e) {
+//							int x = evaluate(oldgame, game, p);
+//							if (x > value) {
+//								arr.add(x+"");
+//								value = x;
+//								sol = arr;
+//							}
+						}
+						break;
+					case "attackdown":
+						try {
+							Game ngame = clone(game);
+							ngame.attack(Direction.DOWN);
+							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+							arr2.add("attackdown");
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,arr2, depth - 1);
+							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+							if (x > value) {
+								value = x;
+								sol = arr3;
+							}
+						} catch (Exception e) {
+//							int x = evaluate(oldgame, game, p);
+//							if (x > value) {
+//								arr.add(x+"");
+//								value = x;
+//								sol = arr;
+//							}
+						}
+						break;
+					case "attackleft":
+						try {
+							Game ngame = clone(game);
+							ngame.attack(Direction.LEFT);
+							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+							arr2.add("attackleft");
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,
+									arr2, depth - 1);
+							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+							System.out.println(x+" "+i);
+							if (x > value) {
+								value = x;
+								sol = arr3;
+							}
+						} catch (Exception e) {
+//							System.out.println(e+" "+i);
+//							int x = evaluate(oldgame, game, p);
+//							if (x > value) {
+//								arr.add(x+"");
+//								value = x;
+//								sol = arr;
+//							}
+						}
+						break;
+					case "attackright":
+						try {
+							Game ngame = clone(game);
+							ngame.attack(Direction.RIGHT);
+							ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+							arr2.add("attackreight");
+							ArrayList<String> arr3 = minimax(oldgame, ngame, p,arr2, depth - 1);
+							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+							if (x > value) {
+								value = x;
+								sol = arr3;
+							}
+						} catch (Exception e) {
+							
+						}
+						break;
+					case "ability":
+						try {
+							for(int j=0;j<3;j++){
+								Game ngame = clone(game);
+								Ability a=ngame.getCurrentChampion().getAbilities().get(j);
+								if(a instanceof HealingAbility){
+									ngame.castAbility(a);
+									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+									arr2.add("usedability"+j);
+									ArrayList<String> arr3 = minimax(oldgame, ngame, p,arr2, depth - 1);
+									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+									if (x > value) {
+										value = x;
+										sol = arr3;
+									}
+								}
+							}
+							
+						} catch (Exception e) {
+							int x = evaluate(oldgame, game, p);
+							if (x > value) {
+								arr.add(x+"");
+								value = x;
+								sol = arr;
+							}
+						}
 					}
-					break;
-				case "attackup":
-					try {
-						Game ngame = clone(game);
-						ngame.attack(Direction.UP);
-						ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-						arr2.add("attackup");
-						ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
-						int x = Integer.parseInt(arr3.get(arr3.size() - 1));
-						if (x > value) {
-							value = x;
-							sol = arr3;
-						}
-					} catch (Exception e) {}
-					break;
-				case "attackdown":
-					try {
-						Game ngame = clone(game);
-						ngame.attack(Direction.DOWN);
-						ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-						arr2.add("attackdown");
-						ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
-						int x = Integer.parseInt(arr3.get(arr3.size() - 1));
-						if (x > value) {
-							value = x;
-							sol = arr3;
-						}
-					} catch (Exception e) {}
-					break;
-				case "attackleft":
-					try {
-						Game ngame = clone(game);
-						ngame.attack(Direction.LEFT);
-						ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-						arr2.add("attackleft");
-						ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
-						int x = Integer.parseInt(arr3.get(arr3.size() - 1));
-						if (x > value) {
-							value = x;
-							sol = arr3;
-						}
-					} catch (Exception e) {
-					}
-					break;
-				case "attackright":
-					try {
-						Game ngame = clone(game);
-						ngame.attack(Direction.RIGHT);
-						ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-						arr2.add("attackright");
-						ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
-						int x = Integer.parseInt(arr3.get(arr3.size() - 1));
-						if (x > value) {
-							value = x;
-							sol = arr3;
-						}
-					} catch (Exception e) {
-					}
-					break;
 				}
 			}
-
+			//System.out.println("retrun "+sol);
 			return sol;
-		} else {
+		}else{
 			return null;
 		}
-
 	}
-
 }

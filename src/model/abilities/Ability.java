@@ -36,10 +36,14 @@ public abstract class Ability {
 	public abstract void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException;
 
 	public void setCurrentCooldown(int currentCoolDown) {
-		if (currentCoolDown < 0)
+		if (currentCoolDown < 0) {
+			System.out.println("smaller than zero");
 			currentCoolDown = 0;
-		else if (currentCoolDown > baseCooldown)
+		}
+		else if (currentCoolDown > baseCooldown) {
+			System.out.println("if curr > base");
 			currentCoolDown = baseCooldown;
+		}
 		this.currentCooldown = currentCoolDown;
 	}
 

@@ -604,8 +604,7 @@ public class Main extends Application {
 		for (Ability a : abilities) {
 			if (a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
 				directionalAbilities.add(a);
-			}
-			if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
+			}else if (a.getCastArea() == AreaOfEffect.SINGLETARGET) {
 				xyAbilities.add(a);
 			} else {
 				justAbilities.add(a);
@@ -632,7 +631,6 @@ public class Main extends Application {
 						gameOver(stage);
 					}
 					if (directionalAbilities.contains(a)) {
-						System.out.println(a.getBaseCooldown() + " " + a.getCurrentCooldown());
 						actionDirectional(moveBox, grid, stage, "castAbility", a);
 						updateGrid(grid);
 						gameOver(stage);
@@ -755,7 +753,6 @@ public class Main extends Application {
 	}
 
 	public static void castJustAbility(Champion currentChampion, Ability a) {
-		System.out.println(a.getName());
 		try {
 			game.castAbility(a);
 		} catch (Exception e) {
