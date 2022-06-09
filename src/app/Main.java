@@ -2,7 +2,6 @@ package app;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import engine.*;
 import exceptions.AbilityUseException;
 import exceptions.ChampionDisarmedException;
@@ -21,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
+import model.effects.Effect;
 import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Cover;
@@ -581,25 +581,41 @@ public class Main extends Application {
 		});
 		
 		leftpane.getChildren().add(move);
-		if(c.getAppliedEffects().contains("Disarm")) {
-			Button attack = new Button("Punch");
+//		if(c.getAppliedEffects().contains("Disarm")) {
+//			Button attack = new Button("Punch");
+//			leftpane.getChildren().add(attack);
+//			attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+//				public void handle(Event arg0) {
+//					actionDirectional(moveBox, grid, stage, "punch", c.getAbilities().get(2));
+//				}
+//
+//			});
+//		}else {
+//		Button attack = new Button("Attack");
+//		leftpane.getChildren().add(attack);
+//		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
+//			public void handle(Event arg0) {
+//				actionDirectional(moveBox, grid, stage, "attack", null);
+//			}
+//		});
+//		}
+		System.out.println(leftpane.getChildren().size()+" "+leftpane.getChildren());
+		Button attack = new Button("Attack");		
+		boolean isStuned=false;
+		for(Effect f:c.getAppliedEffects()) {
+			if(f.getName().equals("Disarm")){
+				isStuned=true;
+			}
+		}
+		if(!isStuned) {
 			leftpane.getChildren().add(attack);
-			attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-				public void handle(Event arg0) {
-					actionDirectional(moveBox, grid, stage, "punch", c.getAbilities().get(2));
-				}
-
-			});
-		}else {
-		Button attack = new Button("Attack");
-		leftpane.getChildren().add(attack);
+		}
 		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 			public void handle(Event arg0) {
 				actionDirectional(moveBox, grid, stage, "attack", null);
+				
 			}
-
 		});
-		}
 		Border b = new Border(
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 		moveBox.setBorder(b);
@@ -622,7 +638,7 @@ public class Main extends Application {
 			abilityBox.getChildren().remove(1);
 		}
 		for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
-			Ability a = game.getCurrentChampion().getAbilities().get(i);
+			Ability a = game.getCurrentChampion().getAbilities().get(i);			
 			Button button = new Button(a.getName());
 			button.setTextFill(Color.BLACK);
 			abilityBox.getChildren().add(button);
@@ -699,7 +715,6 @@ public class Main extends Application {
 
 		});
 		leftpane.getChildren().add(moveBox);
-
 		Button endTurn = new Button("End Turn");
 		leftpane.getChildren().add(endTurn);
 		endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
