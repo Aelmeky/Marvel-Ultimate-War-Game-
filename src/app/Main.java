@@ -425,10 +425,6 @@ public class Main extends Application {
 	}
 
 	public static void scene4(Stage stage) {
-		// TODO effects update
-		// TODO end Turn
-		// TODO xyAbility exception=hide buttons
-		// TODO removing leader from selected champion is not working
 		game.prepareChampionTurns();
 		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
 		BorderPane border = new BorderPane();
@@ -695,7 +691,6 @@ public class Main extends Application {
 		Button endTurn = new Button("End Turn");
 		leftpane.getChildren().add(endTurn);
 		endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			// TODO when the next Champion dies he should be removed from top labels
 			public void handle(Event arg0) {
 				game.endTurn();
 				
@@ -847,8 +842,6 @@ public class Main extends Application {
 	}
 
 	public static String enhancedToString(Champion c) {
-		// TODO handle duplicate shield names
-		// TODO damaging ability worked on cover only(i think so )
 		String s2 = "";
 		if (c instanceof Champion) {
 			s2 = "Champion";
