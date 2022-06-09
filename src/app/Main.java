@@ -579,6 +579,7 @@ public class Main extends Application {
 				actionDirectional(moveBox, grid, stage, "move", null);
 			}
 		});
+		
 		leftpane.getChildren().add(move);
 		Button attack = new Button("Attack");
 		leftpane.getChildren().add(attack);
@@ -1085,6 +1086,11 @@ public class Main extends Application {
 		while(orders.size()!=0) {
 			orders.remove(0);
 		}
+		ImageView i1 = new ImageView(geticon(curr)); 
+		i1.setFitHeight(70);
+		i1.setFitWidth(70);
+		orders.add(i1);
+		
 		while (!game.getTurnOrder().isEmpty()) {
 			String s = ((Champion) game.getTurnOrder().peekMin()).getName();
  			
@@ -1105,10 +1111,7 @@ public class Main extends Application {
 			game.getTurnOrder().insert(c);
 		}
 		
-		ImageView i = new ImageView(geticon(curr)); 
-		i.setFitHeight(70);
-		i.setFitWidth(70);
-		orders.add(i);
+		
 		
 		for (int j=0;j<toprow1.getChildren().size();j++) {
 			toprow1.getChildren().remove(0);
