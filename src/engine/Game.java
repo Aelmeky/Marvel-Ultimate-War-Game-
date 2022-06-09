@@ -407,9 +407,7 @@ public class Game {
 
 	public void castAbility(Ability a, Direction d)
 			throws NotEnoughResourcesException, AbilityUseException, CloneNotSupportedException {
-		System.out.println("h"+a.getCurrentCooldown());
 		validateCastAbility(a);
-		System.out.println(a.getName());
 		ArrayList<Point> possiblePoints = new ArrayList<Point>();
 		int currx = (int) getCurrentChampion().getLocation().getX();
 		int curry = (int) getCurrentChampion().getLocation().getY();
@@ -439,9 +437,9 @@ public class Game {
 		getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
 		getCurrentChampion()
 				.setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
-		System.out.println("directional class "+a.getCurrentCooldown());
+		System.out.println("h1");
 		a.setCurrentCooldown(a.getBaseCooldown());
-		System.out.println("directional class "+a.getCurrentCooldown());
+		System.out.println("h2");
 		cleanup(targets);
 
 	}
