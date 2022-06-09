@@ -586,11 +586,11 @@ public class Main extends Application {
 			leftpane.getChildren().add(attack);
 			attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 				public void handle(Event arg0) {
-					actionDirectional(moveBox, grid, stage, "punch", null);
+					actionDirectional(moveBox, grid, stage, "punch", c.getAbilities().get(2));
 				}
 
 			});
-		}
+		}else {
 		Button attack = new Button("Attack");
 		leftpane.getChildren().add(attack);
 		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
@@ -599,6 +599,7 @@ public class Main extends Application {
 			}
 
 		});
+		}
 		Border b = new Border(
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 		moveBox.setBorder(b);
@@ -991,7 +992,7 @@ public class Main extends Application {
 					} else if (s.equals("castAbility")) {
 						game.castAbility(a, model.world.Direction.UP);
 					}else if(s.equals("Punch")) {
-						
+						game.castAbility(a, model.world.Direction.UP);
 					}
 					updateGrid(grid);
 					hideButtons(directionBox);
@@ -1011,6 +1012,9 @@ public class Main extends Application {
 					} else if (s.equals("attack")) {
 						game.attack(model.world.Direction.RIGHT);
 					} else if (s.equals("castAbility")) {
+						game.castAbility(a, model.world.Direction.RIGHT);
+					}
+					else if(s.equals("Punch")) {
 						game.castAbility(a, model.world.Direction.RIGHT);
 					}
 					updateGrid(grid);
@@ -1033,6 +1037,9 @@ public class Main extends Application {
 					} else if (s.equals("castAbility")) {
 						game.castAbility(a, model.world.Direction.LEFT);
 					}
+					else if(s.equals("Punch")) {
+						game.castAbility(a, model.world.Direction.LEFT);
+					}
 					updateGrid(grid);
 					hideButtons(directionBox);
 					gameOver(stage);
@@ -1051,6 +1058,9 @@ public class Main extends Application {
 					} else if (s.equals("attack")) {
 						game.attack(model.world.Direction.DOWN);
 					} else if (s.equals("castAbility")) {
+						game.castAbility(a, model.world.Direction.DOWN);
+					}
+					else if(s.equals("Punch")) {
 						game.castAbility(a, model.world.Direction.DOWN);
 					}
 					updateGrid(grid);
