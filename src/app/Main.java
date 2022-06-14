@@ -2,6 +2,8 @@ package app;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import computer.driver;
 import engine.*;
 import exceptions.AbilityUseException;
 import exceptions.ChampionDisarmedException;
@@ -64,10 +66,11 @@ public class Main extends Application {
 	static HBox toprow1;
 	static Label next;
 	static String fastestChampion;
+	static boolean computerflag = false;
+	static ArrayList<String> computermoves;
 
 	public void start(Stage stage) {
 		// TODO: add punch ability when champion is disarmed
-		chosenChamions = new ArrayList<Integer>();
 		stage.setTitle("Marvel game");
 		Image icon = new Image("/Assets/Marvel_Logo.png");
 		stage.getIcons().add(icon);
@@ -146,6 +149,12 @@ public class Main extends Application {
 				}
 			}
 		};
+		if(player1field.getText().equals("AI")||player2field.getText().equals("AI")) {
+			computerflag = true;
+			computermoves = driver(game);
+		}
+			
+	
 
 		toscene2.setOnAction(proceed);
 
@@ -417,6 +426,9 @@ public class Main extends Application {
 	}
 
 	public static void toScene3(Stage stage) {
+		if(computerflag) {
+			
+		}
 		if (game.getSecondPlayer().getTeam().size() != 0) {
 			scene4(stage);
 		} else {
@@ -1168,4 +1180,5 @@ public class Main extends Application {
 		
 	
 	}
+	
 }
