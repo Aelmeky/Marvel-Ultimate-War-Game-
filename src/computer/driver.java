@@ -53,9 +53,8 @@ public class driver {
 			game.move(Direction.DOWN);
 		} catch (Exception e) {}
 		game.getCurrentChampion().setCurrentActionPoints(game.getCurrentChampion().getMaxActionPointsPerTurn());
-		game.getCurrentChampion().getAbilities().get(0).setCurrentCooldown(1);
-		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
-		System.out.println(game.getCurrentChampion());
+//		game.getCurrentChampion().getAbilities().get(0).setCurrentCooldown(1);
+//		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
 		Game game2 = clone(game);
 		ArrayList<String> arr = new ArrayList<String>();
 		arr = minimax(game, game2, game2.getSecondPlayer(), arr, game.getCurrentChampion().getCurrentActionPoints());
@@ -198,8 +197,7 @@ public class driver {
 				try {
 					Effect e2 = (Effect) e.clone();
 					c2.getAppliedEffects().add(e2);
-				} catch (CloneNotSupportedException e1) {
-				}
+				} catch (CloneNotSupportedException e1) {}
 			}
 			p2.getTeam().add(c2);
 			if (p1.getLeader().getName().equals(c2.getName())) {
@@ -232,9 +230,40 @@ public class driver {
 						// if me
 						sum += (((Champion) n[i][j]).getCurrentHP() - ogame.getCurrentChampion().getCurrentHP())
 								* (ogame.getCurrentChampion().getMaxHP() / ogame.getCurrentChampion().getCurrentHP());
+						boolean flag=false;
+						Champion c=ngame.getCurrentChampion();
+						for(Effect f:c.getAppliedEffects()) {
+							if(f.getType()==EffectType.BUFF) {
+								flag=true;
+								for(Effect f2:ogame.getCurrentChampion().getAppliedEffects()) {
+									if(f2.getName()==f.getName()) {
+										flag=false;
+									}
+								}
+							}
+						}
+						if(flag) {
+							sum+=200;
+						}
 					}
 					if (!isFriend(me, ((Champion) n[i][j]))) {
 						// effect on an enemy
+						boolean flag=false;
+						Champion c=((Champion) n[i][j]);
+						for(Effect f:c.getAppliedEffects()) {
+							if(f.getType()==EffectType.DEBUFF) {
+								flag=true;
+								System.out.println(f.getName());
+								for(Effect f2:((Champion) o[i][j]).getAppliedEffects()) {
+									if(f2.getName()==f.getName()) {
+										flag=false;
+									}
+								}
+							}
+						}
+						if(flag) {
+							sum+=200;
+						}
 						// damaged an enemy
 						sum += (((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP()) * 1.5;
 					}
@@ -340,8 +369,7 @@ public class driver {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-						}
+						} catch (Exception e) {}
 						break;
 					case "movedown":
 						try {
@@ -356,8 +384,7 @@ public class driver {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-						}
+						} catch (Exception e) {}
 						break;
 					case "moveleft":
 						try {
@@ -371,8 +398,7 @@ public class driver {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-						}
+						} catch (Exception e) {}
 						break;
 					case "moveright":
 						try {
@@ -386,8 +412,7 @@ public class driver {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-						}
+						} catch (Exception e) {}
 						break;
 					case "attackup":
 						try {
@@ -398,19 +423,10 @@ public class driver {
 							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
-								// System.out.println("here "+x+" "+value);
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-							int x = evaluate(oldgame, game, p);
-							if (x > value) {
-								// System.out.println("here e "+x+" "+value);
-								arr.add(x + "");
-								value = x;
-								sol = arr;
-							}
-						}
+						} catch (Exception e) {}
 						break;
 					case "attackdown":
 						try {
@@ -421,19 +437,10 @@ public class driver {
 							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
-								// System.out.println("here "+x+" "+value);
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-							int x = evaluate(oldgame, game, p);
-							if (x > value) {
-								// System.out.println("here e "+x+" "+value);
-								arr.add(x + "");
-								value = x;
-								sol = arr;
-							}
-						}
+						} catch (Exception e) {}
 						break;
 					case "attackleft":
 						try {
@@ -444,20 +451,10 @@ public class driver {
 							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
-								// System.out.println("here "+x+" "+value);
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-//							System.out.println(e+" "+i);
-							int x = evaluate(oldgame, game, p);
-							if (x > value) {
-								// System.out.println("here e "+x+" "+value);
-								arr.add(x + "");
-								value = x;
-								sol = arr;
-							}
-						}
+						} catch (Exception e) {}
 						break;
 					case "attackright":
 						try {
@@ -471,18 +468,10 @@ public class driver {
 								value = x;
 								sol = arr3;
 							}
-						} catch (Exception e) {
-							int x = evaluate(oldgame, game, p);
-							if (x > value) {
-								// System.out.println("here e "+x+" "+value);
-								arr.add(x + "");
-								value = x;
-								sol = arr;
-							}
-						}
+						} catch (Exception e) {}
 						break;
 					case "ability":
-						for (int j = 0; j < 3; j++) {
+						for (int j = 0; j < game.getCurrentChampion().getAbilities().size(); j++) {
 							Ability a = game.getCurrentChampion().getAbilities().get(j);
 							if (a instanceof HealingAbility) {
 								try {
@@ -572,8 +561,7 @@ public class driver {
 										value = x;
 										sol = arr3;
 									}
-								} catch (Exception e) {
-								}
+								} catch (Exception e) {}
 								try {
 									Game ngame = clone(game);
 									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
@@ -613,6 +601,8 @@ public class driver {
 								try {
 									Game ngame = clone(game);
 									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+									//System.out.println("arr"+arr);
+									//System.out.println("a "+a.getName()+" "+a.getCurrentCooldown());
 									ngame.castAbility(a);
 									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
 									arr2.add("usedability" + j);
@@ -624,7 +614,7 @@ public class driver {
 										sol = arr3;
 									}
 								} catch (Exception e) {
-									System.out.println(e);
+									//System.out.println(e);
 								}
 							}
 						}
