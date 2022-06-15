@@ -51,6 +51,7 @@ public class driver {
 		game.endTurn();
 		game.endTurn();
 		game.endTurn();
+		System.out.println(game.getCurrentChampion());
 		try {
 			game.move(Direction.DOWN);
 			game.move(Direction.DOWN);
@@ -58,7 +59,7 @@ public class driver {
 		} catch (Exception e) {}
 		game.getCurrentChampion().setCurrentActionPoints(game.getCurrentChampion().getMaxActionPointsPerTurn());
 //		game.getCurrentChampion().getAbilities().get(0).setCurrentCooldown(1);
-		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
+//		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
 		Game game2 = clone(game);
 		ArrayList<String> arr = new ArrayList<String>();
 		arr = minimax(game, game2, game2.getSecondPlayer(), arr, game.getCurrentChampion().getCurrentActionPoints());
@@ -319,11 +320,7 @@ public class driver {
 		}
 		//System.out.println(sum+" "+newc.getName()+" "+newc.getAppliedEffects()+" "+oldc.getAppliedEffects());
 		if(flag) {
-			if(isFriend(p2, newc)) {
-				sum*=200;
-			}else {
-				sum*=-200;
-			}
+			sum*=200;
 		}
 		return sum;
 	}
@@ -390,7 +387,6 @@ public class driver {
 							ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
 							int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 							if (x > value) {
-								// System.out.println("here "+x+" "+value);
 								value = x;
 								sol = arr3;
 							}
@@ -635,6 +631,26 @@ public class driver {
 										sol = arr3;
 									}
 								} catch (Exception e) {}
+							}
+							if (a instanceof CrowdControlAbility && a.getCastArea() == AreaOfEffect.SINGLETARGET) {
+								for(int k=0;k<game.getFirstPlayer().getTeam().size();k++) {
+										try {
+											Game ngame = clone(game);
+											a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+											int x=ngame.getFirstPlayer().getTeam().get(k).getLocation().x;
+											int y=ngame.getFirstPlayer().getTeam().get(k).getLocation().y;
+											ngame.castAbility(a,x,y);
+											ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+											arr2.add("usedability"+j+""+x+""+y);
+											ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+											int x2 = Integer.parseInt(arr3.get(arr3.size() - 1));
+											System.out.println(x2);
+											if (x2 > value) {
+												value = x2;
+												sol = arr3;
+											}
+										} catch (Exception e) {}
+								}
 							}
 						}
 
