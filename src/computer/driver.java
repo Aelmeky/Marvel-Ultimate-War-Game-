@@ -40,12 +40,16 @@ public class driver {
 		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(11));
 
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(0));
-		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(3));
+		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(2));
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(14));
+		
 		p1.setLeader(game.getAvailableChampions().get(1));
 		p2.setLeader(game.getAvailableChampions().get(0));
 		game.placeChampions();
 		game.prepareChampionTurns();
+		game.endTurn();
+		game.endTurn();
+		game.endTurn();
 		game.endTurn();
 		try {
 			game.move(Direction.DOWN);
@@ -54,7 +58,7 @@ public class driver {
 		} catch (Exception e) {}
 		game.getCurrentChampion().setCurrentActionPoints(game.getCurrentChampion().getMaxActionPointsPerTurn());
 //		game.getCurrentChampion().getAbilities().get(0).setCurrentCooldown(1);
-//		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
+		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
 		Game game2 = clone(game);
 		ArrayList<String> arr = new ArrayList<String>();
 		arr = minimax(game, game2, game2.getSecondPlayer(), arr, game.getCurrentChampion().getCurrentActionPoints());
@@ -62,7 +66,7 @@ public class driver {
 		System.out.println(arr);
 		printGame(game);
 		printGame(game2);
-		//System.out.println(game.getCurrentChampion().getAbilities());
+		System.out.println(game.getCurrentChampion().getAbilities());
 	}
 
 	public static void printGame(Game game) {
@@ -222,48 +226,23 @@ public class driver {
 				if (n[i][j] instanceof Champion) {
 					handel.add(((Champion) n[i][j]).getName());
 					if (isFriend(me, ((Champion) n[i][j]))
-							&& !ngame.getCurrentChampion().getName().equals((ogame.getCurrentChampion().getName()))) {
-						// A friend got damaged
+							&& !((Champion) n[i][j]).getName().equals((ogame.getCurrentChampion().getName()))) {
+						// A friend health changed
 						sum -= ((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP();
+						//A friend has an Effect Applied
+						//TODO harmful efffects from other players
+						sum+=newEffectApplied(((Champion) o[i][j]), ((Champion) n[i][j]),me);
 					}
 					if (ngame.getCurrentChampion().getName().equals(((Champion) n[i][j]).getName())) {
 						// if me
 						sum += (((Champion) n[i][j]).getCurrentHP() - ogame.getCurrentChampion().getCurrentHP())
 								* (ogame.getCurrentChampion().getMaxHP() / ogame.getCurrentChampion().getCurrentHP());
-						boolean flag=false;
-						Champion c=ngame.getCurrentChampion();
-						for(Effect f:c.getAppliedEffects()) {
-							if(f.getType()==EffectType.BUFF) {
-								flag=true;
-								for(Effect f2:ogame.getCurrentChampion().getAppliedEffects()) {
-									if(f2.getName()==f.getName()) {
-										flag=false;
-									}
-								}
-							}
-						}
-						if(flag) {
-							sum+=200;
-						}
+						//System.out.println("here"+((Champion) n[i][j]).getAppliedEffects()+" "+sum);	
+						sum+=newEffectApplied(ogame.getCurrentChampion(), ngame.getCurrentChampion(),me);
 					}
 					if (!isFriend(me, ((Champion) n[i][j]))) {
 						// effect on an enemy
-						boolean flag=false;
-						Champion c=((Champion) n[i][j]);
-						for(Effect f:c.getAppliedEffects()) {
-							if(f.getType()==EffectType.DEBUFF) {
-								flag=true;
-								System.out.println(f.getName());
-								for(Effect f2:((Champion) o[i][j]).getAppliedEffects()) {
-									if(f2.getName()==f.getName()) {
-										flag=false;
-									}
-								}
-							}
-						}
-						if(flag) {
-							sum+=200;
-						}
+						sum+=newEffectApplied(((Champion) o[i][j]), ((Champion) n[i][j]),me);
 						// damaged an enemy
 						sum += (((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP()) * 1.5;
 					}
@@ -303,16 +282,47 @@ public class driver {
 				}
 			}
 		}
-		// using Leader ability
-		if (ngame.isSecondLeaderAbilityUsed() && !ogame.isSecondLeaderAbilityUsed()) {
-			if (sum < 1000) {
-				sum -= 2000;
-			}
-		}
+//		// using Leader ability
+//		if (ngame.isSecondLeaderAbilityUsed() && !ogame.isSecondLeaderAbilityUsed()) {
+//			if (sum < 1000) {
+//				sum -= 2000;
+//			}
+//		}
 		//to not use abilities on covers
 		for(int j=0;j<ngame.getCurrentChampion().getAbilities().size();j++) {
 			if(ngame.getCurrentChampion().getAbilities().get(j).getCurrentCooldown()!=ogame.getCurrentChampion().getAbilities().get(j).getCurrentCooldown()) {
 				sum-=50;
+			}
+		}
+		return sum;
+	}
+	public static int newEffectApplied(Champion oldc,Champion newc,Player p2) {
+		EffectType ef=EffectType.DEBUFF;
+		if(isFriend(p2, newc)) {
+			ef=EffectType.BUFF;
+		}
+		int sum=0;
+		boolean flag=false;
+		for(Effect f:newc.getAppliedEffects()) {
+			flag=false;
+			if(f.getType()==ef) {
+				flag=true;
+				for(Effect f2:oldc.getAppliedEffects()) {
+					if(f2.getName()==f.getName()) {
+						flag=false;
+					}
+				}
+				if(flag) {
+					sum+=1;
+				}
+			}
+		}
+		//System.out.println(sum+" "+newc.getName()+" "+newc.getAppliedEffects()+" "+oldc.getAppliedEffects());
+		if(flag) {
+			if(isFriend(p2, newc)) {
+				sum*=200;
+			}else {
+				sum*=-200;
 			}
 		}
 		return sum;
@@ -597,25 +607,34 @@ public class driver {
 								}
 							}
 							if (a instanceof CrowdControlAbility&&a.getCastArea()==AreaOfEffect.SELFTARGET) {
-								System.out.println("in selftarget");
 								try {
 									Game ngame = clone(game);
 									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
-									//System.out.println("arr"+arr);
-									//System.out.println("a "+a.getName()+" "+a.getCurrentCooldown());
 									ngame.castAbility(a);
 									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
 									arr2.add("usedability" + j);
 									ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
 									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
-									System.out.println("x"+x);
 									if (x > value) {
 										value = x;
 										sol = arr3;
 									}
-								} catch (Exception e) {
-									//System.out.println(e);
-								}
+								} catch (Exception e) {}
+							}
+							if (a instanceof CrowdControlAbility&&a.getCastArea()==AreaOfEffect.TEAMTARGET) {
+								try {
+									Game ngame = clone(game);
+									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+									ngame.castAbility(a);
+									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+									arr2.add("usedability" + j);
+									ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+									if (x > value) {
+										value = x;
+										sol = arr3;
+									}
+								} catch (Exception e) {}
 							}
 						}
 
@@ -634,7 +653,6 @@ public class driver {
 				return a;
 			}
 		}
-		
 		return null;
 	}
 }
