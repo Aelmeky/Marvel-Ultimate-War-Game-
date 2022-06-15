@@ -39,27 +39,25 @@ public class driver {
 		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(5));
 		game.getFirstPlayer().getTeam().add(game.getAvailableChampions().get(11));
 
-		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(0));
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(2));
+		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(7));
 		game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(14));
 		
 		p1.setLeader(game.getAvailableChampions().get(1));
-		p2.setLeader(game.getAvailableChampions().get(0));
+		p2.setLeader(game.getAvailableChampions().get(7));
 		game.placeChampions();
 		game.prepareChampionTurns();
 		game.endTurn();
 		game.endTurn();
 		game.endTurn();
-		game.endTurn();
-		System.out.println(game.getCurrentChampion());
 		try {
 			game.move(Direction.DOWN);
 			game.move(Direction.DOWN);
 			game.move(Direction.DOWN);
 		} catch (Exception e) {}
 		game.getCurrentChampion().setCurrentActionPoints(game.getCurrentChampion().getMaxActionPointsPerTurn());
-//		game.getCurrentChampion().getAbilities().get(0).setCurrentCooldown(1);
-//		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
+		game.getCurrentChampion().getAbilities().get(1).setCurrentCooldown(1);
+		game.getCurrentChampion().getAbilities().get(2).setCurrentCooldown(1);
 		Game game2 = clone(game);
 		ArrayList<String> arr = new ArrayList<String>();
 		arr = minimax(game, game2, game2.getSecondPlayer(), arr, game.getCurrentChampion().getCurrentActionPoints());
@@ -651,6 +649,64 @@ public class driver {
 											}
 										} catch (Exception e) {}
 								}
+							}
+							if (a instanceof CrowdControlAbility && a.getCastArea() == AreaOfEffect.DIRECTIONAL) {
+								try {
+									Game ngame = clone(game);
+									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+									Direction d = Direction.DOWN;
+									ngame.castAbility(a, d);
+									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+									arr2.add("usedability" + j + d);
+									ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+									if (x > value) {
+										value = x;
+										sol = arr3;
+									}									
+								} catch (Exception e) {}
+								try {
+									Game ngame = clone(game);
+									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+									Direction d = Direction.UP;
+									ngame.castAbility(a, d);
+									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+									arr2.add("usedability" + j + d);
+									ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+									if (x > value) {
+										value = x;
+										sol = arr3;
+									}
+								} catch (Exception e) {}
+								try {
+									Game ngame = clone(game);
+									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+									Direction d = Direction.RIGHT;
+									ngame.castAbility(a, d);
+									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+									arr2.add("usedability" + j + d);
+									ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+									if (x > value) {
+										value = x;
+										sol = arr3;
+									}
+								} catch (Exception e) {}
+								try {
+									Game ngame = clone(game);
+									a=getAbilityByName(ngame.getCurrentChampion(),a.getName());
+									Direction d = Direction.LEFT;
+									ngame.castAbility(a, d);
+									ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
+									arr2.add("usedability" + j + d);
+									ArrayList<String> arr3 = minimax(oldgame, ngame, p, arr2, depth - 1);
+									int x = Integer.parseInt(arr3.get(arr3.size() - 1));
+									if (x > value) {
+										value = x;
+										sol = arr3;
+									}
+								} catch (Exception e) {}
 							}
 						}
 
