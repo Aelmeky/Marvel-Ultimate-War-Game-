@@ -152,7 +152,7 @@ public class Main extends Application {
 		};
 		if(player1field.getText().equals("AI")||player2field.getText().equals("AI")) {
 			computerflag = true;
-			computermoves = driver(game);
+			//computermoves = driver(game);
 		}
 			
 	
@@ -881,7 +881,7 @@ public class Main extends Application {
 		case ("Thor"):
 			return "/Assets/thor.jpg";
 		case ("Venom"):
-			return "/Assests/venom.png";
+			return "/Assets/venom.jpg";
 		default:
 			return "/Assets/yellowjacket.png";
 
@@ -992,14 +992,14 @@ public class Main extends Application {
 		if (game.checkGameOver() == null) {
 			return;
 		} else if (game.checkGameOver().equals(player1)) {
-			new Alert("Congrats", "Player 1 Won \n 9ame over");
-			// TODO not so good but gives the grade
 			VBox n = new VBox();
 			stage.setScene(new Scene(n, Color.SKYBLUE));
+			new Alert("Congrats", "Player 1 Won \n 9ame over");			
 			// stage.setdisabeled(true);
 		} else {
+			VBox n = new VBox();
+			stage.setScene(new Scene(n, Color.SKYBLUE));
 			new Alert("Congrats", "Player 2 Won \n 9ame over");
-			stage.setScene(new Scene(null, Color.SKYBLUE));
 		}
 
 	}

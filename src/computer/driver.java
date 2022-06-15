@@ -229,7 +229,6 @@ public class driver {
 						// A friend health changed
 						sum -= ((Champion) o[i][j]).getCurrentHP() - ((Champion) n[i][j]).getCurrentHP();
 						//A friend has an Effect Applied
-						//TODO harmful efffects from other players
 						sum+=newEffectApplied(((Champion) o[i][j]), ((Champion) n[i][j]),me);
 					}
 					if (ngame.getCurrentChampion().getName().equals(((Champion) n[i][j]).getName())) {
@@ -492,7 +491,6 @@ public class driver {
 									}
 								} catch (Exception e) {}
 							}
-							// TODO CroudControl
 							if (a instanceof DamagingAbility && a.getCastArea() == AreaOfEffect.SURROUND) {
 								try {
 									Game ngame = clone(game);
