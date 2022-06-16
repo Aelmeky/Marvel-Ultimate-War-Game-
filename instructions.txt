@@ -1,1 +1,14 @@
- 
+- I started to implement Minimax Algorithm in (Package Computer/ Class driver).
+- Then realized our game containes complex actions and I can't just itirate over all of then for 1 time.
+- so I had to define a recursive method that given an ArrayList of Strings representing the moves made and a game, it would then try all possible moves and evaluate each of them to find the best combination of moves for a champion.
+- thus I had to defive a method called evaluate that tackes 2 game(the old one with no change and the new one with changes) and finds if the moves were good.
+- to avoid reimplemnting all the logic in the game class I just made a method called clone that tackes and returnes an exact copy of it just deep cloned everything(But names).
+- after that I was shoked to find that on average the best Actiond for a champion searched through ~8k-10k branches so in worst case to use Minimax I will have to have 10^3 brances then 10^3 then 10^3 (to reach the depth I wanted which was 3).
+- since java does ~10^8 operations a second then for each time the computer had to "think" it will take ~10 seconds which was not good.
+- I know that alpha-beta pruning is made exactly for this. but I had no time to implement it :'(.
+- so Sadly the current state of the code is that it searches for a depth of 1.
+- which is another way of telling I'm just brute-forcing every possible move for a champion. and returning an ArrayList of Strings with the moves.
+- then in the GUI(Package app/Class Main): If the name of the second Player is "AI" (case ignored) it would realise it's in computer mode. and every time a champion from the second team started his turn is would call the driver class and give it the game so that the driver class would find the best actions. 
+- then the ArrayList is parsed and the required buttons are clicked on using Button.fire().
+----------------------------
+- There's Also an Easter Egg if the Computer Wins :).

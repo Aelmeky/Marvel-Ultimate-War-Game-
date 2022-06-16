@@ -864,7 +864,6 @@ public class Main extends Application {
 						char s2=s.charAt(11);
 						int j=Integer.parseInt(s2+"");
 						((Button) abilitieButtons.get(j+1)).fire();
-						System.out.println(leftPane.getChildren());
 						if(s.length()==14) {
 							((Button)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(0)).fire();
 						}else if(s.length()==15){
