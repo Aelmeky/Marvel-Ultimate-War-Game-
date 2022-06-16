@@ -1,14 +1,10 @@
 package computer;
 
 import java.awt.Point;
-import java.io.IOException;
 import java.util.ArrayList;
-
 import model.effects.*;
 import engine.Game;
 import engine.Player;
-import exceptions.NotEnoughResourcesException;
-import exceptions.UnallowedMovementException;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
@@ -25,7 +21,6 @@ public class driver {
 	static int i = 1;
 	static Player p1;
 	static Player p2;
-	
 	public static ArrayList<String> ComputerTurn(Game game){
 		p1=game.getFirstPlayer();
 		p2=game.getSecondPlayer();
@@ -171,7 +166,7 @@ public class driver {
 				} catch (CloneNotSupportedException e1) {}
 			}
 			p2.getTeam().add(c2);
-			if (p1.getLeader().getName().equals(c2.getName())) {
+			if (p1.getLeader()!=null&&p1.getLeader().getName().equals(c2.getName())) {
 				p2.setLeader(c2);
 			}
 		}
@@ -248,12 +243,12 @@ public class driver {
 				}
 			}
 		}
-//		// using Leader ability
-//		if (ngame.isSecondLeaderAbilityUsed() && !ogame.isSecondLeaderAbilityUsed()) {
-//			if (sum < 1000) {
-//				sum -= 2000;
-//			}
-//		}
+		// using Leader ability
+		if (ngame.isSecondLeaderAbilityUsed() && !ogame.isSecondLeaderAbilityUsed()) {
+			if (sum < 1000 && ogame.getCurrentChampion() instanceof Villain) {
+				sum -= 2000;
+			}
+		}
 		//to not use abilities on covers
 		for(int j=0;j<ngame.getCurrentChampion().getAbilities().size();j++) {
 			if(ngame.getCurrentChampion().getAbilities().get(j).getCurrentCooldown()!=ogame.getCurrentChampion().getAbilities().get(j).getCurrentCooldown()) {
@@ -309,7 +304,6 @@ public class driver {
 		arr.add("attackleft");
 		arr.add("attackright");
 		arr.add("attackdown");
-		// arr.add("useleaderability");
 		arr.add("ability");
 		return arr;
 	}
@@ -329,6 +323,19 @@ public class driver {
 		if (game.getCurrentChampion().getCurrentActionPoints() == 0) {
 			int x = evaluate(oldgame, game, p2);
 			arr.add(x + "");
+			try { 	
+				Game game3=clone(game);
+				ArrayList<String>arr2=(ArrayList<String>) sol.clone();
+				game3.useLeaderAbility();
+				int x2=evaluate(oldgame, game3, p2);
+				if(x2>x) {
+					arr2.remove(arr.size());
+					arr2.add("Use Leader Ability");
+					arr2.add(x2+"");
+					sol=arr;
+					System.out.println("used Leader Ability "+x+" "+x2+" "+sol);
+				}
+			} catch (Exception e) {}
 			return arr;
 		}
 		for (String s : getAvailableActions()) {

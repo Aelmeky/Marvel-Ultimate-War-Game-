@@ -594,7 +594,6 @@ public class Main extends Application {
 		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
 		if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
 			computermoves=driver.ComputerTurn(game);
-			System.out.println(computermoves);
 			executeActions(computermoves,leftpane);
 		}
 	}
@@ -710,8 +709,8 @@ public class Main extends Application {
 						xyBox.getChildren().add(they);
 						Button submit = new Button("submit");
 
-						submit.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-							public void handle(Event arg0) {
+						submit.setOnAction(new EventHandler<ActionEvent>() {
+							public void handle(ActionEvent arg0) {
 								int x = Integer.parseInt(thex.getText());
 								int y = Integer.parseInt(they.getText());
 								castxyabilities(c, a, x, y, grid);
@@ -738,8 +737,8 @@ public class Main extends Application {
 		}
 		Button LeaderAbility = new Button("Use Leader Ability");
 		leftpane.getChildren().add(LeaderAbility);
-		LeaderAbility.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		LeaderAbility.setOnAction( new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				useLeaderAbility();
 				updateGrid(grid);
 				gameOver(stage);
@@ -778,7 +777,6 @@ public class Main extends Application {
 				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
 				if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
 					computermoves=driver.ComputerTurn(game);
-					System.out.println(computermoves);
 					executeActions(computermoves,leftpane);
 				}
 			}
@@ -788,26 +786,20 @@ public class Main extends Application {
 	}
 
 	public static void executeActions(ArrayList<String> arr,VBox leftPane) {
-		//
-//		while(!arr.isEmpty()) {
-//			arr.remove(0);
-//		}
-//		arr.add("movedown");
-//		arr.add("100");
-		//
-		
+		System.out.println(game.getCurrentChampion().getName());
 		HBox movebox=null;
 		for(int i=0;i<leftPane.getChildren().size();i++) {
 			if(leftPane.getChildren().get(i) instanceof HBox) {
 				movebox=(HBox) leftPane.getChildren().get(i);
 			}
 		}
-		System.out.println(leftPane.getChildren());
-		System.out.println(movebox.getChildren());
+//		System.out.println(leftPane.getChildren());
+//		System.out.println(movebox.getChildren());
 		Button move=getButtonByName("Move", leftPane);
 		Button attack=getButtonByName("Attack", leftPane);
 		Button endturn=getButtonByName("End Turn", leftPane);
 		Button useLeaderAbility =getButtonByName("Use Leader Ability", leftPane);
+		ObservableList<Node> abilitieButtons=((VBox)leftPane.getChildren().get(1)).getChildren();
 		System.out.println(arr);
 		System.out.println("-------------------");
 
@@ -815,7 +807,10 @@ public class Main extends Application {
 		try {
 			for(int i=0;i<arr.size()-1;i++) {
 				String s=arr.get(i);
-				System.out.println(s);
+				//System.out.println(s);
+				if(s.equals("Use Leader Ability")){
+					useLeaderAbility.fire();
+				}
 				if(s.equals("moveup")){
 					move.fire();
 					((Button)movebox.getChildren().get(0)).fire();
@@ -848,10 +843,38 @@ public class Main extends Application {
 					attack.fire();
 					((Button)movebox.getChildren().get(1)).fire();
 				}
+				if(s.length()>11&&s.substring(0,11).equals("usedability")){
+					if(s.length()==12) {
+						char s2=s.charAt(11);
+						int j=Integer.parseInt(s2+"");
+						((Button) abilitieButtons.get(j+1)).fire();
+					}else if(s.length()==14&&s.charAt(13)!='p') {
+						//single target ability
+						char s2=s.charAt(11);
+						int j=Integer.parseInt(s2+"");
+						((Button) abilitieButtons.get(j+1)).fire();
+						int x=Integer.parseInt(s.charAt(12)+"");
+						int y=Integer.parseInt(s.charAt(13)+"");
+						((TextField)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(0)).setText(x+"");
+						((TextField)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(1)).setText(y+"");
+						Thread.sleep(1000);
+						((Button)leftPane.getChildren().get(leftPane.getChildren().size()-1)).fire();
+					}else {
+//						//directional ability will not be used
+//						char s2=s.charAt(11);
+//						int j=Integer.parseInt(s2+"");
+//						((Button) abilitieButtons.get(j+1)).fire();
+//						System.out.println(leftPane.getChildren());
+//						if(s.length()==14) {
+//							
+//						}
+					}
+				}
 //				System.out.println("here "+leftPane.getChildren());
 //				System.out.println(movebox.getChildren());
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 			endturn.fire();
 			return;
 		}
@@ -1015,10 +1038,6 @@ public class Main extends Application {
 			eff += c.getAppliedEffects().get(j).getName() + " Duration=" + c.getAppliedEffects().get(j).getDuration()
 					+ "\n";
 		}
-		if (c.getAppliedEffects().size() != 0) {
-			System.out.println(c.getAppliedEffects());
-			System.out.println(eff);
-		}
 		if (c.equals(game.getCurrentChampion())) {
 			String s = "name=" + c.getName() + "\n" + "Type=" + s2 + "\n" + "currentHP=" + c.getCurrentHP() + "\n"
 					+ "mana=" + c.getMana() + "\n" + "currentActionPoints=" + c.getCurrentActionPoints() + "\n"
@@ -1100,12 +1119,16 @@ public class Main extends Application {
 		} else if (game.checkGameOver().equals(player1)) {
 			VBox n = new VBox();
 			stage.setScene(new Scene(n, Color.SKYBLUE));
-			new Alert("Congrats", "Player 1 Won \n 9ame over");			
+			new Alert("Congrats", "Player 1 Won \n 9ame 0ver");			
 			// stage.setdisabeled(true);
 		} else {
 			VBox n = new VBox();
 			stage.setScene(new Scene(n, Color.SKYBLUE));
-			new Alert("Congrats", "Player 2 Won \n 9ame over");
+			if(computermode) {
+				new Alert("Congrats", "My Name is SKYNET \n 9ame 0ver");
+			}else {
+				new Alert("Congrats", "Player 2 Won \n 9ame 0ver");
+			}
 		}
 
 	}

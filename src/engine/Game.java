@@ -437,9 +437,7 @@ public class Game {
 		getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
 		getCurrentChampion()
 				.setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
-		System.out.println("h1");
 		a.setCurrentCooldown(a.getBaseCooldown());
-		System.out.println("h2");
 		cleanup(targets);
 
 	}
