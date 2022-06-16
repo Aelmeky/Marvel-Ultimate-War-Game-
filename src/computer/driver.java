@@ -380,7 +380,7 @@ public class driver {
 					Game ngame = clone(game);
 					ngame.move(Direction.RIGHT);
 					ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-					arr2.add("movereight");
+					arr2.add("moveright");
 					ArrayList<String> arr3 = getBestActions(oldgame, ngame,arr2);
 					int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 					if (x > value) {
@@ -436,7 +436,7 @@ public class driver {
 					Game ngame = clone(game);
 					ngame.attack(Direction.RIGHT);
 					ArrayList<String> arr2 = (ArrayList<String>) arr.clone();
-					arr2.add("attackreight");
+					arr2.add("attackright");
 					ArrayList<String> arr3 = getBestActions(oldgame, ngame,arr2);
 					int x = Integer.parseInt(arr3.get(arr3.size() - 1));
 					if (x > value) {

@@ -37,6 +37,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
@@ -444,7 +445,7 @@ public class Main extends Application {
 		}
 		int i=0;
 		while(player2.getTeam().size()!=3) {
-			if(!player1.getTeam().contains(game.getAvailableChampions().get(i))) {
+			if(!player1.getTeam().contains(game.getAvailableChampions().get(i))&&!player2.getTeam().contains(game.getAvailableChampions().get(i))) {
 				player2.getTeam().add(game.getAvailableChampions().get(i));
 			}
 			i++;
@@ -454,10 +455,6 @@ public class Main extends Application {
 	
 	public static void scene4(Stage stage) {
 		game.prepareChampionTurns();
-		if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
-			computermoves=driver.ComputerTurn(game);
-			System.out.println(computermoves);
-		}
 		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
 		BorderPane border = new BorderPane();
 		border.setPrefHeight(1000);
@@ -595,7 +592,11 @@ public class Main extends Application {
 		border.setTop(top);
 		border.setCenter(grid);
 		prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
-
+		if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
+			computermoves=driver.ComputerTurn(game);
+			System.out.println(computermoves);
+			executeActions(computermoves,leftpane);
+		}
 	}
 
 	public static void prepareActions(VBox leftpane, VBox abilityBox, Champion c, GridPane grid, Stage stage,
@@ -605,8 +606,8 @@ public class Main extends Application {
 		}
 		HBox moveBox = new HBox();
 		Button move = new Button("Move");
-		move.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		move.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				actionDirectional(moveBox, grid, stage, "move", null);
 			}
 		});
@@ -641,8 +642,8 @@ public class Main extends Application {
 		if(!isStuned) {
 			leftpane.getChildren().add(attack);
 		}
-		attack.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		attack.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				actionDirectional(moveBox, grid, stage, "attack", null);
 				
 			}
@@ -678,8 +679,8 @@ public class Main extends Application {
 					((Label) rightpane.getChildren().get(rightpane.getChildren().size() - 1)).setText(a.toString());
 				}
 			});
-			button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-				public void handle(Event arg0) {
+			button.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent arg0) {
 					if (justAbilities.contains(a)) {
 						castJustAbility(game.getCurrentChampion(), a);
 						updateGrid(grid);
@@ -778,6 +779,7 @@ public class Main extends Application {
 				if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
 					computermoves=driver.ComputerTurn(game);
 					System.out.println(computermoves);
+					executeActions(computermoves,leftpane);
 				}
 			}
 
@@ -785,6 +787,88 @@ public class Main extends Application {
 
 	}
 
+	public static void executeActions(ArrayList<String> arr,VBox leftPane) {
+		//
+//		while(!arr.isEmpty()) {
+//			arr.remove(0);
+//		}
+//		arr.add("movedown");
+//		arr.add("100");
+		//
+		
+		HBox movebox=null;
+		for(int i=0;i<leftPane.getChildren().size();i++) {
+			if(leftPane.getChildren().get(i) instanceof HBox) {
+				movebox=(HBox) leftPane.getChildren().get(i);
+			}
+		}
+		System.out.println(leftPane.getChildren());
+		System.out.println(movebox.getChildren());
+		Button move=getButtonByName("Move", leftPane);
+		Button attack=getButtonByName("Attack", leftPane);
+		Button endturn=getButtonByName("End Turn", leftPane);
+		Button useLeaderAbility =getButtonByName("Use Leader Ability", leftPane);
+		System.out.println(arr);
+		System.out.println("-------------------");
+
+		// TODO use Leader Abililty in driver
+		try {
+			for(int i=0;i<arr.size()-1;i++) {
+				String s=arr.get(i);
+				System.out.println(s);
+				if(s.equals("moveup")){
+					move.fire();
+					((Button)movebox.getChildren().get(0)).fire();
+				}
+				if(s.equals("movedown")){
+					move.fire();
+					((Button)movebox.getChildren().get(3)).fire();
+				}
+				if(s.equals("moveleft")){
+					move.fire();
+					((Button)movebox.getChildren().get(2)).fire();
+				}
+				if(s.equals("moveright")){
+					move.fire();
+					((Button)movebox.getChildren().get(1)).fire();
+				}
+				if(s.equals("attackup")){
+					attack.fire();
+					((Button)movebox.getChildren().get(0)).fire();
+				}
+				if(s.equals("attackdown")){
+					attack.fire();
+					((Button)movebox.getChildren().get(3)).fire();
+				}
+				if(s.equals("attackleft")){
+					attack.fire();
+					((Button)movebox.getChildren().get(2)).fire();
+				}
+				if(s.equals("attackright")){
+					attack.fire();
+					((Button)movebox.getChildren().get(1)).fire();
+				}
+//				System.out.println("here "+leftPane.getChildren());
+//				System.out.println(movebox.getChildren());
+			}
+		} catch (Exception e) {
+			endturn.fire();
+			return;
+		}
+		endturn.fire();
+		return;
+	}
+	
+	public static Button getButtonByName(String s,VBox leftPane) {
+		for(int i=0;i<leftPane.getChildren().size();i++) {
+			if(leftPane.getChildren().get(i) instanceof Button && ((Button)leftPane.getChildren().get(i)).getText().equals(s)) {
+				return ((Button)leftPane.getChildren().get(i));
+			}
+		}
+		
+		return null;
+	}
+	
 	public static void castxyabilities(Champion c, Ability a, int x, int y, GridPane grid) {
 		try {
 			// System.out.println(((Damageable)game.getBoard()[x][y]).getCurrentHP());
@@ -1032,8 +1116,8 @@ public class Main extends Application {
 		}
 		Button[] movesbut = new Button[4];
 		movesbut[0] = new Button("Up");
-		movesbut[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		movesbut[0].setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				try {
 					if (s.equals("move")) {
 						game.move(model.world.Direction.UP);
@@ -1054,8 +1138,8 @@ public class Main extends Application {
 			}
 		});
 		movesbut[1] = new Button("Right");
-		movesbut[1].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		movesbut[1].setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				try {
 					if (s.equals("move")) {
 						game.move(model.world.Direction.RIGHT);
@@ -1077,8 +1161,8 @@ public class Main extends Application {
 			}
 		});
 		movesbut[2] = new Button("Left");
-		movesbut[2].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		movesbut[2].setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				try {
 					if (s.equals("move")) {
 						game.move(model.world.Direction.LEFT);
@@ -1100,8 +1184,8 @@ public class Main extends Application {
 			}
 		});
 		movesbut[3] = new Button("Down");
-		movesbut[3].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
-			public void handle(Event arg0) {
+		movesbut[3].setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent arg0) {
 				try {
 					if (s.equals("move")) {
 						game.move(model.world.Direction.DOWN);
