@@ -860,14 +860,22 @@ public class Main extends Application {
 						Thread.sleep(1000);
 						((Button)leftPane.getChildren().get(leftPane.getChildren().size()-1)).fire();
 					}else {
-//						//directional ability will not be used
-//						char s2=s.charAt(11);
-//						int j=Integer.parseInt(s2+"");
-//						((Button) abilitieButtons.get(j+1)).fire();
-//						System.out.println(leftPane.getChildren());
-//						if(s.length()==14) {
-//							
-//						}
+						//directional ability 
+						char s2=s.charAt(11);
+						int j=Integer.parseInt(s2+"");
+						((Button) abilitieButtons.get(j+1)).fire();
+						System.out.println(leftPane.getChildren());
+						if(s.length()==14) {
+							((Button)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(0)).fire();
+						}else if(s.length()==15){
+							((Button)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(1)).fire();
+						}else {
+							if(s.substring(12,s.length()).equals("DOWN")) {
+								((Button)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(3)).fire();
+							}else {
+								((Button)((HBox)leftPane.getChildren().get(leftPane.getChildren().size()-2)).getChildren().get(2)).fire();
+							}
+						}
 					}
 				}
 //				System.out.println("here "+leftPane.getChildren());
