@@ -2,7 +2,6 @@ package app;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import computer.driver;
 import engine.*;
 import exceptions.AbilityUseException;
@@ -423,10 +422,12 @@ public class Main extends Application {
 
 	public static void toScene3(Stage stage) {
 		if (game.getSecondPlayer().getTeam().size() != 0) {
+			game.placeChampions();
 			scene4(stage);
 		} else {
 			if(computermode) {
 				chooseChampions();
+				game.placeChampions();
 				scene4(stage);
 			}else {
 				toscene2(game.getSecondPlayer(), stage);
@@ -434,25 +435,29 @@ public class Main extends Application {
 		}
 	}
 	public static void chooseChampions() {
-		//ArrayList<Champion>arr=new ArrayList<Champion>();
-		if(!chosenChamions.contains(game.getAvailableAbilities().get(2))) {
+		//System.out.println(player1.getTeam());
+		if(!player1.getTeam().contains(game.getAvailableChampions().get(2))) {
 			player2.getTeam().add(game.getAvailableChampions().get(2));
 		}
-		if(!chosenChamions.contains(game.getAvailableAbilities().get(6))) {
+		if(!player1.getTeam().contains(game.getAvailableChampions().get(6))) {
 			player2.getTeam().add(game.getAvailableChampions().get(6));
 		}
 		int i=0;
 		while(player2.getTeam().size()!=3) {
-			if(!chosenChamions.contains(game.getAvailableAbilities().get(i))) {
+			if(!player1.getTeam().contains(game.getAvailableChampions().get(i))) {
 				player2.getTeam().add(game.getAvailableChampions().get(i));
 			}
+			i++;
 		}
 		player2.setLeader(player2.getTeam().get(0));
-		i++;
 	}
 	
 	public static void scene4(Stage stage) {
 		game.prepareChampionTurns();
+		if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
+			computermoves=driver.ComputerTurn(game);
+			System.out.println(computermoves);
+		}
 		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
 		BorderPane border = new BorderPane();
 		border.setPrefHeight(1000);
@@ -577,7 +582,6 @@ public class Main extends Application {
 				});
 			}
 		}
-		game.placeChampions();
 		updateGrid(grid);
 		grid.setVgap(5);
 		grid.setHgap(5);
@@ -771,6 +775,10 @@ public class Main extends Application {
 				updateGrid(grid);
 				gameOver(stage);
 				prepareActions(leftpane, abilityBox, game.getCurrentChampion(), grid, stage, rightpane);
+				if(computermode&&game.getSecondPlayer().getTeam().contains(((Champion)game.getTurnOrder().peekMin()))) {
+					computermoves=driver.ComputerTurn(game);
+					System.out.println(computermoves);
+				}
 			}
 
 		});
@@ -1190,6 +1198,7 @@ public class Main extends Application {
 		if (game.getTurnOrder().size() == 0) {
 			game.prepareChampionTurns();
 		}
+		
 		//game.getTurnOrder().insert(c);
 	}
 	
