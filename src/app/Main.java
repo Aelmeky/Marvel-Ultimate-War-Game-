@@ -66,7 +66,7 @@ public class Main extends Application {
 	static HBox toprow1;
 	static Label next;
 	static String fastestChampion;
-	static boolean computerflag = false;
+	static boolean computermode = false;
 	static ArrayList<String> computermoves;
 
 	public void start(Stage stage) {
@@ -142,7 +142,9 @@ public class Main extends Application {
 							System.out.println(e2);
 							new errormes("Error", "Error in Abilities and Champion Files");
 						}
-
+						if(player2field.getText().toUpperCase().equals("AI")) {
+							computermode = true;
+						}
 						toscene2(game.getFirstPlayer(), stage);
 					}
 				} else {
@@ -150,13 +152,6 @@ public class Main extends Application {
 				}
 			}
 		};
-		if(player1field.getText().equals("AI")||player2field.getText().equals("AI")) {
-			computerflag = true;
-			//computermoves = driver(game);
-		}
-			
-	
-
 		toscene2.setOnAction(proceed);
 
 		toscene2.setPadding(new Insets(10));
@@ -427,16 +422,35 @@ public class Main extends Application {
 	}
 
 	public static void toScene3(Stage stage) {
-		if(computerflag) {
-			
-		}
 		if (game.getSecondPlayer().getTeam().size() != 0) {
 			scene4(stage);
 		} else {
-			toscene2(game.getSecondPlayer(), stage);
+			if(computermode) {
+				chooseChampions();
+				scene4(stage);
+			}else {
+				toscene2(game.getSecondPlayer(), stage);
+			}
 		}
 	}
-
+	public static void chooseChampions() {
+		//ArrayList<Champion>arr=new ArrayList<Champion>();
+		if(!chosenChamions.contains(game.getAvailableAbilities().get(2))) {
+			player2.getTeam().add(game.getAvailableChampions().get(2));
+		}
+		if(!chosenChamions.contains(game.getAvailableAbilities().get(6))) {
+			player2.getTeam().add(game.getAvailableChampions().get(6));
+		}
+		int i=0;
+		while(player2.getTeam().size()!=3) {
+			if(!chosenChamions.contains(game.getAvailableAbilities().get(i))) {
+				player2.getTeam().add(game.getAvailableChampions().get(i));
+			}
+		}
+		player2.setLeader(player2.getTeam().get(0));
+		i++;
+	}
+	
 	public static void scene4(Stage stage) {
 		game.prepareChampionTurns();
 		fastestChampion = ((Champion) game.getTurnOrder().peekMin()).getName();
@@ -612,7 +626,7 @@ public class Main extends Application {
 //			}
 //		});
 //		}
-		System.out.println(leftpane.getChildren().size()+" "+leftpane.getChildren());
+
 		Button attack = new Button("Attack");		
 		boolean isStuned=false;
 		for(Effect f:c.getAppliedEffects()) {
@@ -1177,9 +1191,6 @@ public class Main extends Application {
 			game.prepareChampionTurns();
 		}
 		//game.getTurnOrder().insert(c);
-
-		
-	
 	}
 	
 }
